@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5b5fc7">
+<title>English Coach</title>
+<style>
+:root{--bg:#f7f6f3;--panel:#fff;--panel2:#f0eee9;--text:#26242b;--muted:#7b7683;--line:#e7e3dc;--accent:#5b5fc7;--accent2:#e8e9fa;--ok:#3d8b65;--bad:#c25456;--warn:#fff4e0;--shadow:0 6px 20px rgba(40,35,60,.06)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16151a;--panel:#201e26;--panel2:#2b2933;--text:#efedf3;--muted:#a49fae;--line:#38353f;--accent:#8f93f0;--accent2:#2d2e4a;--ok:#6fc29a;--bad:#e28486;--warn:#3a3020;--shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16151a;--panel:#201e26;--panel2:#2b2933;--text:#efedf3;--muted:#a49fae;--line:#38353f;--accent:#8f93f0;--accent2:#2d2e4a;--ok:#6fc29a;--bad:#e28486;--warn:#3a3020;--shadow:none;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:84px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+#app{max-width:720px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 0;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.logo{font-weight:800;letter-spacing:.2px}
+.chips{display:flex;gap:8px;font-size:12px}
+.chips span{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:var(--muted)}
+main{padding-top:16px;padding-bottom:16px}
+h2{font-size:20px;margin:6px 0 4px}h3{font-size:16px;margin:0 0 6px}h4{font-size:13px;margin:16px 0 4px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+p{margin:6px 0}
+.muted,small{color:var(--muted)}
+small{display:block;font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 14px;box-shadow:var(--shadow)}
+.hero{text-align:center;padding:22px 16px}
+.hero .big{font-size:52px;font-weight:800;line-height:1;color:var(--accent)}
+.btn{border:0;background:var(--accent);color:#fff;padding:12px 18px;border-radius:12px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+.btn.danger{background:var(--bad)}
+.btn.sm{padding:6px 12px;font-size:14px;min-height:36px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.pill{display:inline-block;background:var(--accent2);color:var(--text);border-radius:99px;padding:2px 10px;font-size:12px;font-weight:600}
+.pill.ok{background:rgba(61,139,101,.15);color:var(--ok)}
+.note{background:var(--accent2);border-radius:12px;padding:12px 14px;font-size:14px;margin:0 0 14px}
+.note.warn{background:var(--warn)}
+.note a{color:var(--accent);font-weight:700}
+input,select,textarea{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:150px;resize:vertical}
+label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:12px 0 4px}
+.seg{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
+.seg button{flex:none;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:99px;padding:7px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.item{padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.item:last-child{border-bottom:0}
+.ico{width:40px;height:40px;border-radius:12px;background:var(--panel2);display:grid;place-items:center;font-size:20px;flex:none}
+.chev{color:var(--muted);font-size:22px}
+.phrase{display:flex;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.phrase:last-of-type{border-bottom:0}
+.fc{min-height:220px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--accent2);border-radius:16px;padding:22px;margin:10px 0;white-space:pre-wrap}
+.fc .t{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.fc .f{font-size:22px;font-weight:700}
+.fc .b{font-size:18px;margin-top:10px}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.rate .btn{display:flex;flex-direction:column;align-items:center;gap:0}
+.rate small{color:inherit;opacity:.85;font-size:11px;font-weight:400}
+.ans{background:var(--panel2);border-radius:12px;padding:12px;margin:6px 0;white-space:pre-wrap}
+.err{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}
+.err .w{color:var(--bad);text-decoration:line-through}
+.err .r{color:var(--ok);font-weight:700}
+.q{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;font:inherit;color:var(--text);cursor:pointer}
+.opt.good{border-color:var(--ok);background:rgba(61,139,101,.14)}
+.opt.bad{border-color:var(--bad);background:rgba(194,84,86,.14)}
+.why{font-size:14px;color:var(--muted);margin-top:6px}
+.w-ok{color:var(--ok);font-weight:700}.w-bad{color:var(--bad);font-weight:700;text-decoration:underline}
+.bars{display:flex;gap:6px;align-items:flex-end;height:46px;margin-top:8px}
+.bars i{flex:1;background:var(--accent);border-radius:4px 4px 0 0;min-height:3px;opacity:.85}
+.bars span{flex:1;text-align:center;font-size:11px;color:var(--muted)}
+#micBtn.on{background:var(--bad);color:#fff;border-color:var(--bad)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);z-index:10;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav div{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+nav button{border:0;background:transparent;color:var(--muted);padding:9px 2px 8px;font:inherit;font-size:11px;cursor:pointer;display:grid;gap:1px;justify-items:center}
+nav button b{font-size:20px;line-height:1.1}
+nav button.on{color:var(--accent);font-weight:700}
+#dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:grid;place-items:center;padding:16px}#dlg[hidden]{display:none}.dbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:380px;width:100%}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:30;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+a{color:var(--accent)}
+.link{display:block;padding:12px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.link:last-child{border-bottom:0}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top"><div class="logo">✦ English Coach</div><div class="chips"><span id="chipStreak"></span><span id="chipQuota"></span></div></header>
+  <main id="view"></main>
+</div>
+<nav><div>
+  <button data-act="go" data-p="home"><b>⌂</b>Hari ini</button>
+  <button data-act="go" data-p="write"><b>✎</b>Tulis</button>
+  <button data-act="go" data-p="cards"><b>▤</b>Kartu</button>
+  <button data-act="go" data-p="learn"><b>📖</b>Belajar</button>
+  <button data-act="go" data-p="set"><b>⚙</b>Pengaturan</button>
+</div></nav>
+<div id="toast"></div>
+<div id="dlg" hidden></div>
+<noscript>Aplikasi ini membutuhkan JavaScript.</noscript>
+
+<script>
+"use strict";
+/* ============ Util ============ */
+const LS='english_coach_v1', LSC='english_coach_cache_v1';
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+const pad=n=>String(n).padStart(2,'0');
+const dstr=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>dstr(new Date());
+const addDays=(s,n)=>{const [y,m,d]=s.split('-').map(Number);return dstr(new Date(y,m-1,d+n))};
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800)}
+function hash(str){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<str.length;i++){const ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36)}
+
+/* ============ Konten bawaan ============ */
+const SEED=[
+["Could you say that again, please?","Bisa tolong ulangi?","Sorry, could you say that again, please?","umum"],
+["I'm not sure I understand.","Saya kurang paham.","I'm not sure I understand the last part.","umum"],
+["How do you say this in English?","Ini bahasa Inggrisnya apa?","How do you say 'tenggat' in English?","umum"],
+["I'm looking forward to it.","Saya menantikannya.","We're meeting on Friday. I'm looking forward to it.","umum"],
+["It depends on the situation.","Tergantung situasinya.","It depends on the situation and the budget.","umum"],
+["I used to work at a small company.","Dulu saya bekerja di perusahaan kecil.","I used to work at a small company in Makassar.","umum"],
+["What do you do for a living?","Pekerjaan kamu apa?","Nice to meet you. What do you do for a living?","umum"],
+["I'm a bit tired today.","Hari ini saya agak capek.","I'm a bit tired today, but I'm okay.","umum"],
+["Let me think about it.","Biar saya pikirkan dulu.","That's a good offer. Let me think about it.","umum"],
+["That makes sense.","Masuk akal.","Oh, I see. That makes sense.","umum"],
+["I'd rather stay home today.","Hari ini saya lebih suka di rumah.","It's raining, so I'd rather stay home today.","umum"],
+["Sorry for the late reply.","Maaf balasnya terlambat.","Sorry for the late reply. I was offline yesterday.","umum"],
+["Do you mind if I ask a question?","Boleh saya bertanya?","Do you mind if I ask a question about the task?","umum"],
+["Thanks for your patience.","Terima kasih atas kesabarannya.","Thanks for your patience while I fix the file.","umum"],
+["I'm trying to improve my English.","Saya sedang berusaha memperbaiki bahasa Inggris saya.","I'm trying to improve my English every day.","umum"],
+["Just to confirm, the deadline is Friday, right?","Sekadar konfirmasi, tenggatnya hari Jumat, kan?","Just to confirm, the deadline is Friday, right?","kerja"],
+["I'll get back to you by Friday.","Saya akan kabari Anda paling lambat Jumat.","I need to check the details. I'll get back to you by Friday.","kerja"],
+["Could you clarify what you mean by this?","Bisa dijelaskan maksud Anda?","Could you clarify what you mean by 'priority'?","kerja"],
+["I've attached the file for your review.","Saya lampirkan file untuk Anda periksa.","Hi Sam, I've attached the file for your review.","kerja"],
+["Please let me know if you have any questions.","Kabari saya jika ada pertanyaan.","The report is ready. Please let me know if you have any questions.","kerja"],
+["I apologize for the inconvenience.","Mohon maaf atas ketidaknyamanannya.","I apologize for the inconvenience. I'll fix it today.","kerja"],
+["I'll send you an update by the end of the day.","Saya kirim kabar terbaru sebelum hari berakhir.","I'll send you an update by the end of the day.","kerja"],
+["Could we move the meeting to Thursday?","Bisakah rapatnya dipindah ke Kamis?","Could we move the meeting to Thursday morning?","kerja"],
+["I'm currently working on it.","Saat ini sedang saya kerjakan.","I'm currently working on it and will finish soon.","kerja"],
+["Would it be possible to extend the deadline?","Mungkinkah tenggatnya diperpanjang?","Would it be possible to extend the deadline by one day?","kerja"],
+["I'll keep you posted.","Nanti saya kabari perkembangannya.","I'll keep you posted on the progress.","kerja"],
+["Thank you for your feedback. I'll revise it today.","Terima kasih atas masukannya. Akan saya revisi hari ini.","Thank you for your feedback. I'll revise it today.","kerja"],
+["I'm available from nine to five your time.","Saya tersedia pukul sembilan sampai lima waktu Anda.","I'm available from nine to five your time.","kerja"],
+["Sorry, I missed your message.","Maaf, saya melewatkan pesan Anda.","Sorry, I missed your message. Let me check it now.","kerja"],
+["That's outside the scope of this task.","Itu di luar lingkup tugas ini.","That's outside the scope of this task. Can we discuss it?","VA"],
+["I can help you manage your inbox and calendar.","Saya bisa membantu mengelola email dan kalender Anda.","I can help you manage your inbox and calendar.","VA"],
+["I have experience with Google Workspace and Trello.","Saya berpengalaman dengan Google Workspace dan Trello.","I have experience with Google Workspace and Trello.","VA"],
+["I'm a fast learner and I pay attention to detail.","Saya cepat belajar dan teliti.","I'm a fast learner and I pay attention to detail.","VA"],
+["I can handle multiple tasks at the same time.","Saya bisa menangani beberapa tugas sekaligus.","I can handle multiple tasks at the same time.","VA"],
+["My working hours are flexible.","Jam kerja saya fleksibel.","My working hours are flexible, so we can find a good time.","VA"],
+["I usually reply within 24 hours.","Biasanya saya membalas dalam 24 jam.","I usually reply within 24 hours on working days.","VA"],
+["I'd like to confirm the scope of work first.","Saya ingin memastikan lingkup pekerjaan dulu.","Before I start, I'd like to confirm the scope of work first.","VA"],
+["I'll send you a weekly progress report.","Saya kirim laporan perkembangan mingguan.","I'll send you a weekly progress report every Monday.","VA"],
+["Let me walk you through my process.","Biar saya jelaskan alur kerja saya.","Let me walk you through my process step by step.","VA"],
+["I'm based in Indonesia, so there is a time difference.","Saya tinggal di Indonesia, jadi ada perbedaan waktu.","I'm based in Indonesia, so there is a time difference, but I can adjust.","VA"],
+["I always double-check my work before sending it.","Saya selalu memeriksa ulang pekerjaan sebelum mengirim.","I always double-check my work before sending it.","VA"],
+["My rate is ten dollars per hour.","Tarif saya sepuluh dolar per jam.","My rate is ten dollars per hour. Is that okay for you?","VA"]
+];
+const LESSONS=[
+{id:'l1',title:'Memperkenalkan diri',tag:'umum',level:'A2',time:'5 mnt',icon:'👋',intro:'Pola mudah: nama → asal → pekerjaan → tujuan belajar. Ganti detailnya dengan datamu.',phrases:[["Nice to meet you. My name is Dewi.","Senang bertemu Anda. Nama saya Dewi."],["I'm from Sulawesi, Indonesia.","Saya dari Sulawesi, Indonesia."],["I'm learning English to work with clients abroad.","Saya belajar bahasa Inggris untuk bekerja dengan klien luar negeri."],["In my free time, I like reading and cooking.","Di waktu luang, saya suka membaca dan memasak."]],task:'Write 4 sentences to introduce yourself to a new client.',ttype:'pesan klien'},
+{id:'l2',title:'Rutinitas harian',tag:'umum',level:'A2',time:'6 mnt',icon:'☀️',intro:'Pakai present simple untuk kebiasaan, dan kata urutan: first, then, after that.',phrases:[["I usually wake up at six in the morning.","Biasanya saya bangun jam enam pagi."],["After breakfast, I check my messages.","Setelah sarapan, saya cek pesan."],["I work from home most days.","Saya bekerja dari rumah hampir setiap hari."],["In the evening, I study English for thirty minutes.","Malam hari, saya belajar bahasa Inggris tiga puluh menit."]],task:'Describe your typical day in 5 sentences.',ttype:'jurnal'},
+{id:'l3',title:'Menyampaikan pendapat dengan sopan',tag:'umum',level:'B1',time:'8 mnt',icon:'💬',intro:'Beda pendapat itu biasa. Kuncinya: akui dulu, baru sampaikan pandanganmu.',phrases:[["In my opinion, this plan is realistic.","Menurut saya, rencana ini realistis."],["I see your point, but I have a different view.","Saya paham maksud Anda, tapi saya punya pandangan lain."],["I partly agree with you.","Saya setuju sebagian."],["From my experience, it works better this way.","Dari pengalaman saya, cara ini lebih efektif."]],task:'Write your opinion about working from home. Give two reasons.',ttype:'bebas'},
+{id:'l4',title:'Minta klarifikasi',tag:'kerja',level:'A2',time:'6 mnt',icon:'❔',intro:'Bertanya ulang itu profesional, bukan tanda lemah. Selalu konfirmasi sebelum mengerjakan.',phrases:[["Could you clarify what you mean by this?","Bisa dijelaskan maksud Anda?"],["Just to confirm, you need it by Friday, right?","Sekadar konfirmasi, Anda butuh itu hari Jumat, ya?"],["Sorry, I didn't catch that. Could you repeat it?","Maaf, saya kurang dengar. Bisa diulang?"],["Do you have an example I can follow?","Apakah ada contoh yang bisa saya ikuti?"]],task:'A client sent an unclear task. Write a short message asking 2 clarifying questions.',ttype:'pesan klien'},
+{id:'l5',title:'Update untuk klien',tag:'kerja',level:'B1',time:'8 mnt',icon:'✉️',intro:'Urutan update yang jelas: selesai → sedang dikerjakan → perkiraan selesai → lampiran.',phrases:[["I've finished the first part of the task.","Bagian pertama tugas sudah selesai."],["I'm currently working on the second part.","Saat ini saya mengerjakan bagian kedua."],["I expect to finish it by tomorrow afternoon.","Saya perkirakan selesai besok siang."],["Please find the report attached.","Laporan terlampir."]],task:'Write a short progress update to a client about a research task.',ttype:'pesan klien'},
+{id:'l6',title:'Follow-up profesional',tag:'kerja',level:'B1',time:'8 mnt',icon:'📨',intro:'Follow-up yang sopan: sebut konteks, ajukan satu permintaan jelas, beri tenggat halus.',phrases:[["I'm following up on my previous email.","Saya menindaklanjuti email saya sebelumnya."],["Have you had a chance to review the document?","Apakah Anda sempat memeriksa dokumennya?"],["I'd appreciate your feedback by Thursday.","Saya akan menghargai masukan Anda paling lambat Kamis."],["Thank you for your time and support.","Terima kasih atas waktu dan dukungan Anda."]],task:'Write a polite follow-up email. The client has not replied for three days.',ttype:'email'},
+{id:'l7',title:'Tell me about yourself',tag:'VA',level:'A2–B1',time:'10 mnt',icon:'🎯',intro:'Rumus jawaban interview: sekarang → masa lalu → tujuan. Ganti angka dan detail dengan pengalamanmu yang nyata.',phrases:[["I'm a virtual assistant with two years of experience.","Saya virtual assistant dengan pengalaman dua tahun."],["I help clients manage their inbox, calendar, and tasks.","Saya membantu klien mengelola email, kalender, dan tugas."],["Previously, I worked as an administrative staff member.","Sebelumnya saya bekerja sebagai staf administrasi."],["I'm looking for a long-term role where I can grow.","Saya mencari peran jangka panjang untuk berkembang."]],task:'Tell me about yourself. (5-6 sentences)',ttype:'interview'},
+{id:'l8',title:'Menjelaskan tools dan skill',tag:'VA',level:'B1',time:'8 mnt',icon:'💻',intro:'Sebut tool + manfaatnya untuk klien, bukan sekadar daftar nama.',phrases:[["I'm comfortable with Google Workspace and Trello.","Saya terbiasa dengan Google Workspace dan Trello."],["I can schedule meetings across different time zones.","Saya bisa mengatur rapat lintas zona waktu."],["I pay close attention to detail.","Saya sangat teliti."],["I'm a fast learner, so I can pick up new tools quickly.","Saya cepat belajar sehingga bisa menguasai tool baru dengan cepat."]],task:'Explain 3 tools or skills you have and how they help a client.',ttype:'interview'},
+{id:'l9',title:'Deadline berubah dan di luar scope',tag:'VA',level:'B1',time:'9 mnt',icon:'🗓️',intro:'Tetap sopan tapi tegas: akui permintaan, sebut batasan, tawarkan opsi.',phrases:[["I understand the deadline has changed. Let me check my schedule.","Saya paham tenggatnya berubah. Biar saya cek jadwal."],["I can deliver it by Monday if we keep the same scope.","Saya bisa serahkan hari Senin jika lingkupnya sama."],["This task is outside our agreed scope. Could we discuss it?","Tugas ini di luar lingkup yang disepakati. Bisa kita bahas?"],["I'm sorry for the delay. I'll send it today.","Maaf atas keterlambatannya. Akan saya kirim hari ini."]],task:'A client asks for an extra task and an earlier deadline. Write a polite reply.',ttype:'email'}
+];
+const INTERVIEW=["Tell me about yourself.","Why do you want to work as a virtual assistant?","What tools and software do you use?","How do you manage multiple deadlines?","Tell me about a time you made a mistake. What did you do?","How do you handle a client who changes the plan at the last minute?","What are your working hours and time zone?","How do you keep client information confidential?","What is your biggest strength?","What is something you want to improve?","How do you organize your day?","Why should we hire you?","What are your rates and availability?","How do you communicate progress to a client?"];
+const TOPICS={
+ 'jurnal':["Describe what you did today.","Write about something you learned this week.","Describe a problem you had today and how you solved it.","Write about your plan for tomorrow."],
+ 'pesan klien':["Tell a client you finished a task and attached the file.","Ask a client to clarify an unclear instruction.","Tell a client you need two more days.","Confirm a meeting time with a client in another time zone."],
+ 'email':["Write an email introducing your services as a virtual assistant.","Write a follow-up email to a client who has not replied.","Write an email to politely decline an extra task.","Write an email to ask for feedback on your work."],
+ 'interview':INTERVIEW,
+ 'bebas':["Write about your favorite food.","Write about your hometown.","Write about a goal you have this year.","Describe your ideal workday."]
+};
+const TYPES=[['jurnal','Jurnal harian'],['pesan klien','Pesan ke klien'],['email','Email'],['interview','Jawaban interview VA'],['bebas','Tulis bebas']];
+const TYPE_EN={'jurnal':'daily journal','pesan klien':'message to a client','email':'professional email','interview':'job interview answer (virtual assistant)','bebas':'free writing'};
+const SOURCES=[
+ ['Reading','British Council LearnEnglish','Teks bacaan per level dengan latihan.','https://learnenglish.britishcouncil.org/skills/reading','A2–B1','umum'],
+ ['Reading','News in Levels','Berita yang sama dalam 3 tingkat kesulitan.','https://www.newsinlevels.com/','A1–B1','umum'],
+ ['Reading','Breaking News English','Artikel pendek dengan audio dan latihan.','https://breakingnewsenglish.com/','A2–B1','umum'],
+ ['Reading','Simple English Wikipedia','Topik apa saja dengan bahasa sederhana.','https://simple.wikipedia.org/','A2–B1','umum'],
+ ['Reading','VOA Learning English','Berita dan artikel untuk pembelajar.','https://learningenglish.voanews.com/','A2–B1','umum'],
+ ['Listening','BBC Learning English','6 Minute English dan The English We Speak (ada transkrip).','https://www.bbc.co.uk/learningenglish','B1','umum'],
+ ['Listening','English at Work (BBC)','Percakapan kantor dan frasa profesional.','https://www.bbc.co.uk/learningenglish/english/features/english-at-work','A2–B1','kerja'],
+ ['Listening','Rachel\'s English','Pelafalan dan cara bicara bersambung.','https://www.youtube.com/@rachelsenglish','A2–B1','umum'],
+ ['Listening','English with Lucy','Kosakata dan pelafalan Inggris natural.','https://www.youtube.com/@EnglishwithLucy','A2–B1','umum'],
+ ['Listening','All Ears English','Podcast percakapan natural.','https://www.allearsenglish.com/','B1','umum'],
+ ['Listening','Easy Stories in English','Cerita untuk latihan mendengar.','https://easystoriesinenglish.com/','A2–B1','umum']
+];
+
+/* ============ State ============ */
+const DEF={theme:'system',accent:'en-US',rate:0.9,focus:'all',providers:[],defaultProvider:null,cards:[],seeded:false,activity:[],usage:{},errorStats:{},writings:[],quizzes:[],lessonsDone:[]};
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function load(){try{const o=JSON.parse(localStorage.getItem(LS)||'{}');return Object.assign(clone(DEF),o)}catch(e){return clone(DEF)}}
+let S=load();
+let LS_OK=true;try{localStorage.setItem('__t','1');localStorage.removeItem('__t')}catch(e){LS_OK=false}
+function save(){if(!LS_OK)return;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast('Penyimpanan browser penuh atau diblokir.')}}
+function loadCache(){try{return JSON.parse(localStorage.getItem(LSC)||'{}')}catch(e){return {}}}
+function saveCache(c){const k=Object.keys(c);if(k.length>80){k.sort((a,b)=>c[a].t-c[b].t).slice(0,k.length-80).forEach(x=>delete c[x])}try{localStorage.setItem(LSC,JSON.stringify(c))}catch(e){}}
+const ui={page:'home',lt:'lesson',lesson:null,wtype:'jurnal',topic:'',draft:'',model:null,result:null,rv:null,quiz:null,quizSrc:'',qlevel:'A2–B1',qn:'8',qcat:'umum',dict:null,pf:null,cfilter:'all',busy:false};
+
+function seedIfNeeded(){if(S.seeded)return;S.cards=SEED.map(s=>({id:uid(),front:s[0],back:s[1],example:s[2],tag:s[3],kind:'phrase',say:s[0],box:0,due:today(),created:today(),lapses:0}));S.seeded=true;save()}
+
+/* ============ Kartu & SRS ============ */
+const INT=[0,1,3,7,14,30];
+function focusOk(c){return S.focus==='all'||c.tag===S.focus||c.tag==='koreksi'}
+function dueCards(){return S.cards.filter(c=>c.due<=today()&&focusOk(c)).sort((a,b)=>a.box-b.box||(a.due<b.due?-1:1))}
+function cardById(id){return S.cards.find(c=>c.id===id)}
+function nextState(c,r){let box=c.box;if(r==='again')box=0;else if(r==='good')box=Math.min(5,box+1);else box=Math.max(1,box);const days=r==='again'?0:r==='hard'?Math.max(1,Math.ceil(INT[box]/2)):INT[box];return {box,days}}
+function rateCard(c,r){const n=nextState(c,r);c.box=n.box;c.due=addDays(today(),n.days);if(r==='again')c.lapses=(c.lapses||0)+1}
+function addCard(o){const f=String(o.front||'').trim(),b=String(o.back||'').trim();if(!f||!b)return false;if(S.cards.some(c=>c.kind===(o.kind||'phrase')&&c.front.toLowerCase()===f.toLowerCase()))return false;S.cards.push({id:uid(),front:f,back:b,example:String(o.example||'').trim(),tag:o.tag||'umum',kind:o.kind||'phrase',say:o.say||'',box:0,due:today(),created:today(),lapses:0});return true}
+function streak(){const a=new Set(S.activity);let d=today();if(!a.has(d))d=addDays(d,-1);let n=0;while(a.has(d)){n++;d=addDays(d,-1)}return n}
+function mark(){const t=today();if(!S.activity.includes(t)){S.activity.push(t);if(S.activity.length>400)S.activity.shift();save()}}
+
+/* ============ Suara ============ */
+function speak(t,rate){if(!('speechSynthesis' in window))return toast('Suara tidak didukung browser ini.');try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=S.accent;u.rate=rate||S.rate;const vs=speechSynthesis.getVoices();const v=vs.find(v=>v.lang.replace('_','-')===S.accent)||vs.find(v=>v.lang.startsWith('en'));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){toast('Suara gagal diputar.')}}
+let rec=null;
+function mergeSpeech(list){const out=[];list.forEach(t=>{t=String(t||'').trim();if(!t)return;const last=out[out.length-1];if(last&&t.toLowerCase().startsWith(last.toLowerCase()))out[out.length-1]=t;else if(last&&last.toLowerCase().startsWith(t.toLowerCase())){}else out.push(t)});return out.join(' ')}
+function toggleMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Pengenalan suara belum didukung browser ini. Coba Chrome.');if(rec){rec.stop();return}
+ const ta=$('#draft');if(!ta)return;rec=new SR();rec.lang=S.accent;rec.interimResults=true;rec.continuous=false;
+ const base=ta.value.trim()?ta.value.trim()+' ':'';
+ rec.onresult=e=>{const parts=[];for(let i=0;i<e.results.length;i++)parts.push(e.results[i][0].transcript);ta.value=(base+mergeSpeech(parts)).trim();ui.draft=ta.value};
+ rec.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted')toast('Mikrofon: '+e.error)};
+ rec.onend=()=>{rec=null;const b=$('#micBtn');if(b)b.classList.remove('on');mark();toast('Tekan 🎙 lagi untuk lanjut bicara.')};
+ try{rec.start();$('#micBtn').classList.add('on')}catch(e){rec=null}}
+
+/* ============ AI ============ */
+function provById(id){return S.providers.find(p=>p.id===id)}
+function defProv(){return provById(S.defaultProvider)||S.providers[0]||null}
+function usedToday(p){return ((S.usage[today()]||{})[p.id])||0}
+function bump(p){const t=today();S.usage[t]=S.usage[t]||{};S.usage[t][p.id]=(S.usage[t][p.id]||0)+1;const old=addDays(t,-30);Object.keys(S.usage).forEach(k=>{if(k<old)delete S.usage[k]})}
+function parseJSON(t){t=String(t||'').replace(/^\s*```(?:json)?\s*/i,'').replace(/```\s*$/,'').trim();const a=t.indexOf('{'),b=t.lastIndexOf('}');if(a<0||b<=a)return null;try{return JSON.parse(t.slice(a,b+1))}catch(e){return null}}
+const NETERR='Tidak bisa terhubung. Cek internet dan URL provider. Jika ini dibuka di pratinjau/halaman chat, koneksi keluar diblokir di sana: buka file langsung di Chrome atau Edge.';
+async function callAI(p,system,user,opt){opt=opt||{};
+ if(!p||!p.key||!p.model||!p.url)throw new Error('Lengkapi provider di Pengaturan (URL, key, dan model ID).');
+ const ck=hash(p.model+'|'+system+'|'+user);const cache=loadCache();
+ if(!opt.noTrack&&cache[ck])return {text:cache[ck].v,cached:true};
+ if(!opt.noTrack&&p.limit&&usedToday(p)>=p.limit)throw new Error('Batas harian untuk "'+p.name+'" tercapai ('+p.limit+'). Pilih model lain atau ubah batas di Pengaturan.');
+ let text='';
+ if(p.format==='gemini'){
+  const url=p.url.replace(/\/$/,'')+'/models/'+encodeURIComponent(p.model)+':generateContent?key='+encodeURIComponent(p.key);
+  const body={systemInstruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:user}]}],generationConfig:{temperature:0.3,maxOutputTokens:opt.max||4096,responseMimeType:opt.json?'application/json':undefined}};
+  let res;try{res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})}catch(e){throw new Error(NETERR)}
+  let data={};try{data=await res.json()}catch(e){}
+  if(!res.ok)throw new Error(errMsg(res.status,data));
+  text=((data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts)||[]).map(x=>x.text||'').join('');
+  if(!text)throw new Error('AI tidak mengembalikan teks'+(data.candidates&&data.candidates[0]&&data.candidates[0].finishReason?' ('+data.candidates[0].finishReason+')':'')+'. Coba lagi.');
+ }else{
+  const url=p.url.replace(/\/$/,'')+'/chat/completions';
+  const body={model:p.model,messages:[{role:'system',content:system},{role:'user',content:user}],temperature:0.3,max_tokens:opt.max||4096};
+  let res;try{res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.key},body:JSON.stringify(body)})}catch(e){throw new Error(NETERR)}
+  let data={};try{data=await res.json()}catch(e){}
+  if(!res.ok)throw new Error(errMsg(res.status,data));
+  text=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
+  if(!text)throw new Error('AI tidak mengembalikan teks. Coba lagi.');
+ }
+ if(!opt.noTrack){bump(p);save();let ok=true;if(opt.validate){try{opt.validate(text)}catch(e){ok=false}}if(ok){cache[ck]={t:Date.now(),v:text};saveCache(cache)}}
+ return {text,cached:false}}
+function errMsg(status,data){const m=(data&&data.error&&(data.error.message||data.error))||'';let h='';if(status===429)h=' Kuota atau limit model ini habis. Pilih model lain atau tunggu reset.';else if(status===400&&/api key/i.test(m))h=' Periksa API key.';else if(status===401||status===403)h=' Periksa API key dan izin model.';else if(status===404)h=' Periksa Model ID dan Base URL.';return 'Permintaan gagal ('+status+').'+h+(m?' '+String(m).slice(0,160):'')}
+async function aiJSON(p,sys,user,max){
+ const v=t=>{const o=parseJSON(t);if(!o||typeof o!=='object')throw new Error('bad');return o};
+ let r=await callAI(p,sys,user,{json:true,max:max,validate:v});
+ try{return {data:v(r.text),cached:r.cached}}catch(e){}
+ r=await callAI(p,sys,user+'\n\nIMPORTANT: Return ONLY one valid JSON object. No markdown, no extra text.',{json:true,max:max,validate:v});
+ try{return {data:v(r.text),cached:r.cached}}catch(e){throw new Error('Format jawaban AI tidak bisa dibaca. Coba lagi atau pilih model lain.')}}
+function pickProv(){const el=$('#modelSel');const p=el?provById(el.value):defProv();if(!p){toast('Tambah provider AI di Pengaturan dulu.');return null}ui.model=p.id;return p}
+function modelSelect(){if(!S.providers.length)return '';const cur=(ui.model&&provById(ui.model))?ui.model:(defProv()||{}).id;return `<label>Model AI</label><select id="modelSel">${S.providers.map(p=>`<option value="${p.id}" ${p.id===cur?'selected':''}>${esc(p.name)} · ${esc(p.model)} (${usedToday(p)}${p.limit?'/'+p.limit:''})</option>`).join('')}</select>`}
+
+const SYS_CORRECT=`You are a patient English tutor for an Indonesian adult learner at A2-B1 level who wants to work as a virtual assistant with international clients. Correct the learner's text. Keep the original meaning and the learner's simple vocabulary; do not make it fancy. Explanations must be in simple Indonesian (max 2 short sentences each). Return ONLY a JSON object with this exact shape:
+{"corrected":"fully corrected text","natural":"a more natural or professional alternative, or empty string","errors":[{"wrong":"exact wrong part from the learner text","right":"corrected part","type":"tense|article|preposition|word_order|word_choice|spelling|punctuation|subject_verb|plural|other","why":"penjelasan singkat dalam bahasa Indonesia"}],"vocab":[{"front":"useful English phrase from the corrected text","back":"arti dalam bahasa Indonesia","example":"short example sentence"}],"tip":"one short encouraging tip in Indonesian","interview":""}
+List at most 6 of the most important errors. If there are no errors, return an empty errors array. Give at most 3 vocab items. If the text type is a job interview answer, put 2-3 sentences of feedback in Indonesian about content and structure in "interview"; otherwise "interview" is an empty string.`;
+const SYS_QUIZ=`You are an English teacher creating a comprehension quiz for an Indonesian learner. Return ONLY a JSON object:
+{"title":"short title","questions":[{"type":"mcq","q":"question","options":["A","B","C","D"],"answer":0,"why":"penjelasan singkat dalam bahasa Indonesia"},{"type":"tf","q":"statement","answer":true,"why":"..."},{"type":"fill","q":"sentence with ____ as the blank","answer":"word","accept":["alternative"],"why":"..."}],"vocab":[{"front":"useful English phrase from the text","back":"arti Indonesia","example":"short example sentence"}]}
+For mcq, "answer" is the index (0-3) of the correct option. Use only information from the material.`;
+
+/* ============ Render ============ */
+function go(p){ui.page=p;if(p!=='cards')ui.rv=null;render();window.scrollTo(0,0)}
+function render(){const P={home:pgHome,write:pgWrite,cards:pgCards,learn:pgLearn,set:pgSet};$('#view').innerHTML=(LS_OK?'':'<div class="note warn"><b>Penyimpanan diblokir</b> di tampilan ini. Aplikasi tetap jalan, tapi key, kartu, dan tulisanmu hilang saat halaman ditutup. Untuk pemakaian rutin, buka file di Chrome/Edge biasa.</div>')+P[ui.page]();chrome()}
+function chrome(){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===ui.page));$('#chipStreak').textContent='🔥 '+streak()+' hari';const p=defProv();$('#chipQuota').textContent=p?('AI '+usedToday(p)+(p.limit?'/'+p.limit:'')):'AI: belum diatur'}
+let ownTheme=false;function applyTheme(){const r=document.documentElement;if(S.theme==='system'){if(ownTheme){r.removeAttribute('data-theme');ownTheme=false}}else{r.dataset.theme=S.theme;ownTheme=true}}
+
+function pgHome(){
+ const due=dueCards(),p=defProv();
+ const es=Object.entries(S.errorStats).sort((a,b)=>b[1]-a[1]).slice(0,3);
+ const next=LESSONS.find(l=>!S.lessonsDone.includes(l.id));
+ const labels={tense:'Tenses',article:'Artikel (a/an/the)',preposition:'Preposisi',word_order:'Urutan kata',word_choice:'Pilihan kata',spelling:'Ejaan',punctuation:'Tanda baca',subject_verb:'Subjek–kata kerja',plural:'Bentuk jamak',other:'Lainnya'};
+ return `${p?'':`<div class="note warn">AI belum disiapkan. <a href="#" data-act="go" data-p="set">Tambah provider di Pengaturan</a> untuk koreksi dan soal. Kartu, pelajaran, dan dikte tetap jalan tanpa AI.</div>`}
+ <section class="card hero"><div class="big">${due.length}</div><div class="muted">kartu perlu diulang hari ini</div><div style="margin-top:14px"><button class="btn" data-act="startReview" ${due.length?'':'disabled'}>Mulai ulang kartu</button></div></section>
+ <section class="card"><h3>Tulis hari ini</h3><p class="muted">3–5 kalimat saja cukup. Kesalahanmu bisa langsung jadi kartu.</p><button class="btn block" data-act="go" data-p="write">Tulis sesuatu</button></section>
+ ${next?`<section class="card"><h3>Pelajaran berikutnya</h3><div class="row item" data-act="openLessonHome" data-id="${next.id}"><div class="ico">${next.icon}</div><div class="grow"><b>${esc(next.title)}</b><small>${esc(next.tag)} · ${esc(next.level)} · ${esc(next.time)}</small></div><span class="chev">›</span></div></section>`:''}
+ <section class="card"><h3>Fokus kartu</h3><div class="seg">${[['all','Semua'],['umum','Umum'],['kerja','Kerja'],['VA','VA']].map(x=>`<button class="${S.focus===x[0]?'on':''}" data-act="focus" data-v="${x[0]}">${x[1]}</button>`).join('')}</div><small>Kartu hasil koreksimu selalu ikut muncul.</small></section>
+ ${es.length?`<section class="card"><h3>Kesalahan yang paling sering</h3>${es.map(e=>`<div class="row" style="justify-content:space-between;padding:4px 0"><span>${esc(labels[e[0]]||e[0])}</span><span class="pill">${e[1]}×</span></div>`).join('')}</section>`:''}`}
+
+function pgWrite(){
+ const p=defProv();
+ return `<h2>Tulis & koreksi</h2><p class="muted">Satu koreksi = satu request AI. Tulis agak panjang (3–6 kalimat) supaya hemat kuota.</p>
+ ${p?'':`<div class="note warn">Belum ada provider AI. <a href="#" data-act="go" data-p="set">Atur di Pengaturan</a>. Kamu tetap bisa menulis dan merekam suara.</div>`}
+ <div class="card">
+  <label style="margin-top:0">Jenis tulisan</label><select id="wtype">${TYPES.map(t=>`<option value="${t[0]}" ${ui.wtype===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select>
+  <div class="row" style="margin-top:10px"><button class="btn ghost sm" data-act="topic">🎲 Beri topik</button>${ui.wtype==='interview'?'<span class="pill">tips: jawab 5–6 kalimat</span>':''}</div>
+  ${ui.topic?`<div class="note" style="margin-top:10px"><b>Topik:</b> ${esc(ui.topic)} <button class="btn ghost sm" data-act="say" data-t="${esc(ui.topic)}">🔊</button></div>`:''}
+  <label>Tulisanmu (bahasa Inggris)</label><textarea id="draft" placeholder="Tulis atau tekan mikrofon untuk bicara...">${esc(ui.draft)}</textarea>
+  <div class="row" style="margin-top:8px"><button class="btn ghost sm" id="micBtn" data-act="mic">🎙 Bicara</button><button class="btn ghost sm" data-act="clearDraft">Hapus</button></div>
+  ${modelSelect()}
+  <div style="margin-top:14px"><button class="btn block" data-act="correct">Koreksi dengan AI</button></div>
+ </div>
+ <div id="resultBox">${ui.result?resultHTML(ui.result):''}</div>
+ ${S.writings.length?`<h4>Riwayat tulisan</h4><div class="card">${S.writings.slice(0,8).map((w,i)=>`<div class="row item" data-act="openWriting" data-i="${i}"><div class="grow"><b>${esc(w.text.slice(0,60))}${w.text.length>60?'…':''}</b><small>${esc(w.date)} · ${esc(w.type)}</small></div><span class="chev">›</span></div>`).join('')}</div>`:''}`}
+
+function resultHTML(r){const d=r.data;
+ const savedAll=d.errors.every((e,i)=>r.saved['e'+i])&&d.vocab.every((v,i)=>r.saved['v'+i]);
+ return `<div class="card">${r.cached?'<span class="pill">hasil tersimpan · tanpa request baru</span>':''}
+ <h4>Versi yang benar</h4><div class="ans">${esc(d.corrected)}</div><button class="btn ghost sm" data-act="say" data-k="corrected">🔊 Dengar</button>
+ ${d.natural?`<h4>Lebih natural</h4><div class="ans">${esc(d.natural)}</div><button class="btn ghost sm" data-act="say" data-k="natural">🔊 Dengar</button>`:''}
+ ${d.errors.length?`<h4>Kesalahan utama</h4>${d.errors.map((e,i)=>`<div class="err"><div><span class="w">${esc(e.wrong)}</span> → <span class="r">${esc(e.right)}</span></div><small>${esc(e.why)}</small><div style="margin-top:8px"><button class="btn ghost sm" data-act="saveErr" data-i="${i}" ${r.saved['e'+i]?'disabled':''}>${r.saved['e'+i]?'✓ Tersimpan':'＋ Jadikan kartu'}</button></div></div>`).join('')}`:'<p class="w-ok">Tidak ada kesalahan berarti. Bagus!</p>'}
+ ${d.vocab.length?`<h4>Frasa berguna</h4>${d.vocab.map((v,i)=>`<div class="phrase"><div class="grow"><b>${esc(v.front)}</b><small>${esc(v.back)}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(v.front)}">🔊</button><button class="btn ghost sm" data-act="saveVocab" data-i="${i}" ${r.saved['v'+i]?'disabled':''}>${r.saved['v'+i]?'✓':'＋'}</button></div>`).join('')}`:''}
+ ${d.interview?`<h4>Masukan interview</h4><div class="ans">${esc(d.interview)}</div>`:''}
+ ${d.tip?`<h4>Tips</h4><p>${esc(d.tip)}</p>`:''}
+ ${(d.errors.length||d.vocab.length)?`<div style="margin-top:14px"><button class="btn block" data-act="saveAll" ${savedAll?'disabled':''}>${savedAll?'✓ Semua sudah jadi kartu':'Simpan semua jadi kartu'}</button></div>`:''}</div>`}
+
+function pgCards(){
+ if(ui.rv)return reviewHTML();
+ const due=dueCards();const f=ui.cfilter;
+ const list=S.cards.filter(c=>f==='all'||c.tag===f);
+ const boxes=[0,1,2,3,4,5].map(b=>S.cards.filter(c=>c.box===b).length);const mx=Math.max(1,...boxes);
+ return `<h2>Kartu</h2>
+ <section class="card hero"><div class="big">${due.length}</div><div class="muted">perlu diulang · total ${S.cards.length} kartu</div><div style="margin-top:14px"><button class="btn" data-act="startReview" ${due.length?'':'disabled'}>Mulai ulang</button></div>
+ <div class="bars">${boxes.map(b=>`<i style="height:${Math.round(b/mx*100)}%"></i>`).join('')}</div><div class="bars" style="height:auto;margin-top:2px">${['Baru','1','2','3','4','5'].map(x=>`<span>${x}</span>`).join('')}</div><small>Makin ke kanan, makin kuat hafalanmu.</small></section>
+ <section class="card"><h3>Tambah kartu</h3>
+  <label style="margin-top:0">Frasa / kalimat (Inggris)</label><input id="cFront" placeholder="I'll get back to you by Friday.">
+  <label>Arti (Indonesia)</label><input id="cBack">
+  <label>Contoh kalimat (opsional)</label><input id="cEx">
+  <label>Kategori</label><select id="cTag"><option value="umum">Umum</option><option value="kerja">Kerja</option><option value="VA">VA</option></select>
+  <div style="margin-top:12px"><button class="btn block" data-act="addCard">Simpan kartu</button></div></section>
+ <h4>Semua kartu</h4>
+ <div class="seg">${[['all','Semua'],['umum','Umum'],['kerja','Kerja'],['VA','VA'],['koreksi','Koreksi']].map(x=>`<button class="${f===x[0]?'on':''}" data-act="cfilter" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>
+ <div class="card">${list.length?list.slice(0,100).map(c=>`<div class="phrase"><div class="grow"><b>${c.kind==='fix'?'✏️ ':''}${esc(c.front)}</b><small>${esc(c.back).replace(/\n/g,' · ')}</small></div><span class="pill">${c.box}</span><button class="btn ghost sm" data-act="delCard" data-id="${c.id}">✕</button></div>`).join('')+(list.length>100?`<small>Menampilkan 100 dari ${list.length}.</small>`:''):'<p class="muted">Belum ada kartu di kategori ini.</p>'}</div>`}
+
+function reviewHTML(){const rv=ui.rv;const c=cardById(rv.queue[rv.i]);
+ if(!c)return `<section class="card hero"><div class="big">🎉</div><h2>Selesai!</h2><p class="muted">${rv.done} kartu diulang hari ini.</p><button class="btn" data-act="endReview">Kembali</button></section>`;
+ const left=rv.queue.length-rv.i;
+ const front=c.kind==='fix'?'Perbaiki kalimat ini:\n'+c.front:c.front;
+ const hint=r=>{const n=nextState(c,r);return n.days===0?'hari ini lagi':'+'+n.days+' hari'};
+ return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="endReview">‹ Keluar</button><span class="pill">${left} tersisa</span></div>
+ <div class="fc"><div class="t">${esc(c.tag)}${c.kind==='fix'?' · koreksi':''}</div><div class="f">${esc(front)}</div>
+ ${rv.shown?`<div class="b">${esc(c.back)}</div>${c.example?`<small style="margin-top:8px">${esc(c.example)}</small>`:''}`:'<small style="margin-top:10px">Coba ingat atau ucapkan dulu, lalu tekan Lihat jawaban.</small>'}</div>
+ ${c.say?`<div style="text-align:center"><button class="btn ghost sm" data-act="say" data-t="${esc(c.say)}">🔊 Dengar</button></div>`:''}
+ ${rv.shown?`<div class="rate"><button class="btn danger" data-act="rate" data-v="again">Lupa<small>${hint('again')}</small></button><button class="btn ghost" data-act="rate" data-v="hard">Susah<small>${hint('hard')}</small></button><button class="btn" data-act="rate" data-v="good">Ingat<small>${hint('good')}</small></button></div>`:`<button class="btn block" style="margin-top:10px" data-act="flip">Lihat jawaban</button>`}`}
+
+function pgLearn(){
+ const tabs=[['lesson','Pelajaran'],['quiz','Soal dari teks'],['dictate','Dikte'],['sources','Sumber']];
+ let body='';
+ if(ui.lt==='lesson')body=ui.lesson?lessonDetail(LESSONS.find(l=>l.id===ui.lesson)):`<div class="card">${LESSONS.map(l=>`<div class="row item" data-act="openLesson" data-id="${l.id}"><div class="ico">${l.icon}</div><div class="grow"><b>${esc(l.title)}</b><small>${esc(l.tag)} · ${esc(l.level)} · ${esc(l.time)}</small></div>${S.lessonsDone.includes(l.id)?'<span class="pill ok">selesai</span>':'<span class="chev">›</span>'}</div>`).join('')}</div><div class="note">Saran porsi belajar: sekitar 70% umum, 30% kerja/VA. Naikkan porsi VA setelah B1 terasa nyaman.</div>`;
+ else if(ui.lt==='quiz')body=quizHTML();
+ else if(ui.lt==='dictate')body=dictHTML();
+ else body=['Reading','Listening'].map(k=>`<h4>${k}</h4><div class="card">${SOURCES.filter(s=>s[0]===k).map(s=>`<a class="link" href="${esc(s[3])}" target="_blank" rel="noopener"><b>${esc(s[1])}</b> <span class="pill">${esc(s[4])}</span> <span class="pill">${esc(s[5])}</span><small>${esc(s[2])}</small></a>`).join('')}</div>`).join('')+'<div class="note">Pilih materi yang ada transkrip. Dengar dulu tanpa teks, lalu dengar lagi sambil membaca. Tempel teksnya di tab "Soal dari teks" untuk dibuatkan latihan.</div>';
+ return `<h2>Belajar</h2><div class="seg">${tabs.map(t=>`<button class="${ui.lt===t[0]?'on':''}" data-act="ltab" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>${body}`}
+
+function lessonDetail(l){return `<button class="btn ghost sm" data-act="closeLesson">‹ Kembali</button>
+ <h2>${l.icon} ${esc(l.title)}</h2><p class="muted">${esc(l.intro)}</p>
+ <div class="card">${l.phrases.map((p,i)=>`<div class="phrase"><div class="grow"><b>${esc(p[0])}</b><small>${esc(p[1])}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(p[0])}">🔊</button><button class="btn ghost sm" data-act="addPhrase" data-i="${i}">＋</button></div>`).join('')}
+ <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="addAllPhrases">＋ Semua jadi kartu</button></div></div>
+ <div class="card"><h3>Latihan menulis</h3><p>${esc(l.task)}</p><button class="btn block" data-act="lessonWrite">Tulis sekarang</button></div>
+ <button class="btn ghost block" data-act="doneLesson">${S.lessonsDone.includes(l.id)?'Tandai belum selesai':'✓ Tandai selesai'}</button>`}
+
+function quizHTML(){
+ const q=ui.quiz;
+ const form=`<div class="card"><h3>Buat soal dari teks</h3><p class="muted">Tempel teks bacaan atau transkrip. Satu request menghasilkan satu paket soal yang bisa dikerjakan ulang.</p>
+ <div class="row"><div class="grow"><label style="margin-top:0">Level</label><select id="qlevel">${['A2','A2–B1','B1'].map(x=>`<option ${ui.qlevel===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="grow"><label style="margin-top:0">Jumlah</label><select id="qn">${['5','8','10'].map(x=>`<option ${ui.qn===x?'selected':''}>${x}</option>`).join('')}</select></div></div>
+ <label>Topik</label><select id="qcat"><option value="umum" ${ui.qcat==='umum'?'selected':''}>Umum</option><option value="kerja" ${ui.qcat==='kerja'?'selected':''}>Kerja</option><option value="VA" ${ui.qcat==='VA'?'selected':''}>VA</option></select>
+ <label>Teks / transkrip</label><textarea id="qsrc" placeholder="Tempel di sini...">${esc(ui.quizSrc)}</textarea>
+ ${modelSelect()}
+ <div style="margin-top:12px"><button class="btn block" data-act="quizGen">Buat soal dengan AI</button></div></div>`;
+ const hist=S.quizzes.length?`<h4>Soal tersimpan</h4><div class="card">${S.quizzes.slice(0,8).map((x,i)=>`<div class="row item" data-act="quizOpen" data-i="${i}"><div class="grow"><b>${esc(x.data.title||'Soal')}</b><small>${esc(x.date)} · ${x.data.questions.length} soal</small></div><span class="chev">›</span></div>`).join('')}</div>`:'';
+ return form+`<div id="quizBox">${q?quizBoxHTML():''}</div>`+hist}
+
+function quizBoxHTML(){const q=ui.quiz,d=q.data;const ans=q.ans;const done=Object.keys(ans).length;const correct=Object.values(ans).filter(a=>a.ok).length;
+ return `<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">${esc(d.title||'Soal')}</h3><span class="pill">${correct}/${done} benar · ${d.questions.length} soal</span></div>
+ ${d.questions.map((x,i)=>qHTML(x,i,q)).join('')}
+ ${done?`<div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="quizSaveWrong">Simpan soal salah jadi kartu</button></div>`:''}
+ ${d.vocab&&d.vocab.length?`<h4>Frasa dari teks</h4>${d.vocab.map((v,i)=>`<div class="phrase"><div class="grow"><b>${esc(v.front)}</b><small>${esc(v.back)}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(v.front)}">🔊</button><button class="btn ghost sm" data-act="quizVocab" data-i="${i}">＋</button></div>`).join('')}`:''}</div>`}
+function qHTML(x,i,q){const a=q.ans[i];let inner='';
+ if(x.type==='mcq'){inner=(x.options||[]).map((o,j)=>{let cls='';if(a){if(j===x.answer)cls='good';else if(j===a.v)cls='bad'}return `<button class="opt ${cls}" data-act="qa" data-i="${i}" data-v="${j}" ${a?'disabled':''}>${esc(o)}</button>`}).join('')}
+ else if(x.type==='tf'){inner=[[true,'True'],[false,'False']].map(o=>{let cls='';if(a){if(o[0]===x.answer)cls='good';else if(o[0]===a.v)cls='bad'}return `<button class="opt ${cls}" data-act="qa" data-i="${i}" data-v="${o[0]}" ${a?'disabled':''}>${o[1]}</button>`}).join('')}
+ else{const dv=q.draft[i]||'';inner=a?`<div class="opt ${a.ok?'good':'bad'}">${esc(a.v)}</div>${a.ok?'':`<div class="opt good">${esc(x.answer)}</div>`}`:`<div class="row"><input data-fill="${i}" value="${esc(dv)}" placeholder="Jawabanmu" style="flex:1"><button class="btn sm" data-act="qf" data-i="${i}">Cek</button></div>`}
+ return `<div class="q"><b>${i+1}. ${esc(x.q)}</b>${inner}${a?`<div class="why">${a.ok?'✓ Benar. ':'✗ '}${esc(x.why||'')}</div>`:''}</div>`}
+
+function dictHTML(){if(!ui.dict)pickDict();const d=ui.dict;
+ let res='';if(d.res){res=`<div class="card"><p class="${d.res.score===d.res.total?'w-ok':''}">Skor: ${d.res.score}/${d.res.total} kata</p><p>${d.res.words.map((w,i)=>`<span class="${d.res.ok[i]?'w-ok':'w-bad'}">${esc(w)}</span>`).join(' ')}</p><small>Hijau = tertulis benar, merah = terlewat/salah.</small></div>`}
+ return `<div class="card"><h3>Dikte (tanpa AI)</h3><p class="muted">Dengarkan kalimat, lalu ketik apa yang kamu dengar. Gratis, tidak memakai kuota.</p>
+ <div class="row"><button class="btn" data-act="dictPlay">▶ Putar</button><button class="btn ghost" data-act="dictSlow">🐢 Pelan</button><button class="btn ghost" data-act="dictNext">Kalimat lain</button></div>
+ <label>Yang kamu dengar</label><textarea id="dans" style="min-height:90px"></textarea>
+ <div style="margin-top:10px"><button class="btn block" data-act="dictCheck">Cek jawaban</button></div></div>${res}`}
+function pickDict(){const pool=[].concat(LESSONS.flatMap(l=>l.phrases.map(x=>x[0])),S.cards.map(c=>c.example)).filter(s=>s&&s.split(/\s+/).length>=4&&s.indexOf('...')<0);ui.dict={t:rand(pool),res:null}}
+function diffWords(target,ans){const norm=s=>s.toLowerCase().replace(/[^a-z0-9' ]/g,' ').split(/\s+/).filter(Boolean);const a=norm(target),b=norm(ans);const n=a.length,m=b.length;const dp=Array.from({length:n+1},()=>Array(m+1).fill(0));for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);const ok=Array(n).fill(false);let i=0,j=0;while(i<n&&j<m){if(a[i]===b[j]){ok[i]=true;i++;j++}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++}return {words:a,ok,score:ok.filter(Boolean).length,total:n}}
+
+function pgSet(){
+ const ps=S.providers;
+ return `<h2>Pengaturan</h2>
+ <section class="card"><h3>Provider AI</h3>
+ ${ps.length?ps.map(p=>`<div class="phrase"><div class="grow"><b>${esc(p.name)} ${S.defaultProvider===p.id?'<span class="pill">default</span>':''}</b><small>${esc(p.model)} · ${p.format==='gemini'?'Gemini':'OpenAI-compatible'} · hari ini ${usedToday(p)}${p.limit?'/'+p.limit:''}</small></div><button class="btn ghost sm" data-act="pfUse" data-id="${p.id}">Pakai</button><button class="btn ghost sm" data-act="pfEdit" data-id="${p.id}">Edit</button><button class="btn ghost sm" data-act="pfDel" data-id="${p.id}">✕</button></div>`).join(''):'<p class="muted">Belum ada provider.</p>'}
+ <div class="row" style="margin-top:12px"><button class="btn sm" data-act="pfNew" data-k="gemini">＋ Gemini</button><button class="btn ghost sm" data-act="pfNew" data-k="openai">＋ OpenAI-compatible (RouterKu, dll)</button></div>
+ <div class="note" style="margin-top:12px">Satu provider = satu key + satu model. Untuk memakai 3.5 Flash Lite dan 3.8 Flash, tambahkan dua entri Gemini dengan key yang sama dan model ID berbeda. Salin model ID persis dari AI Studio (Get code). Kuota dihitung per model.</div></section>
+ ${ui.pf?pfHTML():''}
+ <section class="card"><h3>Suara</h3><label style="margin-top:0">Aksen</label><select id="setAccent"><option value="en-US" ${S.accent==='en-US'?'selected':''}>Amerika (en-US)</option><option value="en-GB" ${S.accent==='en-GB'?'selected':''}>Inggris (en-GB)</option><option value="en-AU" ${S.accent==='en-AU'?'selected':''}>Australia (en-AU)</option></select>
+ <label>Kecepatan</label><select id="setRate">${[['0.7','Pelan'],['0.9','Normal'],['1','Cepat']].map(x=>`<option value="${x[0]}" ${String(S.rate)===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select>
+ <div style="margin-top:10px"><button class="btn ghost sm" data-act="say" data-t="Hello! I'll get back to you by Friday.">🔊 Tes suara</button></div></section>
+ <section class="card"><h3>Tampilan</h3><select id="setTheme">${[['system','Ikuti sistem'],['light','Terang'],['dark','Gelap']].map(x=>`<option value="${x[0]}" ${S.theme===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select></section>
+ <section class="card"><h3>Data & backup</h3><p class="muted">Semua data tersimpan di browser ini saja. Ekspor berkala, terutama sebelum membersihkan data browser atau pindah perangkat.</p>
+ <label class="row" style="font-weight:400;color:inherit;margin:8px 0"><input type="checkbox" id="incKey" style="width:auto"> Sertakan API key di file backup</label>
+ <div class="row"><button class="btn ghost sm" data-act="export">Ekspor JSON</button><button class="btn ghost sm" data-act="importPick">Impor JSON</button><input type="file" id="impFile" accept="application/json" style="display:none"></div>
+ <p class="muted" style="margin-top:10px">Kalau unduhan tidak jalan di tampilanmu, tombol Ekspor menampilkan teks backup untuk disalin. Simpan di catatan atau pesan ke dirimu sendiri.</p>
+ ${ui.exportText?`<textarea id="expBox" readonly style="min-height:120px;margin-top:6px">${esc(ui.exportText)}</textarea><div class="row" style="margin-top:8px"><button class="btn ghost sm" data-act="copyExport">Salin teks</button></div>`:''}
+ <label>Impor dari teks backup</label><textarea id="impText" style="min-height:80px" placeholder="Tempel isi backup di sini..."></textarea><div style="margin-top:8px"><button class="btn ghost sm" data-act="importPaste">Impor dari teks</button></div>
+ <div style="margin-top:12px"><button class="btn danger sm" data-act="reset">Hapus semua data</button></div></section>
+ <div class="note warn"><b>Privasi:</b> API key disimpan di browser ini (Local Storage), jadi jangan bagikan file ini dari browser yang sudah berisi key. Di tier gratis, Google boleh memakai prompt dan jawabanmu untuk meningkatkan produk. Jangan menulis data pribadi atau rahasia klien asli. Layanan pihak ketiga (misalnya RouterKu) juga melihat teks yang kamu kirim.</div>`}
+function pfHTML(){const f=ui.pf;return `<section class="card"><h3>${f.id?'Edit':'Tambah'} provider</h3>
+ <label style="margin-top:0">Nama tampilan</label><input id="pfName" value="${esc(f.name)}" placeholder="mis. Gemini 3.5 Flash Lite">
+ <label>Format permintaan</label><select id="pfFormat"><option value="gemini" ${f.format==='gemini'?'selected':''}>Gemini (generateContent)</option><option value="openai" ${f.format==='openai'?'selected':''}>OpenAI-compatible (/chat/completions)</option></select>
+ <label>Base URL</label><input id="pfUrl" value="${esc(f.url)}" placeholder="https://...">
+ <label>API key</label><input id="pfKey" type="password" autocomplete="off" value="${esc(f.key)}">
+ <label>Model ID</label><input id="pfModel" value="${esc(f.model)}" placeholder="salin persis dari dashboard provider">
+ <label>Batas request harian (pelacak lokal)</label><input id="pfLimit" type="number" min="1" value="${esc(f.limit)}">
+ <div class="row" style="margin-top:14px"><button class="btn" data-act="pfSave">Simpan</button><button class="btn ghost" data-act="pfTest">Tes koneksi (1 request)</button><button class="btn ghost" data-act="pfClose">Batal</button></div>
+ <div id="pfMsg" class="muted" style="margin-top:10px"></div></section>`}
+
+/* ============ Aksi ============ */
+function ask(msg,fn){const d=$('#dlg');d.innerHTML='<div class="dbox"><p>'+esc(msg)+'</p><div class="row" style="justify-content:flex-end"><button class="btn ghost sm" data-act="dlgNo">Batal</button><button class="btn danger sm" data-act="dlgYes">Ya</button></div></div>';d.hidden=false;ui.dlg=fn}
+const A={};
+A.go=(d)=>go(d.p);
+A.focus=(d)=>{S.focus=d.v;save();render()};
+A.startReview=()=>{const q=dueCards().slice(0,30).map(c=>c.id);if(!q.length)return toast('Tidak ada kartu yang perlu diulang. 🎉');ui.rv={queue:q,i:0,shown:false,done:0};ui.page='cards';render();window.scrollTo(0,0)};
+A.endReview=()=>{ui.rv=null;render()};
+A.flip=()=>{ui.rv.shown=true;render()};
+A.rate=(d)=>{const rv=ui.rv;const c=cardById(rv.queue[rv.i]);if(!c)return;rateCard(c,d.v);if(d.v==='again')rv.queue.push(c.id);rv.done++;rv.i++;rv.shown=false;save();mark();render()};
+A.say=(d)=>{let t=d.t;if(d.k&&ui.result)t=ui.result.data[d.k];if(t)speak(t)};
+A.addCard=()=>{const ok=addCard({front:$('#cFront').value,back:$('#cBack').value,example:$('#cEx').value,tag:$('#cTag').value,say:$('#cFront').value});if(!ok)return toast('Isi frasa dan arti (dan jangan duplikat).');save();toast('Kartu disimpan.');render()};
+A.dlgNo=()=>{$('#dlg').hidden=true;ui.dlg=null};
+A.dlgYes=()=>{const f=ui.dlg;$('#dlg').hidden=true;ui.dlg=null;if(f)f()};
+A.delCard=(d)=>ask('Hapus kartu ini?',()=>{S.cards=S.cards.filter(c=>c.id!==d.id);save();render()});
+A.cfilter=(d)=>{ui.cfilter=d.v;render()};
+A.topic=()=>{const list=TOPICS[ui.wtype]||TOPICS.bebas;let t=rand(list);if(list.length>1)while(t===ui.topic)t=rand(list);ui.topic=t;ui.draft=($('#draft')||{}).value||ui.draft;render()};
+A.clearDraft=()=>{ui.draft='';ui.result=null;render()};
+A.mic=toggleMic;
+A.correct=async()=>{
+ if(ui.busy)return;const text=(($('#draft')||{}).value||'').trim();ui.draft=text;if(text.length<3)return toast('Tulis dulu sesuatu.');
+ const p=pickProv();if(!p)return;ui.busy=true;
+ $('#resultBox').innerHTML='<div class="note">Memeriksa tulisanmu… (1 request)</div>';
+ try{const r=await aiJSON(p,SYS_CORRECT,'Text type: '+TYPE_EN[ui.wtype]+'\nText:\n'+text);const d=r.data;
+  d.corrected=String(d.corrected||'');d.natural=String(d.natural||'');d.tip=String(d.tip||'');d.interview=String(d.interview||'');
+  d.errors=(Array.isArray(d.errors)?d.errors:[]).filter(e=>e&&e.wrong&&e.right).slice(0,6);d.vocab=(Array.isArray(d.vocab)?d.vocab:[]).filter(v=>v&&v.front&&v.back).slice(0,3);
+  ui.result={data:d,text:text,cached:r.cached,saved:{}};
+  if(!r.cached){d.errors.forEach(e=>{const k=e.type||'other';S.errorStats[k]=(S.errorStats[k]||0)+1})}
+  S.writings.unshift({id:uid(),date:today(),type:ui.wtype,text:text,data:d});S.writings=S.writings.slice(0,30);save();mark();
+  $('#resultBox').innerHTML=resultHTML(ui.result);chrome();
+ }catch(e){$('#resultBox').innerHTML='<div class="note warn">'+esc(e.message)+'</div>'}
+ ui.busy=false};
+A.openWriting=(d)=>{const w=S.writings[+d.i];if(!w)return;ui.wtype=w.type;ui.draft=w.text;ui.result={data:w.data,text:w.text,cached:true,saved:{}};render();window.scrollTo(0,0)};
+function refreshResult(){const b=$('#resultBox');if(b&&ui.result)b.innerHTML=resultHTML(ui.result)}
+A.saveErr=(d)=>{const r=ui.result,e=r.data.errors[+d.i];if(!e)return;addCard({front:e.wrong,back:e.right+'\n'+(e.why||''),example:'',tag:'koreksi',kind:'fix',say:e.right});r.saved['e'+d.i]=true;save();toast('Jadi kartu.');refreshResult()};
+A.saveVocab=(d)=>{const r=ui.result,v=r.data.vocab[+d.i];if(!v)return;addCard({front:v.front,back:v.back,example:v.example,tag:ui.wtype==='interview'?'VA':ui.wtype==='jurnal'||ui.wtype==='bebas'?'umum':'kerja',say:v.front});r.saved['v'+d.i]=true;save();toast('Jadi kartu.');refreshResult()};
+A.saveAll=()=>{const r=ui.result;r.data.errors.forEach((e,i)=>{if(!r.saved['e'+i]){addCard({front:e.wrong,back:e.right+'\n'+(e.why||''),tag:'koreksi',kind:'fix',say:e.right});r.saved['e'+i]=true}});r.data.vocab.forEach((v,i)=>{if(!r.saved['v'+i]){addCard({front:v.front,back:v.back,example:v.example,tag:'umum',say:v.front});r.saved['v'+i]=true}});save();toast('Semua jadi kartu.');refreshResult()};
+A.ltab=(d)=>{ui.lt=d.v;render()};
+A.openLesson=(d)=>{ui.lesson=d.id;render();window.scrollTo(0,0)};
+A.openLessonHome=(d)=>{ui.lt='lesson';ui.lesson=d.id;go('learn')};
+A.closeLesson=()=>{ui.lesson=null;render()};
+A.addPhrase=(d)=>{const l=LESSONS.find(x=>x.id===ui.lesson),p=l.phrases[+d.i];const ok=addCard({front:p[0],back:p[1],example:'',tag:l.tag,say:p[0]});save();toast(ok?'Jadi kartu.':'Sudah ada di kartumu.')};
+A.addAllPhrases=()=>{const l=LESSONS.find(x=>x.id===ui.lesson);let n=0;l.phrases.forEach(p=>{if(addCard({front:p[0],back:p[1],tag:l.tag,say:p[0]}))n++});save();toast(n+' kartu ditambahkan.')};
+A.doneLesson=()=>{const id=ui.lesson,i=S.lessonsDone.indexOf(id);if(i>=0)S.lessonsDone.splice(i,1);else{S.lessonsDone.push(id);mark()}save();render()};
+A.lessonWrite=()=>{const l=LESSONS.find(x=>x.id===ui.lesson);ui.wtype=l.ttype;ui.topic=l.task;ui.draft='';ui.result=null;go('write')};
+A.quizGen=async()=>{
+ if(ui.busy)return;const src=(($('#qsrc')||{}).value||'').trim();ui.quizSrc=src;if(src.length<80)return toast('Tempel teks yang lebih panjang (minimal beberapa kalimat).');
+ const p=pickProv();if(!p)return;ui.busy=true;$('#quizBox').innerHTML='<div class="note">Membuat paket soal… (1 request)</div>';
+ try{const r=await aiJSON(p,SYS_QUIZ,'Level: '+ui.qlevel+'\nTopic focus: '+ui.qcat+'\nNumber of questions: '+ui.qn+'\nMix mcq, tf and fill. Questions in English at the stated level. Give 4-6 vocab items.\nMaterial:\n'+src.slice(0,6000),6000);
+  const d=r.data;d.questions=(Array.isArray(d.questions)?d.questions:[]).filter(q=>q&&q.q&&(q.type==='fill'||q.type==='tf'||(q.type==='mcq'&&Array.isArray(q.options)&&q.options.length>=2)));
+  if(!d.questions.length)throw new Error('Soal tidak terbentuk. Coba lagi dengan teks lain.');
+  d.vocab=(Array.isArray(d.vocab)?d.vocab:[]).filter(v=>v&&v.front&&v.back);
+  ui.quiz={data:d,ans:{},draft:{}};
+  if(!r.cached){S.quizzes.unshift({id:uid(),date:today(),data:d});S.quizzes=S.quizzes.slice(0,15);save()}
+  mark();$('#quizBox').innerHTML=quizBoxHTML();chrome();
+ }catch(e){$('#quizBox').innerHTML='<div class="note warn">'+esc(e.message)+'</div>'}
+ ui.busy=false};
+function refreshQuiz(){document.querySelectorAll('[data-fill]').forEach(i=>{ui.quiz.draft[i.dataset.fill]=i.value});$('#quizBox').innerHTML=quizBoxHTML()}
+const normA=s=>String(s).toLowerCase().replace(/[^a-z0-9' ]/g,' ').replace(/\s+/g,' ').trim();
+A.qa=(d)=>{const q=ui.quiz,i=+d.i,x=q.data.questions[i];if(q.ans[i])return;let v,ok;if(x.type==='mcq'){v=+d.v;ok=v===+x.answer}else{v=d.v==='true';ok=v===(x.answer===true||x.answer==='true')}q.ans[i]={v,ok};mark();refreshQuiz()};
+A.qf=(d)=>{const q=ui.quiz,i=+d.i,x=q.data.questions[i];const inp=document.querySelector('[data-fill="'+i+'"]');const v=(inp?inp.value:'').trim();if(!v)return toast('Isi jawabannya dulu.');const acc=[x.answer].concat(x.accept||[]).map(normA);q.ans[i]={v,ok:acc.indexOf(normA(v))>=0};mark();refreshQuiz()};
+A.quizSaveWrong=()=>{const q=ui.quiz;let n=0;q.data.questions.forEach((x,i)=>{const a=q.ans[i];if(!a||a.ok)return;let ans=x.type==='mcq'?(x.options||[])[x.answer]:x.type==='tf'?String(x.answer):x.answer;if(addCard({front:x.q,back:String(ans)+'\n'+(x.why||''),tag:'koreksi',kind:'fix',say:x.type==='fill'?String(x.q).replace(/_+/,String(ans)):''}))n++});save();toast(n?n+' kartu ditambahkan.':'Tidak ada soal salah yang baru.')};
+A.quizVocab=(d)=>{const v=ui.quiz.data.vocab[+d.i];const ok=addCard({front:v.front,back:v.back,example:v.example,tag:ui.qcat,say:v.front});save();toast(ok?'Jadi kartu.':'Sudah ada.')};
+A.quizOpen=(d)=>{const x=S.quizzes[+d.i];if(!x)return;ui.quiz={data:clone(x.data),ans:{},draft:{}};render();const b=$('#quizBox');if(b)b.scrollIntoView({behavior:'smooth'})};
+A.dictPlay=()=>speak(ui.dict.t);
+A.dictSlow=()=>speak(ui.dict.t,0.6);
+A.dictNext=()=>{pickDict();render()};
+A.dictCheck=()=>{const a=($('#dans')||{}).value||'';if(!a.trim())return toast('Ketik dulu yang kamu dengar.');ui.dict.res=diffWords(ui.dict.t,a);mark();const keep=a;render();$('#dans').value=keep};
+/* provider */
+const PRESET={gemini:{name:'Gemini',url:'https://generativelanguage.googleapis.com/v1beta',format:'gemini'},openai:{name:'',url:'',format:'openai'}};
+A.pfNew=(d)=>{const pr=PRESET[d.k];const prevKey=(S.providers.find(p=>p.format===pr.format)||{}).key||'';ui.pf={id:null,name:pr.name,url:pr.url,format:pr.format,key:prevKey,model:'',limit:d.k==='gemini'?'400':''};render()};
+A.pfEdit=(d)=>{const p=provById(d.id);ui.pf={id:p.id,name:p.name,url:p.url,format:p.format,key:p.key,model:p.model,limit:p.limit||''};render()};
+A.pfClose=()=>{ui.pf=null;render()};
+A.pfUse=(d)=>{S.defaultProvider=d.id;save();render()};
+A.pfDel=(d)=>ask('Hapus provider ini beserta API key-nya dari browser?',()=>{S.providers=S.providers.filter(p=>p.id!==d.id);if(S.defaultProvider===d.id)S.defaultProvider=S.providers[0]?S.providers[0].id:null;save();render()});
+function readPf(){return {name:$('#pfName').value.trim(),format:$('#pfFormat').value,url:$('#pfUrl').value.trim(),key:$('#pfKey').value.trim(),model:$('#pfModel').value.trim(),limit:Math.max(0,parseInt($('#pfLimit').value,10)||0)}}
+A.pfSave=()=>{const v=readPf();const miss=[];if(!v.url)miss.push('Base URL');if(!v.key)miss.push('API key');if(!v.model)miss.push('Model ID');
+ if(miss.length){const m='Belum diisi: '+miss.join(', ');const el=$('#pfMsg');if(el)el.textContent=m;return toast(m)}
+ if(!v.name)v.name=v.model;const f=ui.pf;if(f.id){const p=provById(f.id);Object.assign(p,v)}else{const p=Object.assign({id:uid()},v);S.providers.push(p);if(!S.defaultProvider)S.defaultProvider=p.id}ui.pf=null;save();toast('Provider disimpan.');render()};
+A.pfTest=async()=>{const v=readPf();const m=$('#pfMsg');if(!v.url||!v.key||!v.model)return toast('Isi URL, key, dan model dulu.');m.textContent='Menguji… (1 request)';
+ try{const r=await callAI(Object.assign({id:'tmp'},v),'You are a connection test.','Reply with the single word: OK',{noTrack:true,max:256});m.textContent='Berhasil: '+r.text.slice(0,60)}catch(e){m.textContent='Gagal: '+e.message}};
+A.export=()=>{const o=clone(S);if(!$('#incKey').checked)o.providers=o.providers.map(p=>Object.assign({},p,{key:''}));ui.exportText=JSON.stringify(o,null,2);try{const b=new Blob([ui.exportText],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='english-coach-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}catch(e){}render();setTimeout(()=>{const t=$('#expBox');if(t)t.scrollIntoView({behavior:'smooth'})},0)};
+A.copyExport=()=>{const t=$('#expBox');if(!t)return;t.select();try{navigator.clipboard.writeText(t.value).then(()=>toast('Tersalin.'),()=>toast('Pilih teks lalu salin manual.'))}catch(e){toast('Pilih teks lalu salin manual.')}};
+A.importPaste=()=>{const v=(($('#impText')||{}).value||'').trim();try{const o=JSON.parse(v);if(!o||typeof o!=='object'||!Array.isArray(o.cards))throw new Error('x');const old=S.providers;const n=Object.assign(clone(DEF),o);n.providers=(n.providers||[]).map(p=>{if(!p.key){const m=old.find(x=>x.id===p.id);if(m)p.key=m.key}return p});S=n;save();applyTheme();toast('Backup diimpor.');render()}catch(err){toast('Teks backup tidak valid.')}};
+A.importPick=()=>$('#impFile').click();
+A.reset=()=>ask('Hapus SEMUA data (kartu, tulisan, provider, key)? Tidak bisa dibatalkan.',()=>{try{localStorage.removeItem(LS);localStorage.removeItem(LSC)}catch(e){}S=clone(DEF);seedIfNeeded();ui.pf=null;ui.exportText='';ui.result=null;ui.quiz=null;render();toast('Data dihapus.')});
+
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const f=A[t.dataset.act];if(!f)return;if(t.tagName==='A')e.preventDefault();f(t.dataset,t)});
+document.addEventListener('input',e=>{const id=e.target.id;if(id==='draft')ui.draft=e.target.value;else if(id==='qsrc')ui.quizSrc=e.target.value});
+document.addEventListener('change',e=>{const el=e.target,id=el.id;
+ if(id==='modelSel')ui.model=el.value;
+ else if(id==='wtype'){ui.draft=($('#draft')||{}).value||ui.draft;ui.wtype=el.value;ui.topic='';render()}
+ else if(id==='qlevel')ui.qlevel=el.value;else if(id==='qn')ui.qn=el.value;else if(id==='qcat')ui.qcat=el.value;
+ else if(id==='setAccent'){S.accent=el.value;save()}
+ else if(id==='setRate'){S.rate=parseFloat(el.value);save()}
+ else if(id==='setTheme'){S.theme=el.value;save();applyTheme()}
+ else if(id==='impFile'){const f=el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o||typeof o!=='object'||!Array.isArray(o.cards))throw new Error('x');const old=S.providers;const n=Object.assign(clone(DEF),o);n.providers=(n.providers||[]).map(p=>{if(!p.key){const m=old.find(x=>x.id===p.id);if(m)p.key=m.key}return p});S=n;save();applyTheme();toast('Backup diimpor.');render()}catch(err){toast('File backup tidak valid.')}};r.readAsText(f);el.value=''}});
+if('speechSynthesis' in window){try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){}}
+seedIfNeeded();applyTheme();render();
+</script>
+</body>
+</html>
