@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b4332">
+<meta name="description" content="English Coach — daily English practice for work and virtual assistants. Cards, corrections, lessons, and history in one file.">
+<title>English Coach</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231b4332'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='16' fill='%23f3e6cf'%3EEc%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,560;0,9..144,700;1,9..144,560&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+try{var __t=JSON.parse(localStorage.getItem('english_coach_v1')||'{}').theme||'system';if(__t==='dark'||__t==='light')document.documentElement.setAttribute('data-theme',__t);}catch(e){}
+</script>
+<style>
+:root{
+  --bg:#f3eee4; --bg-2:#e7f0ea; --paper:#fffdf8; --ink:#1c1915; --muted:#5e574c;
+  --line:#e4d9c8; --forest:#1b4332; --forest-2:#2d6a4f; --gold:#8d6430; --gold-2:#f3e6cf;
+  --ok:#1a6b42; --bad:#8f2f2a; --warn:#f6e7c8; --btn:#1b4332; --btn-ink:#f7f3eb;
+  --shadow:0 10px 30px rgba(60,40,10,.06); --serif:"Fraunces","Iowan Old Style",Palatino,"Liberation Serif","DejaVu Serif",Georgia,serif;
+  --sans:"Outfit","Avenir Next","Segoe UI","Liberation Sans","DejaVu Sans",system-ui,sans-serif;
+  --h0:#e6dece; --h1:#c5dccb; --h2:#7eae8e; --h3:#3d7a58; --h4:#1b4332;
+  --sidebar:#1b4332; --side-fg:#f6f1e7; --side-muted:#d5e4d6; --radius:18px;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#121512; --bg-2:#1a2420; --paper:#1c211d; --ink:#f4efe6; --muted:#b7afa2;
+  --line:#31382f; --forest:#e4c07a; --forest-2:#8fbc8f; --gold:#e4c07a; --gold-2:#3a3224;
+  --ok:#8dcea8; --bad:#f0a8a2; --warn:#3a3224; --btn:#e4c07a; --btn-ink:#1c160d;
+  --shadow:none; --h0:#2a312c; --h1:#1e4634; --h2:#2f6b4c; --h3:#6eaa84; --h4:#e4c07a;
+  --sidebar:#0e120f; --side-fg:#f4efe6; --side-muted:#b7c4b8;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121512; --bg-2:#1a2420; --paper:#1c211d; --ink:#f4efe6; --muted:#b7afa2;
+    --line:#31382f; --forest:#e4c07a; --forest-2:#8fbc8f; --gold:#e4c07a; --gold-2:#3a3224;
+    --ok:#8dcea8; --bad:#f0a8a2; --warn:#3a3224; --btn:#e4c07a; --btn-ink:#1c160d;
+    --shadow:none; --h0:#2a312c; --h1:#1e4634; --h2:#2f6b4c; --h3:#6eaa84; --h4:#e4c07a;
+    --sidebar:#0e120f; --side-fg:#f4efe6; --side-muted:#b7c4b8;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:#e7dcc8; color:var(--ink);
+  font:16px/1.5 var(--sans); padding-bottom:calc(78px + env(safe-area-inset-bottom,0px));
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:8}
+button,input,select,textarea{font:inherit; color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+.shell{min-height:100dvh; background:var(--bg)}
+.side{display:none}
+.stage{min-width:0}
+.top{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 16px 12px; position:sticky; top:env(safe-area-inset-top,0px); z-index:6;
+  background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(12px);
+  border-bottom:1px solid transparent;
+}
+.brandmark{font-family:var(--serif); font-weight:560; font-size:22px; letter-spacing:-.03em; line-height:1}
+.brandmark i{font-style:italic; color:var(--gold)}
+.top-meta{display:flex; align-items:center; gap:8px; margin-left:auto}
+.chip{font-size:12px; font-weight:600; color:var(--muted); background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 10px; white-space:nowrap}
+.iconbtn{width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:var(--paper); display:grid; place-items:center; color:var(--ink)}
+.iconbtn.on{background:var(--forest); color:var(--btn-ink); border-color:transparent}
+main{padding:8px 16px 28px}
+h1{font-family:var(--serif); font-weight:560; font-size:40px; line-height:1.05; letter-spacing:-.03em; margin:0 0 8px}
+h1 em{font-style:italic; font-weight:560}
+h2{font-family:var(--serif); font-weight:560; font-size:34px; line-height:1.1; letter-spacing:-.03em; margin:0 0 6px}
+h3{font-size:16px; margin:0 0 6px; letter-spacing:-.01em}
+h4{font-size:12px; margin:16px 0 6px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-weight:700}
+p{margin:6px 0}
+.kicker{font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin:0 0 8px}
+.lede{color:var(--muted); margin:0 0 16px; max-width:46ch}
+.muted,small{color:var(--muted)}
+small{display:block; font-size:13px; line-height:1.4}
+.card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:16px; margin:0 0 14px; box-shadow:var(--shadow)}
+.card h3{font-family:var(--serif); font-size:22px; font-weight:560}
+.stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 14px}
+.stat{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:14px 14px 12px}
+.stat b{display:block; font-family:var(--serif); font-size:32px; font-weight:560; letter-spacing:-.03em; line-height:1}
+.stat span{color:var(--muted); font-size:12px; font-weight:600}
+.split{display:grid; gap:14px}
+.btn{border:0; background:var(--btn); color:var(--btn-ink); padding:12px 16px; border-radius:12px; font-weight:650; min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:8px}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line)}
+.btn.soft{background:var(--gold-2); color:var(--ink)}
+.btn.danger{background:var(--bad); color:#fff}
+.btn.sm{padding:7px 12px; min-height:36px; font-size:14px; font-weight:600}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.45; cursor:default}
+.row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.grow{flex:1; min-width:0}
+.pill{display:inline-flex; align-items:center; background:var(--bg-2); color:var(--ink); border-radius:999px; padding:2px 8px; font-size:12px; font-weight:650}
+.pill.ok{background:color-mix(in srgb, var(--ok) 16%, transparent); color:var(--ok)}
+.note{background:var(--bg-2); border-radius:14px; padding:12px 14px; font-size:14px; margin:0 0 14px}
+.note.warn{background:var(--warn)}
+.note a{color:var(--forest); font-weight:700}
+input,select,textarea{width:100%; background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:11px 12px; outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--forest)}
+textarea{min-height:150px; resize:vertical; line-height:1.55}
+label{display:block; font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin:12px 0 6px}
+.seg{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; margin:0 0 12px}
+.seg button{flex:none; border:1px solid var(--line); background:var(--paper); color:var(--muted); border-radius:999px; padding:8px 12px; font-size:14px; font-weight:650; min-height:36px}
+.seg button.on{background:var(--forest); color:var(--btn-ink); border-color:transparent}
+.item{width:100%; text-align:left; display:flex; gap:12px; align-items:center; padding:12px 2px; border:0; border-bottom:1px solid var(--line); background:transparent; color:inherit; min-height:44px}
+.item:last-child{border-bottom:0}
+.mono{width:42px; height:42px; border-radius:12px; background:var(--gold-2); color:var(--forest); display:grid; place-items:center; font-family:var(--serif); font-weight:700; flex:none}
+.chev{color:var(--muted); font-size:20px}
+.phrase{display:flex; gap:8px; align-items:center; padding:10px 0; border-bottom:1px solid var(--line)}
+.phrase:last-of-type{border-bottom:0}
+.en{font-family:var(--serif); font-weight:560; font-size:18px; letter-spacing:-.02em; line-height:1.35}
+.fc{min-height:250px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; background:var(--paper); border:1px solid var(--line); border-radius:22px; padding:28px 20px; margin:12px 0; box-shadow:var(--shadow)}
+.fc .t{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:12px}
+.fc .f{font-family:var(--serif); font-size:30px; font-weight:560; letter-spacing:-.03em; line-height:1.2; white-space:pre-wrap}
+.fc .b{font-size:18px; margin-top:14px; white-space:pre-wrap}
+.prog{height:4px; background:var(--line); border-radius:99px; overflow:hidden; margin-top:8px}
+.prog i{display:block; height:100%; background:var(--forest)}
+.rate{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px}
+.rate .btn{flex-direction:column; gap:0; min-height:64px}
+.rate small{color:inherit; opacity:.8; font-size:11px; font-weight:500}
+#micBtn.on{background:#c0392b;color:#fff;border-color:#c0392b;animation:micPulse 1.4s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.55)}50%{box-shadow:0 0 0 7px rgba(192,57,43,0)}}
+@media (prefers-reduced-motion:reduce){#micBtn.on{animation:none}}
+.keys{display:none; text-align:center; margin-top:8px}
+.ans{background:var(--bg); border-radius:12px; padding:12px 14px; margin:6px 0; white-space:pre-wrap; overflow-wrap:anywhere; font-family:var(--serif); font-size:18px; line-height:1.45}
+.err{border:1px solid var(--line); border-radius:14px; padding:12px; margin:8px 0; background:var(--bg)}
+.err .w{color:var(--bad); text-decoration:line-through}
+.err .r{color:var(--ok); font-weight:700}
+.q{border:1px solid var(--line); border-radius:14px; padding:14px; margin:10px 0; background:var(--bg)}
+.opt{display:block; width:100%; text-align:left; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:6px 0; color:inherit; min-height:44px}
+.opt.good{border-color:var(--ok); background:color-mix(in srgb, var(--ok) 14%, var(--paper))}
+.opt.bad{border-color:var(--bad); background:color-mix(in srgb, var(--bad) 12%, var(--paper))}
+.why{font-size:14px; color:var(--muted); margin-top:6px}
+.w-ok{color:var(--ok); font-weight:700}
+.w-bad{color:var(--bad); font-weight:700; text-decoration:underline}
+.plan{list-style:none; margin:0; padding:0; display:grid; gap:8px}
+.plan button{width:100%; text-align:left; display:flex; gap:12px; align-items:center; background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:12px; min-height:52px}
+.plan button.done{background:color-mix(in srgb, var(--ok) 10%, var(--paper)); border-color:transparent}
+.tick{width:22px; height:22px; border-radius:99px; border:1.5px solid var(--line); display:grid; place-items:center; flex:none; color:transparent}
+.plan button.done .tick{background:var(--ok); border-color:var(--ok); color:#fff}
+.wbars{display:flex; align-items:flex-end; gap:8px; height:108px}
+.wcol{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; height:100%; min-width:0}
+.wcol i{display:block; width:100%; max-width:26px; border-radius:8px 8px 3px 3px; background:var(--forest); min-height:4px}
+.wcol span{font-size:11px; color:var(--muted)}
+.wcol.today span{color:var(--ink); font-weight:700}
+.wcol.today i{background:var(--gold)}
+.bars{display:flex; gap:6px; align-items:flex-end; height:64px; margin-top:10px}
+.bars i{flex:1; background:var(--forest); border-radius:5px 5px 2px 2px; min-height:3px; opacity:.9}
+.bars span{flex:1; text-align:center; font-size:10px; color:var(--muted)}
+.heatwrap{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; max-width:100%}
+.heatdays{display:grid; grid-template-rows:repeat(7,12px); gap:3px; font-size:9px; color:var(--muted); flex:none; padding-top:0}
+.heatdays span{line-height:12px}
+.heat{display:grid; grid-auto-flow:column; grid-template-rows:repeat(7,12px); gap:3px}
+.heat i,.legend i{width:12px; height:12px; border-radius:3px; background:var(--h0); display:block}
+.heat i.lv1,.legend i.lv1{background:var(--h1)}
+.heat i.lv2,.legend i.lv2{background:var(--h2)}
+.heat i.lv3,.legend i.lv3{background:var(--h3)}
+.heat i.lv4,.legend i.lv4{background:var(--h4)}
+.heat i.fut{opacity:.35}
+.legend{display:flex; align-items:center; gap:4px; margin-top:8px; color:var(--muted); font-size:11px}
+.erow{margin:8px 0}
+.erowtop{display:flex; justify-content:space-between; font-size:14px; gap:8px}
+.ebar{height:6px; background:var(--bg); border-radius:99px; margin-top:4px; overflow:hidden}
+.ebar i{display:block; height:100%; background:var(--forest); border-radius:99px}
+.hitem{width:100%; text-align:left; display:flex; gap:10px; align-items:flex-start; padding:12px 0; border:0; border-bottom:1px solid var(--line); background:transparent; color:inherit}
+.hitem:last-child{border-bottom:0}
+.hico{width:34px; height:34px; border-radius:10px; background:var(--bg); display:grid; place-items:center; flex:none; color:var(--forest)}
+.daylab{font-size:13px; font-weight:700; margin:14px 0 0}
+.link{display:block; padding:12px 0; border-bottom:1px solid var(--line); text-decoration:none; color:inherit}
+.link:last-child{border-bottom:0}
+.src b{display:block}
+.cmp{display:grid; gap:10px}
+.navb,.tabb{color:inherit}
+.tabbar{position:fixed; left:0; right:0; bottom:0; background:var(--paper); border-top:1px solid var(--line); z-index:12; padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar #tabNav{display:grid; grid-template-columns:repeat(5,1fr); max-width:640px; margin:0 auto}
+.tabb{border:0; background:transparent; color:var(--muted); padding:8px 2px 10px; font-size:11px; font-weight:650; display:grid; gap:2px; justify-items:center; min-height:58px}
+.tabb.on{color:var(--forest)}
+.tabb svg,.navb svg,.iconbtn svg,.hico svg{display:block}
+#dlg{position:fixed; inset:0; background:rgba(20,16,10,.48); z-index:40; display:grid; place-items:center; padding:16px}
+#dlg[hidden]{display:none}
+.dbox{background:var(--paper); border:1px solid var(--line); border-radius:18px; padding:18px; max-width:400px; width:100%; box-shadow:var(--shadow)}
+#toast{position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(8px); background:#1c1915; color:#f6f1e7; padding:10px 14px; border-radius:999px; font-size:14px; opacity:0; pointer-events:none; transition:.2s; z-index:30; max-width:min(92vw,440px); text-align:center}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+a{color:var(--forest)}
+.only-desktop{display:none}
+svg{width:20px; height:20px}
+@media (min-width:800px){
+  .stats.cols3{grid-template-columns:repeat(3,1fr)}
+  .split{grid-template-columns:1.15fr .85fr; align-items:start}
+  .cmp{grid-template-columns:1fr 1fr}
+  h1{font-size:52px}
+}
+@media (min-width:980px){
+  body{padding:22px 18px; background:#e4d8c4; background-image:radial-gradient(rgba(28,25,21,.045) 0.7px, transparent 0.7px); background-size:5px 5px}
+  .shell{display:grid; grid-template-columns:248px minmax(0,1fr); max-width:1120px; margin:0 auto; min-height:calc(100dvh - 44px); border-radius:28px; overflow:hidden; border:1px solid rgba(28,25,21,.08); box-shadow:0 30px 70px rgba(60,40,10,.14)}
+  .side{display:flex; flex-direction:column; gap:8px; background:var(--sidebar); color:var(--side-fg); padding:22px 14px 16px; position:sticky; top:0; height:calc(100dvh - 44px)}
+  .brand{display:flex; gap:10px; align-items:center; padding:0 8px 12px}
+  .brand small{color:var(--side-muted); font-size:12px}
+  .brand .brandmark{font-size:20px; color:var(--side-fg)}
+  .brand .brandmark i{color:#e4c07a}
+  .mark{width:40px; height:40px; border-radius:12px; background:#143528; color:#f3e6cf; display:grid; place-items:center; font-family:var(--serif); font-weight:700; border:1px solid rgba(243,230,207,.2)}
+  .sidenav{display:flex; flex-direction:column; gap:4px}
+  .navb{display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:transparent; color:var(--side-muted); border:0; border-radius:12px; padding:10px 12px; font-weight:600; min-height:44px}
+  .navb.on{background:rgba(255,255,255,.1); color:#fff}
+  .navgap{height:8px}
+  .sidefoot{margin-top:auto; padding:12px; border-top:1px solid rgba(255,255,255,.1)}
+  .side-streak{display:flex; align-items:baseline; gap:8px}
+  .side-streak b{font-family:var(--serif); font-size:36px; font-weight:560; letter-spacing:-.03em; line-height:1}
+  .side-streak span,.side-ai{color:var(--side-muted); font-size:12px}
+  .side-ai{margin-top:4px}
+  .tabbar{display:none}
+  .only-mobile{display:none}
+  .only-desktop{display:initial}
+  .top{padding:22px 28px 0; background:transparent; backdrop-filter:none; position:static}
+  main{padding:6px 28px 36px}
+  .keys{display:block}
+  #toast{bottom:28px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+  .btn:active{transform:none}
+}
+
+/* ---- sampul ---- */
+:root{--cv-bg:#14352a;--cv-ink:#f6f1e7;--cv-mute:#bcd2c1;--cv-gold:#e8c98b;--cv-btn:#f3e6cf;--cv-btn-ink:#14352a}
+html.cv-on,html.cv-on body{overflow:hidden}
+#cover{position:fixed;inset:0;z-index:60;background:var(--cv-bg);color:var(--cv-ink);overflow:hidden;opacity:1;visibility:visible;transition:opacity .35s ease,visibility 0s}
+#cover[hidden]{display:none}
+#cover.out{opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s}
+#cover .cv-in{position:relative;z-index:1;width:min(100%,760px);height:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:space-between;gap:24px;
+  padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+#cover .cv-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--cv-mute)}
+#cover .cv-mid{min-width:0}
+#cover .cv-kick{margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--cv-gold)}
+#cover .cv-title{font-family:var(--serif);font-weight:560;font-size:clamp(64px,19vw,140px);line-height:.92;letter-spacing:-.04em;margin:0 0 18px;color:var(--cv-ink);text-wrap:balance}
+#cover .cv-title em{font-style:italic;color:var(--cv-gold);font-weight:560}
+#cover .cv-sub{margin:0;max-width:34ch;font-size:18px;line-height:1.45;color:var(--cv-mute)}
+#cover .cv-bot{display:grid;gap:18px}
+#cover .cv-phrase{border-top:1px solid rgba(232,201,139,.35);padding-top:16px;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:center}
+#cover .cv-label{grid-column:1/-1;margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cv-gold)}
+#cover .cv-en{margin:0;font-family:var(--serif);font-style:italic;font-weight:560;font-size:clamp(22px,5.4vw,30px);line-height:1.2;color:var(--cv-ink);min-width:0}
+#cover .cv-id{grid-column:1;margin:0;font-size:14px;color:var(--cv-mute)}
+#cover .cv-say{grid-row:2/4;grid-column:2;width:44px;height:44px;border-radius:50%;border:1px solid rgba(232,201,139,.55);background:transparent;color:var(--cv-gold);display:grid;place-items:center}
+#cover .cv-say svg{width:20px;height:20px;display:block}
+#cover .cv-go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;border:0;border-radius:16px;background:var(--cv-btn);color:var(--cv-btn-ink);font-weight:700;font-size:18px;letter-spacing:.01em}
+#cover .cv-go svg{width:22px;height:22px;display:block}
+#cover .cv-go:active{transform:translateY(1px)}
+#cover button:focus-visible{outline:2px solid var(--cv-gold);outline-offset:3px}
+#cover .cv-mono{position:absolute;right:-4vw;bottom:-9vw;font-family:var(--serif);font-weight:700;font-size:clamp(260px,64vw,560px);line-height:1;letter-spacing:-.06em;color:var(--cv-gold);opacity:.07;pointer-events:none;user-select:none}
+@media (min-width:720px){#cover .cv-go{width:auto;min-width:220px;justify-self:start;padding:0 28px}}
+@keyframes cvUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#cover .cv-in>*{animation:cvUp .6s cubic-bezier(.2,.7,.2,1) both}
+#cover .cv-in>.cv-mid{animation-delay:.08s}
+#cover .cv-in>.cv-bot{animation-delay:.2s}
+@media (prefers-reduced-motion:reduce){#cover,#cover.out{transition:none}#cover .cv-in>*{animation:none}}
+/* ---- buku kesalahan ---- */
+.nrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}
+.nrow:last-child{border-bottom:0}
+.nline{font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+.nw{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1.5px}
+.nr{color:var(--ok);font-weight:650}
+.narrow{color:var(--muted);margin:0 6px}
+.nrow small{margin-top:2px}
+.nmeta{font-size:12px;letter-spacing:.02em}
+.nact{display:flex;gap:6px}
+.nfoot{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.iconbtn.sm{width:38px;height:38px}
+.iconbtn.sm svg{width:18px;height:18px}
+.nx:hover{color:var(--bad);border-color:var(--bad)}
+</style>
+</head>
+<body>
+<section id="cover" aria-label="English Coach cover"></section>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <span class="mark">Ec</span>
+      <div>
+        <div class="brandmark">English <i>Coach</i></div>
+        <small>Learning studio</small>
+      </div>
+    </div>
+    <nav id="sideNav" class="sidenav"></nav>
+    <div class="sidefoot">
+      <div class="side-streak"><b id="sideStreak">0</b><span>day streak</span></div>
+      <div class="side-ai" id="sideAi">AI not set up</div>
+    </div>
+  </aside>
+  <div class="stage">
+    <header class="top">
+      <div class="brandmark only-mobile">English <i>Coach</i></div>
+      <div class="top-meta">
+        <button class="iconbtn" data-act="openCover" aria-label="Back to cover" title="Back to cover" id="coverBtn"></button>
+        <span class="chip" id="chipStreak"></span>
+        <span class="chip" id="chipQuota"></span>
+        <button class="iconbtn only-mobile" data-act="go" data-p="set" aria-label="Settings" id="gearBtn"></button>
+      </div>
+    </header>
+    <main id="view"></main>
+  </div>
+</div>
+<nav class="tabbar"><div id="tabNav"></div></nav>
+<div id="toast" role="status"></div>
+<div id="dlg" hidden></div>
+<noscript>This app needs JavaScript.</noscript>
+<script>
+"use strict";
+const LS="english_coach_v1", LSC="english_coach_cache_v1";
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"\u0026amp;","<":"\u0026lt;",">":"\u0026gt;",'"':"\u0026quot;","'":"\u0026#39;"}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+const pad=n=>String(n).padStart(2,"0");
+const dstr=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today=()=>dstr(new Date());
+const addDays=(s,n)=>{const [y,m,d]=s.split("-").map(Number);return dstr(new Date(y,m-1,d+n))};
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2600)}
+function hash(str){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<str.length;i++){const ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36)}
+function svg(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+"</svg>"}
+const IC={
+  home:svg('<path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/>'),
+  pen:svg('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>'),
+  cards:svg('<rect x="3" y="5" width="13" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v12"/>'),
+  book:svg('<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V19"/>'),
+  clock:svg('<circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/>'),
+  gear:svg('<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>'),
+  x:svg('<path d="M6 6l12 12M18 6 6 18"/>'),
+  cover:svg('<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H19v-5"/><path d="M9 8h6"/>'),
+  arrow:svg('<path d="M5 12h14M13 6l6 6-6 6"/>'),
+  vol:svg('<path d="M4 10h3l5-4v12l-5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6"/>'),
+  mic:svg('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/>'),
+  check:svg('<path d="m5 12 5 5L20 7"/>')
+};
+const KIND={write:["Writing","pen"],quiz:["Quiz","book"],lesson:["Lesson","book"],review:["Review","cards"],dictate:["Dictation","mic"]};
+
+const SEED=[
+["Could you say that again, please?","Bisa tolong ulangi?","Sorry, could you say that again, please?","umum"],
+["I'm not sure I understand.","Saya kurang paham.","I'm not sure I understand the last part.","umum"],
+["How do you say this in English?","Ini bahasa Inggrisnya apa?","How do you say 'tenggat' in English?","umum"],
+["I'm looking forward to it.","Saya menantikannya.","We're meeting on Friday. I'm looking forward to it.","umum"],
+["It depends on the situation.","Tergantung situasinya.","It depends on the situation and the budget.","umum"],
+["I used to work at a small company.","Dulu saya bekerja di perusahaan kecil.","I used to work at a small company in Makassar.","umum"],
+["What do you do for a living?","Pekerjaan kamu apa?","Nice to meet you. What do you do for a living?","umum"],
+["I'm a bit tired today.","Hari ini saya agak capek.","I'm a bit tired today, but I'm okay.","umum"],
+["Let me think about it.","Biar saya pikirkan dulu.","That's a good offer. Let me think about it.","umum"],
+["That makes sense.","Masuk akal.","Oh, I see. That makes sense.","umum"],
+["I'd rather stay home today.","Hari ini saya lebih suka di rumah.","It's raining, so I'd rather stay home today.","umum"],
+["Sorry for the late reply.","Maaf balasnya terlambat.","Sorry for the late reply. I was offline yesterday.","umum"],
+["Do you mind if I ask a question?","Boleh saya bertanya?","Do you mind if I ask a question about the task?","umum"],
+["Thanks for your patience.","Terima kasih atas kesabarannya.","Thanks for your patience while I fix the file.","umum"],
+["I'm trying to improve my English.","Saya sedang berusaha memperbaiki bahasa Inggris saya.","I'm trying to improve my English every day.","umum"],
+["Just to confirm, the deadline is Friday, right?","Sekadar konfirmasi, tenggatnya hari Jumat, kan?","Just to confirm, the deadline is Friday, right?","kerja"],
+["I'll get back to you by Friday.","Saya akan kabari Anda paling lambat Jumat.","I need to check the details. I'll get back to you by Friday.","kerja"],
+["Could you clarify what you mean by this?","Bisa dijelaskan maksud Anda?","Could you clarify what you mean by 'priority'?","kerja"],
+["I've attached the file for your review.","Saya lampirkan file untuk Anda periksa.","Hi Sam, I've attached the file for your review.","kerja"],
+["Please let me know if you have any questions.","Kabari saya jika ada pertanyaan.","The report is ready. Please let me know if you have any questions.","kerja"],
+["I apologize for the inconvenience.","Mohon maaf atas ketidaknyamanannya.","I apologize for the inconvenience. I'll fix it today.","kerja"],
+["I'll send you an update by the end of the day.","Saya kirim kabar terbaru sebelum hari berakhir.","I'll send you an update by the end of the day.","kerja"],
+["Could we move the meeting to Thursday?","Bisakah rapatnya dipindah ke Kamis?","Could we move the meeting to Thursday morning?","kerja"],
+["I'm currently working on it.","Saat ini sedang saya kerjakan.","I'm currently working on it and will finish soon.","kerja"],
+["Would it be possible to extend the deadline?","Mungkinkah tenggatnya diperpanjang?","Would it be possible to extend the deadline by one day?","kerja"],
+["I'll keep you posted.","Nanti saya kabari perkembangannya.","I'll keep you posted on the progress.","kerja"],
+["Thank you for your feedback. I'll revise it today.","Terima kasih atas masukannya. Akan saya revisi hari ini.","Thank you for your feedback. I'll revise it today.","kerja"],
+["I'm available from nine to five your time.","Saya tersedia pukul sembilan sampai lima waktu Anda.","I'm available from nine to five your time.","kerja"],
+["Sorry, I missed your message.","Maaf, saya melewatkan pesan Anda.","Sorry, I missed your message. Let me check it now.","kerja"],
+["That's outside the scope of this task.","Itu di luar lingkup tugas ini.","That's outside the scope of this task. Can we discuss it?","VA"],
+["I can help you manage your inbox and calendar.","Saya bisa membantu mengelola email dan kalender Anda.","I can help you manage your inbox and calendar.","VA"],
+["I have experience with Google Workspace and Trello.","Saya berpengalaman dengan Google Workspace dan Trello.","I have experience with Google Workspace and Trello.","VA"],
+["I'm a fast learner and I pay attention to detail.","Saya cepat belajar dan teliti.","I'm a fast learner and I pay attention to detail.","VA"],
+["I can handle multiple tasks at the same time.","Saya bisa menangani beberapa tugas sekaligus.","I can handle multiple tasks at the same time.","VA"],
+["My working hours are flexible.","Jam kerja saya fleksibel.","My working hours are flexible, so we can find a good time.","VA"],
+["I usually reply within 24 hours.","Biasanya saya membalas dalam 24 jam.","I usually reply within 24 hours on working days.","VA"],
+["I'd like to confirm the scope of work first.","Saya ingin memastikan lingkup pekerjaan dulu.","Before I start, I'd like to confirm the scope of work first.","VA"],
+["I'll send you a weekly progress report.","Saya kirim laporan perkembangan mingguan.","I'll send you a weekly progress report every Monday.","VA"],
+["Let me walk you through my process.","Biar saya jelaskan alur kerja saya.","Let me walk you through my process step by step.","VA"],
+["I'm based in Indonesia, so there is a time difference.","Saya tinggal di Indonesia, jadi ada perbedaan waktu.","I'm based in Indonesia, so there is a time difference, but I can adjust.","VA"],
+["I always double-check my work before sending it.","Saya selalu memeriksa ulang pekerjaan sebelum mengirim.","I always double-check my work before sending it.","VA"],
+["My rate is ten dollars per hour.","Tarif saya sepuluh dolar per jam.","My rate is ten dollars per hour. Is that okay for you?","VA"]
+];
+const LESSONS=[
+{id:"l1",title:"Introducing yourself",tag:"umum",level:"A2",time:"5 min",intro:"A simple pattern: your name, where you are from, your job, then why you are learning. Replace the details with your own.",phrases:[["Nice to meet you. My name is Dewi.","Senang bertemu Anda. Nama saya Dewi."],["I'm from Sulawesi, Indonesia.","Saya dari Sulawesi, Indonesia."],["I'm learning English to work with clients abroad.","Saya belajar bahasa Inggris untuk bekerja dengan klien luar negeri."],["In my free time, I like reading and cooking.","Di waktu luang, saya suka membaca dan memasak."]],task:"Write 4 sentences to introduce yourself to a new client.",ttype:"pesan klien"},
+{id:"l2",title:"Your daily routine",tag:"umum",level:"A2",time:"6 min",intro:"Use the present simple for habits, and sequence words: first, then, after that.",phrases:[["I usually wake up at six in the morning.","Biasanya saya bangun jam enam pagi."],["After breakfast, I check my messages.","Setelah sarapan, saya cek pesan."],["I work from home most days.","Saya bekerja dari rumah hampir setiap hari."],["In the evening, I study English for thirty minutes.","Malam hari, saya belajar bahasa Inggris tiga puluh menit."]],task:"Describe your typical day in 5 sentences.",ttype:"jurnal"},
+{id:"l3",title:"Giving your opinion politely",tag:"umum",level:"B1",time:"8 min",intro:"Disagreeing is normal. Acknowledge the other person first, then share your view.",phrases:[["In my opinion, this plan is realistic.","Menurut saya, rencana ini realistis."],["I see your point, but I have a different view.","Saya paham maksud Anda, tapi saya punya pandangan lain."],["I partly agree with you.","Saya setuju sebagian."],["From my experience, it works better this way.","Dari pengalaman saya, cara ini lebih efektif."]],task:"Write your opinion about working from home. Give two reasons.",ttype:"bebas"},
+{id:"l4",title:"Asking for clarification",tag:"kerja",level:"A2",time:"6 min",intro:"Asking again is professional. Confirm the task before you start working.",phrases:[["Could you clarify what you mean by this?","Bisa dijelaskan maksud Anda?"],["Just to confirm, you need it by Friday, right?","Sekadar konfirmasi, Anda butuh itu hari Jumat, ya?"],["Sorry, I didn't catch that. Could you repeat it?","Maaf, saya kurang dengar. Bisa diulang?"],["Do you have an example I can follow?","Apakah ada contoh yang bisa saya ikuti?"]],task:"A client sent an unclear task. Write a short message asking 2 clarifying questions.",ttype:"pesan klien"},
+{id:"l5",title:"Updates for clients",tag:"kerja",level:"B1",time:"8 min",intro:"Keep a clear order: what is done, what you are doing now, when you expect to finish, and what is attached.",phrases:[["I've finished the first part of the task.","Bagian pertama tugas sudah selesai."],["I'm currently working on the second part.","Saat ini saya mengerjakan bagian kedua."],["I expect to finish it by tomorrow afternoon.","Saya perkirakan selesai besok siang."],["Please find the report attached.","Laporan terlampir."]],task:"Write a short progress update to a client about a research task.",ttype:"pesan klien"},
+{id:"l6",title:"Professional follow-ups",tag:"kerja",level:"B1",time:"8 min",intro:"Give the context, make one request, then add a gentle deadline.",phrases:[["I'm following up on my previous email.","Saya menindaklanjuti email saya sebelumnya."],["Have you had a chance to review the document?","Apakah Anda sempat memeriksa dokumennya?"],["I'd appreciate your feedback by Thursday.","Saya akan menghargai masukan Anda paling lambat Kamis."],["Thank you for your time and support.","Terima kasih atas waktu dan dukungan Anda."]],task:"Write a polite follow-up email. The client has not replied for three days.",ttype:"email"},
+{id:"l7",title:"Tell me about yourself",tag:"VA",level:"A2–B1",time:"10 min",intro:"An interview formula: present, past, then goals. Use real numbers and details.",phrases:[["I'm a virtual assistant with two years of experience.","Saya virtual assistant dengan pengalaman dua tahun."],["I help clients manage their inbox, calendar, and tasks.","Saya membantu klien mengelola email, kalender, dan tugas."],["Previously, I worked as an administrative staff member.","Sebelumnya saya bekerja sebagai staf administrasi."],["I'm looking for a long-term role where I can grow.","Saya mencari peran jangka panjang untuk berkembang."]],task:"Tell me about yourself. (5-6 sentences)",ttype:"interview"},
+{id:"l8",title:"Explaining your tools and skills",tag:"VA",level:"B1",time:"8 min",intro:"Name each tool and say how it helps the client. Do not just list names.",phrases:[["I'm comfortable with Google Workspace and Trello.","Saya terbiasa dengan Google Workspace dan Trello."],["I can schedule meetings across different time zones.","Saya bisa mengatur rapat lintas zona waktu."],["I pay close attention to detail.","Saya sangat teliti."],["I'm a fast learner, so I can pick up new tools quickly.","Saya cepat belajar sehingga bisa menguasai tool baru dengan cepat."]],task:"Explain 3 tools or skills you have and how they help a client.",ttype:"interview"},
+{id:"l9",title:"Deadline changes and extra work",tag:"VA",level:"B1",time:"9 min",intro:"Stay polite but firm: acknowledge the request, state your limit, and offer options.",phrases:[["I understand the deadline has changed. Let me check my schedule.","Saya paham tenggatnya berubah. Biar saya cek jadwal."],["I can deliver it by Monday if we keep the same scope.","Saya bisa serahkan hari Senin jika lingkupnya sama."],["This task is outside our agreed scope. Could we discuss it?","Tugas ini di luar lingkup yang disepakati. Bisa kita bahas?"],["I'm sorry for the delay. I'll send it today.","Maaf atas keterlambatannya. Akan saya kirim hari ini."]],task:"A client asks for an extra task and an earlier deadline. Write a polite reply.",ttype:"email"},
+{id:"l10",title:"Scheduling a time",tag:"kerja",level:"B1",time:"7 min",intro:"Mention the time zone, offer two options, then ask for confirmation.",phrases:[["What time works best for you?","Jam berapa yang paling cocok untuk Anda?"],["I'm free on Tuesday at 9 a.m. your time.","Saya luang hari Selasa pukul 9 pagi waktu Anda."],["I'm in Indonesia, so we are a few hours apart.","Saya di Indonesia, jadi selisih waktu kami beberapa jam."],["Please let me know which option you prefer.","Kabari saya opsi mana yang Anda pilih."]],task:"Propose two meeting times to a client in another time zone.",ttype:"pesan klien"},
+{id:"l11",title:"Opening and closing emails",tag:"kerja",level:"A2",time:"6 min",intro:"A tidy email has a greeting, one purpose, and a closing. Do not start with 'I want to ask'.",phrases:[["I hope you are doing well.","Semoga Anda baik-baik saja."],["I'm writing to ask about the schedule.","Saya menulis untuk menanyakan jadwal."],["Please let me know what works for you.","Kabari saya mana yang cocok untuk Anda."],["Best regards,","Salam hormat,"]],task:"Write a short email asking a client to confirm a deadline.",ttype:"email"}
+];
+const INTERVIEW=["Tell me about yourself.","Why do you want to work as a virtual assistant?","What tools and software do you use?","How do you manage multiple deadlines?","Tell me about a time you made a mistake. What did you do?","How do you handle a client who changes the plan at the last minute?","What are your working hours and time zone?","How do you keep client information confidential?","What is your biggest strength?","What is something you want to improve?","How do you organize your day?","Why should we hire you?","What are your rates and availability?","How do you communicate progress to a client?"];
+const TOPICS={
+  jurnal:["Describe what you did today.","Write about something you learned this week.","Describe a problem you had today and how you solved it.","Write about your plan for tomorrow."],
+  "pesan klien":["Tell a client you finished a task and attached the file.","Ask a client to clarify an unclear instruction.","Tell a client you need two more days.","Confirm a meeting time with a client in another time zone."],
+  email:["Write an email introducing your services as a virtual assistant.","Write a follow-up email to a client who has not replied.","Write an email to politely decline an extra task.","Write an email to ask for feedback on your work."],
+  interview:INTERVIEW,
+  bebas:["Write about your favorite food.","Write about your hometown.","Write about a goal you have this year.","Describe your ideal workday."]
+};
+const TYPES=[["jurnal","Daily journal"],["pesan klien","Message to a client"],["email","Email"],["interview","VA interview answer"],["bebas","Free writing"]];
+const TYPE_EN={jurnal:"daily journal","pesan klien":"message to a client",email:"professional email",interview:"job interview answer (virtual assistant)",bebas:"free writing"};
+const HINTS={
+  jurnal:"Use the present simple for habits. Four to six sentences is enough.",
+  "pesan klien":"Keep it short and polite. Make one clear request.",
+  email:"Subject, greeting, body, then closing.",
+  interview:"Present, experience, then what you offer. Five to six sentences.",
+  bebas:"Write naturally. Do not translate word by word from Indonesian."
+};
+const FRAMES={
+  jurnal:"Today, I .\n\nFirst, I .\nThen, I .\nAfter that, I .\n\nTomorrow, I will .",
+  "pesan klien":"Hi ,\n\nI wanted to update you on .\n\nPlease let me know if you have any questions.\n\nThank you,",
+  email:"Subject: \n\nHi ,\n\nI hope you are doing well.\n\nI am writing to .\n\nPlease let me know what works for you.\n\nBest regards,\n",
+  interview:"Right now, I .\n\nBefore this, I .\n\nI can help a client with .\n\nI am looking for ."
+};
+const SOURCES=[
+["Reading","British Council LearnEnglish","Levelled reading texts with exercises.","https://learnenglish.britishcouncil.org/skills/reading","A2–B1","umum"],
+["Reading","News in Levels","The same news story in three difficulty levels.","https://www.newsinlevels.com/","A1–B1","umum"],
+["Reading","Breaking News English","Short articles with audio and exercises.","https://breakingnewsenglish.com/","A2–B1","umum"],
+["Reading","Simple English Wikipedia","Any topic in simple English.","https://simple.wikipedia.org/","A2–B1","umum"],
+["Reading","VOA Learning English","News and articles for learners.","https://learningenglish.voanews.com/","A2–B1","umum"],
+["Listening","BBC Learning English","6 Minute English and The English We Speak, with transcripts.","https://www.bbc.co.uk/learningenglish","B1","umum"],
+["Listening","English at Work (BBC)","Office conversations and professional phrases.","https://www.bbc.co.uk/learningenglish/english/features/english-at-work","A2–B1","kerja"],
+["Listening","Rachel's English","Pronunciation and connected speech.","https://www.youtube.com/@rachelsenglish","A2–B1","umum"],
+["Listening","English with Lucy","Natural vocabulary and pronunciation.","https://www.youtube.com/@EnglishwithLucy","A2–B1","umum"],
+["Listening","All Ears English","A natural conversation podcast.","https://www.allearsenglish.com/","B1","umum"],
+["Listening","Easy Stories in English","Stories for listening practice.","https://easystoriesinenglish.com/","A2–B1","umum"]
+];
+const ERR_LABEL={dictation:"Dictation",tense:"Tenses",article:"Articles (a/an/the)",preposition:"Prepositions",word_order:"Word order",word_choice:"Word choice",spelling:"Spelling",punctuation:"Punctuation",subject_verb:"Subject–verb agreement",plural:"Plurals",other:"Other"};
+const TAGLABEL={umum:"General",kerja:"Work",VA:"VA",koreksi:"Corrections"};
+const tagName=t=>TAGLABEL[t]||t;
+const typeName=k=>{const t=TYPES.find(x=>x[0]===k);return t?t[1]:k};
+const pl=(n,w)=>n+" "+w+(n===1?"":"s");
+const msgHTML=m=>esc(m).replace(/\n/g,"<br>");
+function histTitle(h){const t=String(h.title||"");if(h.kind==="lesson"){const l=LESSONS.find(x=>x.id===h.ref);if(l)return l.title}let m=t.match(/^Mengulang (\d+) kartu$/);if(m)return "Reviewed "+pl(+m[1],"card");if(t==="Soal")return "Quiz";if(t==="Pelajaran")return "Lesson";return t}
+function histDetail(h){const d=String(h.detail||"");if(h.kind==="write")return typeName(d);let m;if(m=d.match(/^(\d+) soal$/))return pl(+m[1],"question");if(m=d.match(/^(\d+)\/(\d+) benar$/))return m[1]+"/"+m[2]+" correct";if(m=d.match(/^(\d+) ingat · (\d+) susah · (\d+) lupa$/))return m[1]+" got it · "+m[2]+" hard · "+m[3]+" forgot";if(m=d.match(/^(\d+)\/(\d+) kata$/))return m[1]+"/"+m[2]+" words";return d}
+
+const DEF={theme:"system",accent:"en-US",rate:0.9,focus:"all",providers:[],defaultProvider:null,cards:[],seeded:false,activity:[],usage:{},errorStats:{},writings:[],quizzes:[],lessonsDone:[],history:[],reviews:{},historyMigrated:false,notebook:[],notesMigrated:false};
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function load(){
+  try{
+    const o=JSON.parse(localStorage.getItem(LS)||"{}");
+    const s=Object.assign(clone(DEF),o);
+    ["cards","providers","history","writings","quizzes","activity","lessonsDone","notebook"].forEach(k=>{if(!Array.isArray(s[k]))s[k]=[]});
+    if(!s.reviews||typeof s.reviews!=="object"||Array.isArray(s.reviews))s.reviews={};
+    if(!s.errorStats||typeof s.errorStats!=="object")s.errorStats={};
+    if(!s.usage||typeof s.usage!=="object")s.usage={};
+    return s;
+  }catch(e){return clone(DEF)}
+}
+let S=load();
+let LS_OK=true;try{localStorage.setItem("__t","1");localStorage.removeItem("__t")}catch(e){LS_OK=false}
+function save(){if(!LS_OK)return;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast("Browser storage is full or blocked.")}}
+function loadCache(){try{return JSON.parse(localStorage.getItem(LSC)||"{}")}catch(e){return {}}}
+function saveCache(c){const k=Object.keys(c);if(k.length>80){k.sort((a,b)=>c[a].t-c[b].t).slice(0,k.length-80).forEach(x=>delete c[x])}try{localStorage.setItem(LSC,JSON.stringify(c))}catch(e){}}
+const ui={wshow:8,page:"home",lt:"lesson",lesson:null,wtype:"jurnal",topic:"",draft:"",model:null,result:null,rv:null,quiz:null,quizSrc:"",qlevel:"A2–B1",qn:"8",qcat:"umum",dict:null,pf:null,cfilter:"all",cquery:"",hfilter:"all",nfilter:"all",busy:false,exportText:""};
+
+function seedIfNeeded(){if(S.seeded)return;S.cards=SEED.map(s=>({id:uid(),front:s[0],back:s[1],example:s[2],tag:s[3],kind:"phrase",say:s[0],box:0,due:today(),created:today(),lapses:0}));S.seeded=true;save()}
+function migrate(){
+  if(!Array.isArray(S.history))S.history=[];
+  if(S.historyMigrated)return;
+  const seen=new Set(S.history.map(h=>h.kind+":"+(h.ref||"")));
+  (S.writings||[]).forEach(w=>{
+    if(!w.id||seen.has("write:"+w.id))return;
+    S.history.push({id:uid(),ts:(w.date||today())+"T12:00:00.000Z",date:w.date||today(),kind:"write",title:String(w.text||"").slice(0,90),detail:w.type||"",ref:w.id});
+  });
+  (S.quizzes||[]).forEach(q=>{
+    if(!q.id||seen.has("quiz:"+q.id))return;
+    const n=(q.data&&q.data.questions&&q.data.questions.length)||0;
+    S.history.push({id:uid(),ts:(q.date||today())+"T12:00:00.000Z",date:q.date||today(),kind:"quiz",title:(q.data&&q.data.title)||"Quiz",detail:n+" questions",ref:q.id});
+  });
+  S.history.sort((a,b)=>String(b.ts).localeCompare(String(a.ts)));
+  S.historyMigrated=true;save();
+}
+
+const INT=[0,1,3,7,14,30];
+function focusOk(c){return S.focus==="all"||c.tag===S.focus||c.tag==="koreksi"}
+function dueCards(){return S.cards.filter(c=>c.due<=today()&&focusOk(c)).sort((a,b)=>a.box-b.box||(a.due<b.due?-1:1))}
+function cardById(id){return S.cards.find(c=>c.id===id)}
+function nextState(c,r){let box=c.box;if(r==="again")box=0;else if(r==="good")box=Math.min(5,box+1);else box=Math.max(1,box);const days=r==="again"?0:r==="hard"?Math.max(1,Math.ceil(INT[box]/2)):INT[box];return {box,days}}
+function rateCard(c,r){const n=nextState(c,r);c.box=n.box;c.due=addDays(today(),n.days);if(r==="again")c.lapses=(c.lapses||0)+1}
+function addCard(o){const f=String(o.front||"").trim(),b=String(o.back||"").trim();if(!f||!b)return false;if(S.cards.some(c=>c.kind===(o.kind||"phrase")&&c.front.toLowerCase()===f.toLowerCase()))return false;S.cards.push({id:uid(),front:f,back:b,example:String(o.example||"").trim(),tag:o.tag||"umum",kind:o.kind||"phrase",say:o.say||"",box:0,due:today(),created:today(),lapses:0});return true}
+function streak(){const a=new Set(S.activity);let d=today();if(!a.has(d))d=addDays(d,-1);let n=0;while(a.has(d)){n++;d=addDays(d,-1)}return n}
+function mark(){const t=today();if(!S.activity.includes(t)){S.activity.push(t);if(S.activity.length>400)S.activity.shift()}save()}
+function logEvent(ev){if(!Array.isArray(S.history))S.history=[];S.history.unshift(Object.assign({id:uid(),ts:new Date().toISOString(),date:today()},ev));if(S.history.length>400)S.history.length=400;mark()}
+function bumpReview(r){const t=today();S.reviews[t]=S.reviews[t]||{again:0,hard:0,good:0};S.reviews[t][r]=(S.reviews[t][r]||0)+1}
+function reviewsToday(){const r=S.reviews[today()]||{again:0,hard:0,good:0};return (r.again||0)+(r.hard||0)+(r.good||0)}
+function dayScore(key){let n=(S.history||[]).filter(h=>h.date===key).length;const rv=S.reviews&&S.reviews[key];if(rv)n+=(rv.again||0)+(rv.hard||0)+(rv.good||0);if(!n&&S.activity.includes(key))n=1;return n}
+function heatLevel(n){if(n<=0)return 0;if(n===1)return 1;if(n<=3)return 2;if(n<=7)return 3;return 4}
+function weekKeys(){const now=new Date();const dow=(now.getDay()+6)%7;const mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-dow);const keys=[];for(let i=0;i<7;i++)keys.push(dstr(new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i)));return keys}
+function niceDate(s){if(s===today())return "Today";if(s===addDays(today(),-1))return "Yesterday";const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}
+function greet(){const h=new Date().getHours();if(h<12)return "Good morning";if(h<18)return "Good afternoon";return "Good evening"}
+function dateLong(){return new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}
+function tagForWrite(){if(ui.wtype==="interview")return "VA";if(ui.wtype==="jurnal"||ui.wtype==="bebas")return "umum";return "kerja"}
+function mastered(){return S.cards.filter(c=>c.box>=3).length}
+function wroteToday(){return S.writings.some(w=>w.date===today())}
+function didToday(kind){return (S.history||[]).some(h=>h.date===today()&&h.kind===kind)}
+
+function speak(t,rate){if(!("speechSynthesis" in window))return toast("Speech is not supported in this browser.");try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=S.accent;u.rate=rate||S.rate;const vs=speechSynthesis.getVoices();const v=vs.find(v=>v.lang.replace("_","-")===S.accent)||vs.find(v=>v.lang.startsWith("en"));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){toast("Could not play the audio.")}}
+let rec=null, micStop=false;
+function mergeSpeech(list){const out=[];list.forEach(t=>{t=String(t||"").trim();if(!t)return;const last=out[out.length-1];if(last&&t.toLowerCase().startsWith(last.toLowerCase()))out[out.length-1]=t;else if(!(last&&last.toLowerCase().startsWith(t.toLowerCase())))out.push(t)});return out.join(" ")}
+const MIC_IDLE=()=>IC.mic+" Speak",MIC_ON=()=>IC.mic+" Listening… tap to stop";
+function micUI(on){const b=$("#micBtn");if(!b)return;b.classList.toggle("on",on);b.innerHTML=on?MIC_ON():MIC_IDLE();b.setAttribute("aria-pressed",on?"true":"false")}
+function stopMic(){micStop=true;if(rec){try{rec.stop()}catch(e){}rec=null}micUI(false)}
+function toggleMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast("Speech recognition is not supported here. Try Chrome.");if(rec){stopMic();return}const ta=$("#draft");if(!ta)return;micStop=false;rec=new SR();rec.lang=S.accent;rec.interimResults=true;rec.continuous=false;const base=ta.value.trim()?ta.value.trim()+" ":"";rec.onresult=e=>{const parts=[];for(let i=0;i<e.results.length;i++)parts.push(e.results[i][0].transcript);ta.value=(base+mergeSpeech(parts)).trim();ui.draft=ta.value;updateWc()};rec.onerror=e=>{if(e.error!=="no-speech"&&e.error!=="aborted")toast(e.error==="not-allowed"||e.error==="service-not-allowed"?(location.protocol==="file:"?"Chrome blocks the microphone for files opened from your computer. Open the app from https or localhost. Brave does not support speech recognition.":"Microphone is blocked. Allow it in the site settings and your system privacy settings."):e.error==="network"?"Speech service unreachable. Brave blocks it, so use Chrome or Edge.":"Microphone: "+e.error)};rec.onend=()=>{rec=null;micUI(false);if(!micStop){mark();toast("Press Speak again to continue.")}};try{rec.start();micUI(true)}catch(e){rec=null;micUI(false)}}
+
+function provById(id){return S.providers.find(p=>p.id===id)}
+function defProv(){return provById(S.defaultProvider)||S.providers[0]||null}
+function usedToday(p){return ((S.usage[today()]||{})[p.id])||0}
+function bump(p){const t=today();S.usage[t]=S.usage[t]||{};S.usage[t][p.id]=(S.usage[t][p.id]||0)+1;const old=addDays(t,-30);Object.keys(S.usage).forEach(k=>{if(k<old)delete S.usage[k]})}
+function parseJSON(t){t=String(t||"").replace(/^\s*```(?:json)?\s*/i,"").replace(/```\s*$/,"").trim();const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a<0||b<=a)return null;try{return JSON.parse(t.slice(a,b+1))}catch(e){return null}}
+const NETERR="Cannot connect. Check your internet and the provider URL. If you opened this in a preview, outgoing requests may be blocked: download the HTML file and open it in Chrome or Edge.\nTidak bisa terhubung. Periksa internet dan URL provider. Di pratinjau koneksi keluar sering diblokir, jadi buka file HTML di Chrome atau Edge.";
+async function callAI(p,system,user,opt){opt=opt||{};
+  if(!p||!p.key||!p.model||!p.url)throw new Error("Finish setting up a provider in Settings: URL, key, and model ID.\nLengkapi provider di Pengaturan.");
+  const ck=hash(p.model+"|"+system+"|"+user);const cache=loadCache();
+  if(!opt.noTrack&&cache[ck])return {text:cache[ck].v,cached:true};
+  if(!opt.noTrack&&p.limit&&usedToday(p)>=p.limit)throw new Error('Daily limit reached for "'+p.name+'" ('+p.limit+"). Pick another model or change the limit in Settings.\nBatas harian tercapai. Pilih model lain atau ubah batas di Pengaturan.");
+  let text="";
+  if(p.format==="gemini"){
+    const url=p.url.replace(/\/$/,"")+"/models/"+encodeURIComponent(p.model)+":generateContent?key="+encodeURIComponent(p.key);
+    const body={systemInstruction:{parts:[{text:system}]},contents:[{role:"user",parts:[{text:user}]}],generationConfig:{temperature:0.3,maxOutputTokens:opt.max||4096,responseMimeType:opt.json?"application/json":undefined}};
+    let res;try{res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})}catch(e){throw new Error(NETERR)}
+    let data={};try{data=await res.json()}catch(e){}
+    if(!res.ok)throw new Error(errMsg(res.status,data));
+    text=((data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts)||[]).map(x=>x.text||"").join("");
+    if(!text)throw new Error("The AI returned no text"+(data.candidates&&data.candidates[0]&&data.candidates[0].finishReason?" ("+data.candidates[0].finishReason+")":"")+". Try again.");
+  }else{
+    const url=p.url.replace(/\/$/,"")+"/chat/completions";
+    const body={model:p.model,messages:[{role:"system",content:system},{role:"user",content:user}],temperature:0.3,max_tokens:opt.max||4096};
+    let res;try{res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+p.key},body:JSON.stringify(body)})}catch(e){throw new Error(NETERR)}
+    let data={};try{data=await res.json()}catch(e){}
+    if(!res.ok)throw new Error(errMsg(res.status,data));
+    text=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||"";
+    if(!text)throw new Error("The AI returned no text. Try again.");
+  }
+  if(!opt.noTrack){bump(p);save();let ok=true;if(opt.validate){try{opt.validate(text)}catch(e){ok=false}}if(ok){cache[ck]={t:Date.now(),v:text};saveCache(cache)}}
+  return {text,cached:false}}
+function errMsg(status,data){const m=(data&&data.error&&(data.error.message||data.error))||"";let h="",id="";if(status===429){h=" The quota or limit for this model is used up. Pick another model or wait for the reset.";id="Kuota model ini habis. Pilih model lain atau tunggu reset."}else if(status===400&&/api key/i.test(m)){h=" Check your API key.";id="Periksa API key."}else if(status===401||status===403){h=" Check your API key and model access.";id="Periksa API key dan izin model."}else if(status===404){h=" Check the model ID and base URL.";id="Periksa Model ID dan Base URL."}return "Request failed ("+status+")."+h+(m?" "+String(m).slice(0,160):"")+(id?"\n"+id:"")}
+async function aiJSON(p,sys,user,max){
+  const v=t=>{const o=parseJSON(t);if(!o||typeof o!=="object")throw new Error("bad");return o};
+  let r=await callAI(p,sys,user,{json:true,max:max,validate:v});
+  try{return {data:v(r.text),cached:r.cached}}catch(e){}
+  r=await callAI(p,sys,user+"\n\nIMPORTANT: Return ONLY one valid JSON object. No markdown, no extra text.",{json:true,max:max,validate:v});
+  try{return {data:v(r.text),cached:r.cached}}catch(e){throw new Error("Could not read the AI answer. Try again or pick another model.")}}
+function pickProv(){const el=$("#modelSel");const p=el?provById(el.value):defProv();if(!p){toast("Add an AI provider in Settings first.");return null}ui.model=p.id;return p}
+function modelSelect(){if(!S.providers.length)return "";const cur=(ui.model&&provById(ui.model))?ui.model:(defProv()||{}).id;return `<label>AI model</label><select id="modelSel">${S.providers.map(p=>`<option value="${p.id}" ${p.id===cur?"selected":""}>${esc(p.name)} · ${esc(p.model)} (${usedToday(p)}${p.limit?"/"+p.limit:""})</option>`).join("")}</select>`}
+
+const SYS_CORRECT=`You are a patient English tutor for an Indonesian adult learner at A2-B1 level who wants to work as a virtual assistant with international clients. Correct the learner's text. Keep the original meaning and the learner's simple vocabulary; do not make it fancy. Explanations must be in simple Indonesian (max 2 short sentences each). Return ONLY a JSON object with this exact shape:
+{"corrected":"fully corrected text","natural":"a more natural or professional alternative, or empty string","errors":[{"wrong":"exact wrong part from the learner text","right":"corrected part","type":"tense|article|preposition|word_order|word_choice|spelling|punctuation|subject_verb|plural|other","why":"short explanation in simple Indonesian"}],"vocab":[{"front":"useful English phrase from the corrected text","back":"Indonesian meaning","example":"short example sentence"}],"suggested":"a model answer to the topic","suggested_id":"Indonesian translation of the model answer","tip":"one short encouraging tip in simple English","interview":""}
+The user message may include a "Topic" line. "suggested" is a fresh model answer to that topic (or, if there is no topic, to the situation the learner's text is about), written as the learner could say it: same text type, simple B1 English, 3-5 sentences, natural and ready to study or reuse. It must not just repeat "corrected". Keep it relevant to the learner's own ideas where possible. "suggested_id" is its translation in simple Indonesian. List at most 6 of the most important errors. If there are no errors, return an empty errors array. Give at most 3 vocab items. If the text type is a job interview answer, put 2-3 sentences of feedback in simple English (B1 level) about content and structure in "interview"; otherwise "interview" is an empty string.`;
+const SYS_QUIZ=`You are an English teacher creating a comprehension quiz for an Indonesian learner. Return ONLY a JSON object:
+{"title":"short title","questions":[{"type":"mcq","q":"question","options":["A","B","C","D"],"answer":0,"why":"short explanation in simple Indonesian"},{"type":"tf","q":"statement","answer":true,"why":"..."},{"type":"fill","q":"sentence with ____ as the blank","answer":"word","accept":["alternative"],"why":"..."}],"vocab":[{"front":"useful English phrase from the text","back":"Indonesian meaning","example":"short example sentence"}]}
+For mcq, "answer" is the index (0-3) of the correct option. Use only information from the material.`;
+
+function go(p){stopMic();try{speechSynthesis.cancel()}catch(e){}if(ui.page==="cards"&&p!=="cards"&&ui.rv)commitReview(ui.rv);ui.page=p;if(p!=="cards")ui.rv=null;render();window.scrollTo(0,0)}
+function navBtn(p,label,icon,cls){const on=ui.page===p;return `<button class="${cls}${on?" on":""}" data-act="go" data-p="${p}" ${on?'aria-current="page"':""}>${IC[icon]}<span>${label}</span></button>`}
+function chrome(){
+  const items=[["home","Today","home"],["write","Write","pen"],["cards","Cards","cards"],["learn","Learn","book"],["history","History","clock"]];
+  const side=$("#sideNav"),tab=$("#tabNav");
+  if(side)side.innerHTML=items.map(x=>navBtn(x[0],x[1],x[2],"navb")).join("")+'<div class="navgap"></div>'+navBtn("set","Settings","gear","navb");
+  if(tab)tab.innerHTML=items.map(x=>navBtn(x[0],x[1],x[2],"tabb")).join("");
+  const n=streak();
+  if($("#sideStreak"))$("#sideStreak").textContent=String(n);
+  if($("#chipStreak"))$("#chipStreak").textContent=pl(n,"day");
+  const p=defProv();
+  const q=p?("AI "+usedToday(p)+(p.limit?"/"+p.limit:"")):"AI not set up";
+  if($("#chipQuota"))$("#chipQuota").textContent=q;
+  if($("#sideAi"))$("#sideAi").textContent=q;
+  const cb=$("#coverBtn");if(cb&&!cb.firstChild)cb.innerHTML=IC.cover;
+  const g=$("#gearBtn");if(g){g.innerHTML=IC.gear;g.classList.toggle("on",ui.page==="set")}
+}
+function render(){
+  const P={home:pgHome,write:pgWrite,cards:pgCards,learn:pgLearn,history:pgHistory,set:pgSet};
+  const warn=LS_OK?"":'<div class="note warn"><b>Storage is blocked</b> in this view. Open this file in regular Chrome or Edge so your cards and key stay saved.<small>Penyimpanan diblokir. Buka file di Chrome atau Edge biasa agar data tersimpan.</small></div>';
+  $("#view").innerHTML=warn+(P[ui.page]||pgHome)();
+  chrome();updateWc();
+  document.querySelectorAll(".seg").forEach(sg=>{const on=sg.querySelector(".on");if(!on)return;const over=on.getBoundingClientRect().right-sg.getBoundingClientRect().right+16;if(over>0)sg.scrollLeft+=over});
+}
+let ownTheme=false;
+function applyTheme(){const r=document.documentElement;if(S.theme==="system"){if(ownTheme){r.removeAttribute("data-theme");ownTheme=false}}else{r.dataset.theme=S.theme;ownTheme=true}}
+function updateWc(){const el=$("#wc"),ta=$("#draft");if(!el||!ta)return;const words=(ta.value.trim().match(/\S+/g)||[]).length;el.textContent=words?pl(words,"word"):"Nothing written yet"}
+
+function weekHTML(){const keys=weekKeys();const labels=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];const scores=keys.map(dayScore);const mx=Math.max(1,...scores);return `<div class="wbars">${scores.map((n,i)=>{const h=n?Math.max(8,Math.round(n/mx*72)):4;const cls=keys[i]===today()?" today":"";return `<div class="wcol${cls}"><i style="height:${h}px"></i><span>${labels[i]}</span></div>`}).join("")}</div>`}
+function heatHTML(){
+  const now=new Date();const dow=(now.getDay()+6)%7;const start=new Date(now.getFullYear(),now.getMonth(),now.getDate()-dow-15*7);let cells="";
+  for(let i=0;i<16*7;i++){const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);const key=dstr(d);const fut=key>today();const n=fut?0:dayScore(key);cells+=`<i class="lv${fut?0:heatLevel(n)}${fut?" fut":""}" title="${esc(fut?key:key+": "+pl(n,"activity").replace("activitys","activities"))}"></i>`}
+  return `<div class="heatwrap"><div class="heatdays"><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span>Sun</span></div><div class="heat">${cells}</div></div><div class="legend"><span>Less</span><i class="lv0"></i><i class="lv1"></i><i class="lv2"></i><i class="lv3"></i><i class="lv4"></i><span>More</span></div>`;
+}
+function errorHTML(){const es=Object.entries(S.errorStats||{}).sort((a,b)=>b[1]-a[1]);if(!es.length)return "";const mx=Math.max(1,...es.map(e=>e[1]));return es.map(e=>`<div class="erow"><div class="erowtop"><span>${esc(ERR_LABEL[e[0]]||e[0])}</span><b>${e[1]}</b></div><div class="ebar"><i style="width:${Math.round(e[1]/mx*100)}%"></i></div></div>`).join("")}
+
+function pgHome(){
+  const due=dueCards(),p=defProv(),next=LESSONS.find(l=>!S.lessonsDone.includes(l.id));
+  const reviewed=reviewsToday()>0||due.length===0;
+  const wrote=wroteToday();
+  const extra=didToday("lesson")||didToday("dictate")||didToday("quiz");
+  const doneN=[reviewed,wrote,extra].filter(Boolean).length;
+  const line=doneN===3?"Today's parts are done. Come back tomorrow.":due.length?`${pl(due.length,"card")} waiting for you.`:"One short piece of writing is enough to keep your rhythm.";
+  const es=Object.entries(S.errorStats||{}).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const recent=(S.history||[]).slice(0,4);
+  return `${p?"":'<div class="note">Corrections and quizzes need an AI provider. Cards, lessons, and dictation already work. <a href="#" data-act="go" data-p="set">Set up a provider</a></div>'}
+  <p class="kicker">${esc(dateLong())}</p>
+  <h1>${esc(greet())}. <em>${doneN===3?"You're on a roll.":"Take one step."}</em></h1>
+  <p class="lede">${esc(line)} ${doneN}/3 done today.</p>
+  <section class="card"><h3>Today's plan</h3>
+    <ul class="plan">
+      <li><button class="${reviewed?"done":""}" data-act="go" data-p="cards"><span class="tick">${IC.check}</span><span class="grow"><b>Review cards</b><small>${due.length?due.length+" due":"Nothing due"}</small></span></button></li>
+      <li><button class="${wrote?"done":""}" data-act="go" data-p="write"><span class="tick">${IC.check}</span><span class="grow"><b>Write something</b><small>${wrote?"You already wrote today":"3–6 sentences is enough"}</small></span></button></li>
+      <li><button class="${extra?"done":""}" data-act="${next?"openLessonHome":"go"}" ${next?`data-id="${next.id}"`:'data-p="learn"'}><span class="tick">${IC.check}</span><span class="grow"><b>${next?"Lesson or practice":"Extra practice"}</b><small>${extra?"Logged in History":next?esc(next.title):"Dictation, quiz, or lesson"}</small></span></button></li>
+    </ul>
+  </section>
+  <div class="split">
+    <section class="card"><div class="kicker">Cards</div><div class="stat" style="border:0;padding:0;background:transparent"><b>${due.length}</b><span>to review, out of ${pl(S.cards.length,"card")} · ${mastered()} strong</span></div>
+      <div style="margin-top:14px"><button class="btn" data-act="startReview" ${due.length?"":"disabled"}>Start review</button></div></section>
+    <section class="card">${next?`<div class="kicker">Up next</div><h3>${esc(next.title)}</h3><p class="muted">${esc(tagName(next.tag))} · ${esc(next.level)} · ${esc(next.time)} · ${S.lessonsDone.length}/${LESSONS.length} lessons</p><button class="btn block" data-act="openLessonHome" data-id="${next.id}">Open lesson</button>`:`<h3>All lessons done</h3><p class="muted">You can review phrases with cards, or make a quiz from a reading text.</p><button class="btn block" data-act="go" data-p="learn">Go to Learn</button>`}</section>
+  </div>
+  <div class="split">
+    <section class="card"><h3>This week</h3>${weekHTML()}<small>Each bar is a day you wrote, reviewed cards, or practiced.</small></section>
+    <section class="card"><h3>Latest</h3>${recent.length?recent.map(histBtn).join(""):'<p class="muted">History appears after you write, review cards, or finish a lesson.</p>'}<div style="margin-top:8px"><button class="btn ghost sm" data-act="go" data-p="history">View history</button></div></section>
+  </div>
+  <section class="card"><h3>Card focus</h3><div class="seg">${[["all","All"],["umum","General"],["kerja","Work"],["VA","VA"]].map(x=>`<button class="${S.focus===x[0]?"on":""}" data-act="focus" data-v="${x[0]}">${x[1]}</button>`).join("")}</div><small>Cards from your corrections always show up.</small></section>
+  ${es.length?`<section class="card"><h3>Most common mistakes</h3>${es.map(e=>`<div class="row" style="justify-content:space-between;padding:4px 0"><span>${esc(ERR_LABEL[e[0]]||e[0])}</span><span class="pill">${e[1]}×</span></div>`).join("")}<button class="btn ghost sm" data-act="go" data-p="history">Details in History</button></section>`:""}`;
+}
+function histBtn(h){const k=KIND[h.kind]||["Activity","clock"];return `<button class="hitem" data-act="openHist" data-id="${esc(h.id)}"><span class="hico">${IC[k[1]]||IC.clock}</span><span class="grow"><b>${esc(histTitle(h)||k[0])}</b><small>${esc(k[0])}${h.detail?" · "+esc(histDetail(h)):""}</small></span></button>`}
+
+function pgWrite(){
+  const p=defProv();
+  return `<h2>Write</h2><p class="lede">One correction uses one request. Write 3–6 sentences to make each request count.</p>
+  ${p?"":'<div class="note">No provider yet. <a href="#" data-act="go" data-p="set">Set one up in Settings</a>. You can still write and use your voice.</div>'}
+  <div class="card">
+    <label style="margin-top:0">Writing type</label><select id="wtype">${TYPES.map(t=>`<option value="${t[0]}" ${ui.wtype===t[0]?"selected":""}>${t[1]}</option>`).join("")}</select>
+    <p class="muted" style="margin-top:8px">${esc(HINTS[ui.wtype]||"")}</p>
+    <div class="row" style="margin-top:8px"><button class="btn ghost sm" data-act="topic">Get a topic</button>${FRAMES[ui.wtype]?'<button class="btn ghost sm" data-act="frame">Insert a template</button>':""}</div>
+    ${ui.topic?`<div class="note" style="margin-top:12px"><b>Topic.</b> ${esc(ui.topic)} <button class="btn ghost sm" data-act="say" data-t="${esc(ui.topic)}">${IC.vol} Listen</button></div>`:""}
+    <label>Your writing</label><textarea id="draft" lang="en" spellcheck="true" placeholder="Write in English, or press Speak.">${esc(ui.draft)}</textarea>
+    <div class="row" style="margin-top:8px"><button class="btn ghost sm" id="micBtn" data-act="mic">${IC.mic} Speak</button><button class="btn ghost sm" data-act="clearDraft">Clear</button><small id="wc" style="margin-left:auto"></small></div>
+    ${modelSelect()}
+    <div style="margin-top:14px"><button class="btn block" data-act="correct">Correct with AI</button></div>
+  </div>
+  <div id="resultBox">${ui.result?resultHTML(ui.result):""}</div>
+  ${S.writings.length?`<h4>Saved writing</h4><div class="card">${S.writings.slice(0,ui.wshow).map((w,i)=>`<button class="item" data-act="openWriting" data-i="${i}"><span class="grow"><b>${esc(w.text.slice(0,72))}${w.text.length>72?"…":""}</b><small>${esc(niceDate(w.date))} · ${esc(typeName(w.type))}</small></span><span class="chev">›</span></button>`).join("")}${S.writings.length>ui.wshow?`<div style="margin-top:10px"><button class="btn ghost sm" data-act="moreWrit">Show more (${S.writings.length-ui.wshow} older)</button></div>`:""}<small style="margin-top:8px">Newest first. The app keeps the latest 30; older ones are removed automatically.</small></div>`:""}`;
+}
+function resultHTML(r){const d=r.data;
+  const savedAll=d.errors.every((e,i)=>r.saved["e"+i])&&d.vocab.every((v,i)=>r.saved["v"+i]);
+  return `<div class="card">${r.cached?'<span class="pill">from saved results · no new request</span>':""}
+  <div class="cmp"><div><h4 style="margin-top:8px">Your writing</h4><div class="ans">${esc(r.text||"")}</div></div><div><h4 style="margin-top:8px">Corrected version</h4><div class="ans">${esc(d.corrected)}</div><button class="btn ghost sm" data-act="say" data-k="corrected">${IC.vol} Listen</button></div></div>
+  ${d.natural?`<h4>More natural</h4><div class="ans">${esc(d.natural)}</div><button class="btn ghost sm" data-act="say" data-k="natural">${IC.vol} Listen</button>`:""}
+  ${d.suggested?`<h4>Suggested answer${r.topic?" for this topic":""}</h4><div class="ans">${esc(d.suggested)}</div>${d.suggested_id?`<small>${esc(d.suggested_id)}</small>`:""}<div class="row" style="margin-top:8px"><button class="btn ghost sm" data-act="say" data-k="suggested">${IC.vol} Listen</button><button class="btn ghost sm" data-act="useSuggested">Copy to my writing</button></div>`:""}
+  ${d.errors.length?`<h4>Main mistakes</h4><small>Saved automatically to your <a href="#" data-act="openNotes">Mistake notebook</a>.</small>${d.errors.map((e,i)=>`<div class="err"><div><span class="w">${esc(e.wrong)}</span> → <span class="r">${esc(e.right)}</span> <span class="pill">${esc(ERR_LABEL[e.type]||e.type||"")}</span></div><small>${esc(e.why||"")}</small><div style="margin-top:8px"><button class="btn ghost sm" data-act="saveErr" data-i="${i}" ${r.saved["e"+i]?"disabled":""}>${r.saved["e"+i]?"Saved":"Make a card"}</button></div></div>`).join("")}`:'<p class="w-ok">No major mistakes.</p>'}
+  ${d.vocab.length?`<h4>Useful phrases</h4>${d.vocab.map((v,i)=>`<div class="phrase"><div class="grow"><b class="en">${esc(v.front)}</b><small>${esc(v.back)}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(v.front)}" aria-label="Listen">${IC.vol}</button><button class="btn ghost sm" data-act="saveVocab" data-i="${i}" ${r.saved["v"+i]?"disabled":""}>${r.saved["v"+i]?"Saved":"Save"}</button></div>`).join("")}`:""}
+  ${d.interview?`<h4>Interview feedback</h4><div class="ans">${esc(d.interview)}</div>`:""}
+  ${d.tip?`<h4>Tip</h4><p>${esc(d.tip)}</p>`:""}
+  ${(d.errors.length||d.vocab.length)?`<div style="margin-top:14px"><button class="btn block" data-act="saveAll" ${savedAll?"disabled":""}>${savedAll?"All saved as cards":"Save all as cards"}</button></div>`:""}</div>`;
+}
+
+function cardListHTML(){
+  const f=ui.cfilter,q=(ui.cquery||"").trim().toLowerCase();
+  const list=S.cards.filter(c=>(f==="all"||c.tag===f)&&(!q||(c.front+" "+c.back+" "+(c.example||"")).toLowerCase().includes(q)));
+  if(!list.length)return '<p class="muted">No cards match this filter.</p>';
+  return list.slice(0,120).map(c=>`<div class="phrase"><div class="grow"><b class="en">${c.kind==="fix"?"Fix: ":""}${esc(c.front)}</b><small>${esc(c.back).replace(/\n/g," · ")}</small></div><span class="pill">${c.box}</span><button class="btn ghost sm" data-act="delCard" data-id="${c.id}" aria-label="Delete card">Delete</button></div>`).join("")+(list.length>120?`<small>Showing 120 of ${list.length}.</small>`:"");
+}
+function pgCards(){
+  if(ui.rv)return reviewHTML();
+  const due=dueCards();
+  const boxes=[0,1,2,3,4,5].map(b=>S.cards.filter(c=>c.box===b).length);const mx=Math.max(1,...boxes);
+  const labs=["New","1d","3d","7d","14d","30d"];
+  return `<h2>Cards</h2><p class="lede">Due cards come first. The further right a bar, the less often you see those cards.</p>
+  <section class="card"><div class="stat" style="border:0;padding:0;background:transparent"><b>${due.length}</b><span>due · ${pl(S.cards.length,"card")} · ${mastered()} strong</span></div>
+    <div style="margin-top:14px"><button class="btn" data-act="startReview" ${due.length?"":"disabled"}>Start review</button></div>
+    <div class="bars">${boxes.map(b=>`<i style="height:${Math.max(6,Math.round(b/mx*100))}%"></i>`).join("")}</div>
+    <div class="bars" style="height:auto;margin-top:4px">${labs.map(x=>`<span>${x}</span>`).join("")}</div></section>
+  <section class="card"><h3>Add a card</h3>
+    <label style="margin-top:0">English</label><input id="cFront" lang="en" placeholder="I'll get back to you by Friday.">
+    <label>Meaning, in Indonesian</label><input id="cBack" placeholder="Saya kabari paling lambat Jumat.">
+    <label>Example, optional</label><input id="cEx" lang="en">
+    <label>Category</label><select id="cTag"><option value="umum">General</option><option value="kerja">Work</option><option value="VA">VA</option></select>
+    <div style="margin-top:12px"><button class="btn block" data-act="addCard">Save card</button></div></section>
+  <h4>All cards</h4>
+  <div class="seg">${[["all","All"],["umum","General"],["kerja","Work"],["VA","VA"],["koreksi","Corrections"]].map(x=>`<button class="${ui.cfilter===x[0]?"on":""}" data-act="cfilter" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>
+  <div class="card"><input id="cSearch" placeholder="Search a phrase or meaning" value="${esc(ui.cquery)}" style="margin-bottom:8px"><div id="cardList">${cardListHTML()}</div></div>`;
+}
+function commitReview(rv){if(!rv||rv.logged||!rv.done)return;rv.logged=true;const s=rv.stats;logEvent({kind:"review",title:"Reviewed "+pl(rv.unique,"card"),detail:s.good+" got it · "+s.hard+" hard · "+s.again+" forgot"})}
+function reviewHTML(){
+  const rv=ui.rv;const c=cardById(rv.queue[rv.i]);
+  if(!c){commitReview(rv);const s=rv.stats;return `<section class="card" style="text-align:center;padding:28px 18px"><p class="kicker">Done</p><h2>${pl(rv.unique,"card")}</h2><p class="muted">${s.good} got it · ${s.hard} hard · ${s.again} forgot</p><button class="btn" data-act="endReview">Back to cards</button></section>`}
+  const left=rv.queue.length-rv.i;const front=c.kind==="fix"?"Fix this sentence:\n"+c.front:c.front;
+  const hint=r=>{const n=nextState(c,r);return n.days===0?"again today":"+"+pl(n.days,"day")};
+  const pct=Math.round(rv.i/Math.max(1,rv.i+left)*100);
+  return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="endReview">Exit</button><span class="pill">${left} left</span></div><div class="prog"><i style="width:${pct}%"></i></div>
+  <div class="fc"><div class="t">${esc(tagName(c.tag))}${c.kind==="fix"?" · correction":""}</div><div class="f">${esc(front)}</div>
+  ${rv.shown?`<div class="b">${esc(c.back)}</div>${c.example?`<small style="margin-top:8px">${esc(c.example)}</small>`:""}`:'<small style="margin-top:12px">Say it out loud first, then check the answer.</small>'}</div>
+  ${c.say?`<div style="text-align:center"><button class="btn ghost sm" data-act="say" data-t="${esc(c.say)}">${IC.vol} Listen</button></div>`:""}
+  ${rv.shown?`<div class="rate"><button class="btn danger" data-act="rate" data-v="again">Forgot<small>${hint("again")}</small></button><button class="btn ghost" data-act="rate" data-v="hard">Hard<small>${hint("hard")}</small></button><button class="btn" data-act="rate" data-v="good">Got it<small>${hint("good")}</small></button></div><p class="keys muted">Space to reveal · 1 forgot · 2 hard · 3 got it</p>`:`<button class="btn block" style="margin-top:10px" data-act="flip">Show answer</button><p class="keys muted">Press space</p>`}`;
+}
+
+
+/* ---- buku kesalahan ---- */
+function noteKey(e){return (String(e.wrong).trim()+"|"+String(e.right).trim()).toLowerCase()}
+function addNotes(errors,date){if(!Array.isArray(S.notebook))S.notebook=[];const seen=new Set(S.notebook.map(noteKey));let n=0;(errors||[]).forEach(e=>{if(!e||!e.wrong||!e.right)return;const k=noteKey(e);if(seen.has(k))return;seen.add(k);S.notebook.unshift({id:uid(),date:date||today(),wrong:String(e.wrong).trim(),right:String(e.right).trim(),why:String(e.why||"").trim(),type:e.type||"other"});n++});if(S.notebook.length>300)S.notebook.length=300;return n}
+function migrateNotes(){if(S.notesMigrated)return;if(!Array.isArray(S.notebook))S.notebook=[];(S.writings||[]).slice().reverse().forEach(w=>addNotes((w.data||{}).errors,w.date));S.notesMigrated=true;save()}
+function notesHTML(){
+  const all=S.notebook||[];
+  const types=[...new Set(all.map(n=>n.type||"other"))];
+  if(ui.nfilter!=="all"&&!types.includes(ui.nfilter))ui.nfilter="all";
+  const list=all.filter(n=>ui.nfilter==="all"||(n.type||"other")===ui.nfilter);
+  const hasCard=n=>S.cards.some(c=>c.kind==="fix"&&String(c.front).toLowerCase()===n.wrong.toLowerCase());
+  const intro=all.length?`<p class="muted">${pl(all.length,"mistake")} saved automatically from AI corrections and dictation. Open this anytime to review them, then press X to delete the ones you have mastered.</p>`:"";
+  const seg=types.length>1?`<div class="seg"><button class="${ui.nfilter==="all"?"on":""}" data-act="nfilter" data-v="all">All</button>${types.map(t=>`<button class="${ui.nfilter===t?"on":""}" data-act="nfilter" data-v="${esc(t)}">${esc(ERR_LABEL[t]||t)}</button>`).join("")}</div>`:"";
+  if(!all.length)return `<div class="card"><h3>No mistakes saved yet</h3><p class="muted">Every time the AI corrects your writing, the mistakes are saved here automatically. You do not need to save them one by one.</p><button class="btn" data-act="go" data-p="write">Write something</button></div>`;
+  return intro+seg+`<div class="card">${list.map(n=>`<div class="nrow">
+    <div><div class="nline"><span class="nw">${esc(n.wrong)}</span><span class="narrow" aria-hidden="true">→</span><span class="nr">${esc(n.right)}</span></div>${n.why?`<small>${esc(n.why)}</small>`:""}<small class="nmeta">${esc(ERR_LABEL[n.type]||n.type||"Other")} · ${esc(niceDate(n.date))}</small></div>
+    <div class="nact"><button class="iconbtn sm" data-act="say" data-t="${esc(n.right)}" aria-label="Listen to the correct version">${IC.vol}</button><button class="iconbtn sm nx" data-act="delNote" data-id="${n.id}" aria-label="Delete from mistake notebook">${IC.x}</button></div>
+    <div class="nfoot"><button class="btn ghost sm" data-act="noteCard" data-id="${n.id}" ${hasCard(n)?"disabled":""}>${hasCard(n)?"Already a card":"Make a card"}</button></div>
+  </div>`).join("")}</div>`;
+}
+function pgLearn(){
+  const tabs=[["lesson","Lessons"],["quiz","Quiz from text"],["dictate","Dictation"],["notes","Mistake notebook"],["sources","Sources"]];
+  let body="";
+  if(ui.lt==="lesson")body=ui.lesson?lessonDetail(LESSONS.find(l=>l.id===ui.lesson)):`<p class="muted">${S.lessonsDone.length} of ${LESSONS.length} done. Suggested mix: about 70% general, 30% work and VA.</p><div class="card">${LESSONS.map((l,i)=>`<button class="item" data-act="openLesson" data-id="${l.id}"><span class="mono">${pad(i+1)}</span><span class="grow"><b>${esc(l.title)}</b><small>${esc(tagName(l.tag))} · ${esc(l.level)} · ${esc(l.time)}</small></span>${S.lessonsDone.includes(l.id)?'<span class="pill ok">done</span>':'<span class="chev">›</span>'}</button>`).join("")}</div>`;
+  else if(ui.lt==="quiz")body=quizHTML();
+  else if(ui.lt==="dictate")body=dictHTML();
+  else if(ui.lt==="notes")body=notesHTML();
+  else body=["Reading","Listening"].map(k=>`<h4>${k}</h4><div class="card">${SOURCES.filter(s=>s[0]===k).map(s=>`<a class="link" href="${esc(s[3])}" target="_blank" rel="noopener"><span class="src"><b>${esc(s[1])}</b><small>${esc(s[2])}</small></span><span class="row" style="margin-top:6px"><span class="pill">${esc(s[4])}</span><span class="pill">${esc(tagName(s[5]))}</span></span></a>`).join("")}</div>`).join("")+'<div class="note">Pick materials that have transcripts. Listen first without the text, then listen again while reading. Paste the text into Quiz from text.</div>';
+  return `<h2>Learn</h2><div class="seg">${tabs.map(t=>`<button class="${ui.lt===t[0]?"on":""}" data-act="ltab" data-v="${t[0]}">${t[1]}</button>`).join("")}</div>${body}`;
+}
+function lessonDetail(l){if(!l)return `<button class="btn ghost sm" data-act="closeLesson">Back</button>`;
+  return `<button class="btn ghost sm" data-act="closeLesson">Back</button>
+  <p class="kicker">${esc(tagName(l.tag))} · ${esc(l.level)} · ${esc(l.time)}</p><h2>${esc(l.title)}</h2><p class="lede">${esc(l.intro)}</p>
+  <div class="card">${l.phrases.map((p,i)=>`<div class="phrase"><div class="grow"><b class="en">${esc(p[0])}</b><small>${esc(p[1])}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(p[0])}" aria-label="Listen">${IC.vol}</button><button class="btn ghost sm" data-act="addPhrase" data-i="${i}">Save</button></div>`).join("")}
+  <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="addAllPhrases">Save all as cards</button></div></div>
+  <div class="card"><h3>Writing practice</h3><p class="en">${esc(l.task)}</p><button class="btn block" data-act="lessonWrite">Write now</button></div>
+  <button class="btn ghost block" data-act="doneLesson">${S.lessonsDone.includes(l.id)?"Mark as not done":"Mark as done"}</button>`;
+}
+function quizHTML(){
+  const form=`<div class="card"><h3>Make a quiz from a text</h3><p class="muted">Paste a reading or transcript. One request makes one set you can redo.</p>
+  <div class="row"><div class="grow"><label style="margin-top:0">Level</label><select id="qlevel">${["A2","A2–B1","B1"].map(x=>`<option ${ui.qlevel===x?"selected":""}>${x}</option>`).join("")}</select></div><div class="grow"><label style="margin-top:0">Questions</label><select id="qn">${["5","8","10"].map(x=>`<option ${ui.qn===x?"selected":""}>${x}</option>`).join("")}</select></div></div>
+  <label>Topic</label><select id="qcat"><option value="umum" ${ui.qcat==="umum"?"selected":""}>General</option><option value="kerja" ${ui.qcat==="kerja"?"selected":""}>Work</option><option value="VA" ${ui.qcat==="VA"?"selected":""}>VA</option></select>
+  <label>Text or transcript</label><textarea id="qsrc" placeholder="Paste it here...">${esc(ui.quizSrc)}</textarea>
+  ${modelSelect()}
+  <div style="margin-top:12px"><button class="btn block" data-act="quizGen">Make a quiz with AI</button></div></div>`;
+  const hist=S.quizzes.length?`<h4>Saved quizzes</h4><div class="card">${S.quizzes.slice(0,8).map((x,i)=>`<button class="item" data-act="quizOpen" data-i="${i}"><span class="grow"><b>${esc((x.data&&x.data.title)||"Quiz")}</b><small>${esc(niceDate(x.date))} · ${pl((x.data.questions||[]).length,"question")}</small></span><span class="chev">›</span></button>`).join("")}</div>`:"";
+  return form+`<div id="quizBox">${ui.quiz?quizBoxHTML():""}</div>`+hist;
+}
+function quizBoxHTML(){const q=ui.quiz,d=q.data;const done=Object.keys(q.ans).length;const correct=Object.values(q.ans).filter(a=>a.ok).length;
+  return `<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">${esc(d.title||"Quiz")}</h3><span class="pill">${correct}/${done} correct · ${pl(d.questions.length,"question")}</span></div>
+  ${d.questions.map((x,i)=>qHTML(x,i,q)).join("")}
+  ${done?`<div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="quizSaveWrong">Save wrong answers as cards</button></div>`:""}
+  ${d.vocab&&d.vocab.length?`<h4>Phrases from the text</h4>${d.vocab.map((v,i)=>`<div class="phrase"><div class="grow"><b class="en">${esc(v.front)}</b><small>${esc(v.back)}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(v.front)}" aria-label="Listen">${IC.vol}</button><button class="btn ghost sm" data-act="quizVocab" data-i="${i}">Save</button></div>`).join("")}`:""}</div>`;
+}
+function qHTML(x,i,q){const a=q.ans[i];let inner="";
+  if(x.type==="mcq"){inner=(x.options||[]).map((o,j)=>{let cls="";if(a){if(j===+x.answer)cls="good";else if(j===a.v)cls="bad"}return `<button class="opt ${cls}" data-act="qa" data-i="${i}" data-v="${j}" ${a?"disabled":""}>${esc(o)}</button>`}).join("")}
+  else if(x.type==="tf"){inner=[[true,"True"],[false,"False"]].map(o=>{let cls="";if(a){if(o[0]===x.answer||String(o[0])===String(x.answer))cls="good";else if(o[0]===a.v)cls="bad"}return `<button class="opt ${cls}" data-act="qa" data-i="${i}" data-v="${o[0]}" ${a?"disabled":""}>${o[1]}</button>`}).join("")}
+  else{const dv=q.draft[i]||"";inner=a?`<div class="opt ${a.ok?"good":"bad"}">${esc(a.v)}</div>${a.ok?"":`<div class="opt good">${esc(x.answer)}</div>`}`:`<div class="row"><input data-fill="${i}" value="${esc(dv)}" placeholder="Your answer" lang="en" style="flex:1"><button class="btn sm" data-act="qf" data-i="${i}">Check</button></div>`}
+  return `<div class="q"><b>${i+1}. ${esc(x.q)}</b>${inner}${a?`<div class="why">${a.ok?"Correct. ":"Not quite. "}${esc(x.why||"")}</div>`:""}</div>`;
+}
+function dictHTML(){if(!ui.dict)pickDict();const d=ui.dict;
+  let res="";if(d.res){res=`<div class="card"><p class="${d.res.score===d.res.total?"w-ok":""}">${d.res.score} of ${d.res.total} words correct</p><p>${d.res.words.map((w,i)=>`<span class="${d.res.ok[i]?"w-ok":"w-bad"}">${esc(w)}</span>`).join(" ")}</p><div class="ans">${esc(d.t)}</div><div class="row"><button class="btn ghost sm" data-act="say" data-t="${esc(d.t)}">${IC.vol} Hear the sentence</button><button class="btn ghost sm" data-act="dictSave">Save as a card</button></div><small>Green means correct. Red means missed or wrong.</small></div>`}
+  return `<div class="card"><h3>Dictation</h3><p class="muted">Listen, then type. Uses no AI quota.</p>
+  <div class="row"><button class="btn" data-act="dictPlay">${IC.vol} Play</button><button class="btn ghost" data-act="dictSlow">Slow</button><button class="btn ghost" data-act="dictNext">Another sentence</button></div>
+  <label>What you heard</label><textarea id="dans" lang="en" spellcheck="false" style="min-height:90px"></textarea>
+  <div style="margin-top:10px"><button class="btn block" data-act="dictCheck">Check answer</button></div></div>${res}`;
+}
+function pickDict(){let pool=[].concat(LESSONS.flatMap(l=>l.phrases.map(x=>x[0])),S.cards.map(c=>c.example||"")).filter(s=>s&&s.split(/\s+/).length>=4&&s.indexOf("...")<0);if(!pool.length)pool=["I'll get back to you by Friday."];let t=rand(pool);if(pool.length>1&&ui.dict){let g=0;while(t===ui.dict.t&&g++<6)t=rand(pool)}ui.dict={t,res:null}}
+function diffWords(target,ans){const expand=s=>s.toLowerCase().replace(/[\u2019\u2018`]/g,"'").replace(/\bwon't\b/g,"will not").replace(/\bcan't\b/g,"can not").replace(/\blet's\b/g,"let us").replace(/n't\b/g," not").replace(/'re\b/g," are").replace(/'ve\b/g," have").replace(/'ll\b/g," will").replace(/'m\b/g," am").replace(/\b(it|that|what|there|here|he|she|who|where|how)'s\b/g,"$1 is");
+  const norm=s=>expand(s).replace(/[^a-z0-9' ]/g," ").split(/\s+/).filter(Boolean);const a=norm(target),b=norm(ans);const n=a.length,m=b.length;const dp=Array.from({length:n+1},()=>Array(m+1).fill(0));for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);const ok=Array(n).fill(false);let i=0,j=0;while(i<n&&j<m){if(a[i]===b[j]){ok[i]=true;i++;j++}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++}return {words:a,ok,score:ok.filter(Boolean).length,total:n}}
+
+function pgHistory(){
+  const list=(S.history||[]).filter(h=>ui.hfilter==="all"||h.kind===ui.hfilter);
+  const groups=[];list.slice(0,80).forEach(h=>{const last=groups[groups.length-1];if(!last||last.date!==h.date)groups.push({date:h.date,items:[h]});else last.items.push(h)});
+  const filters=[["all","All"],["write","Write"],["review","Cards"],["lesson","Lessons"],["quiz","Quizzes"],["dictate","Dictation"]];
+  return `<h2>History</h2><p class="lede">All your practice on this device. No account, no server.</p>
+  <div class="stats cols3">
+    <div class="stat"><b>${streak()}</b><span>day streak</span></div>
+    <div class="stat"><b>${S.activity.length}</b><span>days studied</span></div>
+    <div class="stat"><b>${S.writings.length}</b><span>writings corrected</span></div>
+    <div class="stat"><b>${mastered()}</b><span>strong cards of ${S.cards.length}</span></div>
+    <div class="stat"><b>${S.lessonsDone.length}/${LESSONS.length}</b><span>lessons done</span></div>
+    <div class="stat"><b>${S.quizzes.length}</b><span>quizzes</span></div>
+  </div>
+  <section class="card"><h3>16 weeks</h3>${heatHTML()}<small>Color follows writing, card reviews, lessons, quizzes, and dictation.</small></section>
+  <section class="card"><h3>This week</h3>${weekHTML()}</section>
+  ${Object.keys(S.errorStats||{}).length?`<section class="card"><h3>Mistake patterns</h3><p class="muted">Taken from AI corrections. Review your correction cards to bring these numbers down.</p>${errorHTML()}<button class="btn ghost sm" style="margin-top:10px" data-act="openNotes">Open mistake notebook</button></section>`:""}
+  <div class="seg">${filters.map(x=>`<button class="${ui.hfilter===x[0]?"on":""}" data-act="hfilter" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>
+  ${groups.length?groups.map(g=>`<div class="daylab">${esc(niceDate(g.date))}</div><div class="card">${g.items.map(histBtn).join("")}</div>`).join(""):'<div class="card"><h3>No entries yet</h3><p class="muted">Start with a due card, one piece of writing, or one lesson. Everything shows up here.</p><button class="btn" data-act="go" data-p="home">Go to Today</button></div>'}`;
+}
+
+function pgSet(){
+  const ps=S.providers;
+  return `<h2>Settings</h2>
+  <section class="card"><h3>AI provider</h3>
+  ${ps.length?ps.map(p=>`<div class="phrase"><div class="grow"><b>${esc(p.name)} ${S.defaultProvider===p.id?'<span class="pill">default</span>':""}</b><small>${esc(p.model)} · ${p.format==="gemini"?"Gemini":"OpenAI-compatible"} · today ${usedToday(p)}${p.limit?"/"+p.limit:""}</small></div><button class="btn ghost sm" data-act="pfUse" data-id="${p.id}">Use</button><button class="btn ghost sm" data-act="pfEdit" data-id="${p.id}">Edit</button><button class="btn ghost sm" data-act="pfDel" data-id="${p.id}">Delete</button></div>`).join(""):'<p class="muted">No provider yet.</p>'}
+  <div class="row" style="margin-top:12px"><button class="btn sm" data-act="pfNew" data-k="gemini">Add Gemini</button><button class="btn ghost sm" data-act="pfNew" data-k="openai">Add OpenAI-compatible</button></div>
+  <div class="note" style="margin-top:12px">One provider is one key and one model. To use two Gemini models, make two entries with the same key and different model IDs. Copy the exact model ID from the provider's dashboard. Quota is counted per model, on this device.</div></section>
+  ${ui.pf?pfHTML():""}
+  <section class="card"><h3>Voice</h3><label style="margin-top:0">Accent</label><select id="setAccent"><option value="en-US" ${S.accent==="en-US"?"selected":""}>American (en-US)</option><option value="en-GB" ${S.accent==="en-GB"?"selected":""}>British (en-GB)</option><option value="en-AU" ${S.accent==="en-AU"?"selected":""}>Australian (en-AU)</option></select>
+  <label>Speed</label><select id="setRate">${[["0.7","Slow"],["0.9","Normal"],["1","Fast"]].map(x=>`<option value="${x[0]}" ${String(S.rate)===x[0]?"selected":""}>${x[1]}</option>`).join("")}</select>
+  <div style="margin-top:10px"><button class="btn ghost sm" data-act="say" data-t="Hello. I'll get back to you by Friday.">${IC.vol} Test voice</button></div></section>
+  <section class="card"><h3>Appearance</h3><select id="setTheme">${[["system","Follow system"],["light","Light"],["dark","Dark"]].map(x=>`<option value="${x[0]}" ${S.theme===x[0]?"selected":""}>${x[1]}</option>`).join("")}</select></section>
+  <section class="card"><h3>Data</h3><p class="muted">All your data is in this browser. Export before clearing browser data or switching devices.</p>
+  <label class="row" style="font-weight:500;letter-spacing:0;text-transform:none;color:inherit;margin:8px 0"><input type="checkbox" id="incKey" style="width:auto"> Include the API key in the backup file</label>
+  <div class="row"><button class="btn ghost sm" data-act="export">Export JSON</button><button class="btn ghost sm" data-act="importPick">Import JSON</button><input type="file" id="impFile" accept="application/json" style="display:none"></div>
+  ${ui.exportText?`<textarea id="expBox" readonly style="min-height:120px;margin-top:8px">${esc(ui.exportText)}</textarea><div class="row" style="margin-top:8px"><button class="btn ghost sm" data-act="copyExport">Copy text</button></div>`:""}
+  <label>Import from text</label><textarea id="impText" style="min-height:80px" placeholder="Paste your backup here"></textarea><div style="margin-top:8px"><button class="btn ghost sm" data-act="importPaste">Import from text</button></div>
+  
+  <div style="margin-top:12px"><button class="btn danger sm" data-act="reset">Delete all data</button></div></section>
+  <div class="note warn"><b>Privacy.</b> Your API key is stored in this browser. Do not share a backup that includes the key. On free tiers, the AI provider may use your prompts to improve its products. Do not write personal data or client secrets. OpenAI-compatible services also see the text you send.<small>Privasi: key tersimpan di browser ini. Jangan bagikan backup yang berisi key. Di tier gratis, penyedia AI boleh memakai teksmu. Jangan menulis data pribadi atau rahasia klien.</small></div>`;
+}
+function pfHTML(){const f=ui.pf;return `<section class="card"><h3>${f.id?"Edit":"Add"} provider</h3>
+  <label style="margin-top:0">Display name</label><input id="pfName" value="${esc(f.name)}" placeholder="Gemini Flash">
+  <label>Format</label><select id="pfFormat"><option value="gemini" ${f.format==="gemini"?"selected":""}>Gemini</option><option value="openai" ${f.format==="openai"?"selected":""}>OpenAI-compatible</option></select>
+  <label>Base URL</label><input id="pfUrl" value="${esc(f.url)}" placeholder="${f.format==="gemini"?"https://generativelanguage.googleapis.com/v1beta":"https://api.openai.com/v1"}">
+  <label>API key</label><div class="row"><input id="pfKey" type="password" autocomplete="off" value="${esc(f.key)}" style="flex:1"><button class="btn ghost sm" data-act="toggleKey">Show</button></div>
+  <label>Model ID</label><input id="pfModel" value="${esc(f.model)}" placeholder="Copy the exact ID from the provider dashboard">
+  <label>Daily request limit</label><input id="pfLimit" type="number" min="0" placeholder="Leave empty for no limit" value="${f.limit?esc(f.limit):""}">
+  <div class="row" style="margin-top:14px"><button class="btn" data-act="pfSave">Save</button><button class="btn ghost" data-act="pfTest">Test connection</button><button class="btn ghost" data-act="pfClose">Cancel</button></div>
+  <div id="pfMsg" class="muted" style="margin-top:10px;white-space:pre-line"></div></section>`;
+}
+
+function ask(msg,fn){const d=$("#dlg");const parts=String(msg).split("\n");d.innerHTML='<div class="dbox"><p>'+esc(parts[0])+'</p>'+parts.slice(1).map(x=>'<p class="muted" style="font-size:14px">'+esc(x)+'</p>').join("")+'<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn ghost sm" data-act="dlgNo">Cancel</button><button class="btn danger sm" data-act="dlgYes">Delete</button></div></div>';d.hidden=false;ui.dlg=fn}
+const A={};
+A.go=(d)=>go(d.p);
+A.focus=(d)=>{S.focus=d.v;save();render()};
+A.hfilter=(d)=>{ui.hfilter=d.v;render()};
+A.startReview=()=>{const q=dueCards().slice(0,30).map(c=>c.id);if(!q.length)return toast("No cards to review.");ui.rv={queue:q,i:0,shown:false,done:0,unique:0,seen:{},logged:false,stats:{again:0,hard:0,good:0}};ui.page="cards";render();window.scrollTo(0,0)};
+A.endReview=()=>{if(ui.rv)commitReview(ui.rv);ui.rv=null;save();render()};
+A.flip=()=>{if(ui.rv){ui.rv.shown=true;render()}};
+A.rate=(d)=>{const rv=ui.rv;if(!rv)return;const c=cardById(rv.queue[rv.i]);if(!c)return;rateCard(c,d.v);bumpReview(d.v);rv.stats[d.v]=(rv.stats[d.v]||0)+1;if(!rv.seen[c.id]){rv.seen[c.id]=1;rv.unique++}if(d.v==="again")rv.queue.push(c.id);rv.done++;rv.i++;rv.shown=false;if(rv.i>=rv.queue.length)commitReview(rv);else mark();save();render()};
+A.say=(d)=>{let t=d.t;if(d.k&&ui.result)t=ui.result.data[d.k];if(t)speak(t)};
+A.addCard=()=>{const ok=addCard({front:$("#cFront").value,back:$("#cBack").value,example:$("#cEx").value,tag:$("#cTag").value,say:$("#cFront").value});if(!ok)return toast("Fill in the phrase and meaning. No duplicates.");save();toast("Card saved.");render()};
+A.dlgNo=()=>{$("#dlg").hidden=true;ui.dlg=null};
+A.dlgYes=()=>{const f=ui.dlg;$("#dlg").hidden=true;ui.dlg=null;if(f)f()};
+A.delCard=(d)=>ask("Delete this card?",()=>{S.cards=S.cards.filter(c=>c.id!==d.id);save();render()});
+A.cfilter=(d)=>{ui.cfilter=d.v;render()};
+A.topic=()=>{const list=TOPICS[ui.wtype]||TOPICS.bebas;let t=rand(list);if(list.length>1){let g=0;while(t===ui.topic&&g++<6)t=rand(list)}ui.topic=t;ui.draft=($("#draft")||{}).value||ui.draft;render()};
+A.frame=()=>{const f=FRAMES[ui.wtype];if(!f)return;const cur=($("#draft")||{}).value||"";if(cur.trim())return toast("Clear your writing first to use a template.");ui.draft=f;render()};
+A.clearDraft=()=>{ui.draft="";ui.result=null;render()};
+A.mic=toggleMic;
+A.moreWrit=()=>{ui.wshow=Math.min(30,ui.wshow+8);render()};
+A.correct=async()=>{
+  if(ui.busy)return;const text=(($("#draft")||{}).value||"").trim();ui.draft=text;if(text.length<3)return toast("Write something first.");
+  const p=pickProv();if(!p)return;ui.busy=true;
+  $("#resultBox").innerHTML='<div class="note">Checking your writing. This uses one request.</div>';
+  try{const r=await aiJSON(p,SYS_CORRECT,"Text type: "+(TYPE_EN[ui.wtype]||"free writing")+(ui.topic?"\nTopic: "+ui.topic:"")+"\nText:\n"+text);const d=r.data;
+    d.corrected=String(d.corrected||"");d.natural=String(d.natural||"");d.tip=String(d.tip||"");d.suggested=String(d.suggested||"");d.suggested_id=String(d.suggested_id||"");d.interview=String(d.interview||"");
+    d.errors=(Array.isArray(d.errors)?d.errors:[]).filter(e=>e&&e.wrong&&e.right).slice(0,6);
+    d.vocab=(Array.isArray(d.vocab)?d.vocab:[]).filter(v=>v&&v.front&&v.back).slice(0,3);
+    ui.result={data:d,text:text,cached:r.cached,saved:{},topic:ui.topic||""};
+    if(!r.cached){d.errors.forEach(e=>{const k=e.type||"other";S.errorStats[k]=(S.errorStats[k]||0)+1});const id=uid();S.writings.unshift({id,date:today(),type:ui.wtype,text,data:d});S.writings=S.writings.slice(0,30);logEvent({kind:"write",title:text.slice(0,90),detail:ui.wtype,ref:id});addNotes(d.errors,today());save()}
+    $("#resultBox").innerHTML=resultHTML(ui.result);chrome();
+  }catch(e){$("#resultBox").innerHTML='<div class="note warn">'+msgHTML(e.message)+"</div>"}
+  ui.busy=false};
+A.openWriting=(d)=>{const w=S.writings[+d.i];if(!w)return;ui.wtype=w.type;ui.draft=w.text;ui.topic="";ui.result={data:w.data,text:w.text,cached:true,saved:{}};render();window.scrollTo(0,0)};
+function refreshResult(){const b=$("#resultBox");if(b&&ui.result)b.innerHTML=resultHTML(ui.result)}
+A.saveErr=(d)=>{const r=ui.result,e=r.data.errors[+d.i];if(!e||r.saved["e"+d.i])return;const ok=addCard({front:e.wrong,back:e.right+"\n"+(e.why||""),example:"",tag:"koreksi",kind:"fix",say:e.right});r.saved["e"+d.i]=true;save();toast(ok?"Card made.":"Already in your cards.");refreshResult()};
+A.useSuggested=()=>{const r=ui.result;if(!r||!r.data.suggested)return;ui.draft=r.data.suggested;ui.result=null;render();window.scrollTo(0,0);toast("Copied. Read it aloud, then edit it in your own words.")};
+A.saveVocab=(d)=>{const r=ui.result,v=r.data.vocab[+d.i];if(!v||r.saved["v"+d.i])return;const ok=addCard({front:v.front,back:v.back,example:v.example,tag:tagForWrite(),say:v.front});r.saved["v"+d.i]=true;save();toast(ok?"Card made.":"Already in your cards.");refreshResult()};
+A.saveAll=()=>{const r=ui.result;let n=0;r.data.errors.forEach((e,i)=>{if(r.saved["e"+i])return;if(addCard({front:e.wrong,back:e.right+"\n"+(e.why||""),tag:"koreksi",kind:"fix",say:e.right}))n++;r.saved["e"+i]=true});r.data.vocab.forEach((v,i)=>{if(r.saved["v"+i])return;if(addCard({front:v.front,back:v.back,example:v.example,tag:tagForWrite(),say:v.front}))n++;r.saved["v"+i]=true});save();toast(n?pl(n,"new card")+".":"Nothing new.");refreshResult()};
+A.ltab=(d)=>{ui.lt=d.v;render()};
+A.delNote=(d)=>{S.notebook=(S.notebook||[]).filter(n=>n.id!==d.id);save();render();toast("Deleted from your mistake notebook.")};
+A.noteCard=(d)=>{const n=(S.notebook||[]).find(x=>x.id===d.id);if(!n)return;const ok=addCard({front:n.wrong,back:n.right+"\n"+(n.why||""),example:"",tag:"koreksi",kind:"fix",say:n.right});save();toast(ok?"Card made.":"Already in your cards.");render()};
+A.nfilter=(d)=>{ui.nfilter=d.v;render()};
+A.openNotes=()=>{ui.lt="notes";go("learn")};
+
+A.openLesson=(d)=>{ui.lesson=d.id;render();window.scrollTo(0,0)};
+A.openLessonHome=(d)=>{ui.lt="lesson";ui.lesson=d.id;go("learn")};
+A.closeLesson=()=>{ui.lesson=null;render()};
+A.addPhrase=(d)=>{const l=LESSONS.find(x=>x.id===ui.lesson);if(!l)return;const p=l.phrases[+d.i];const ok=addCard({front:p[0],back:p[1],example:"",tag:l.tag,say:p[0]});save();toast(ok?"Card made.":"Already in your cards.")};
+A.addAllPhrases=()=>{const l=LESSONS.find(x=>x.id===ui.lesson);if(!l)return;let n=0;l.phrases.forEach(p=>{if(addCard({front:p[0],back:p[1],tag:l.tag,say:p[0]}))n++});save();toast(n?pl(n,"card")+" added.":"All already saved.")};
+A.doneLesson=()=>{const id=ui.lesson;if(!id)return;const i=S.lessonsDone.indexOf(id);if(i>=0){S.lessonsDone.splice(i,1);save();render();return}S.lessonsDone.push(id);const l=LESSONS.find(x=>x.id===id);logEvent({kind:"lesson",title:l?l.title:"Lesson",detail:l?l.level:"",ref:id});save();render()};
+A.lessonWrite=()=>{const l=LESSONS.find(x=>x.id===ui.lesson);if(!l)return;ui.wtype=l.ttype;ui.topic=l.task;ui.draft="";ui.result=null;go("write")};
+A.quizGen=async()=>{
+  if(ui.busy)return;const src=(($("#qsrc")||{}).value||"").trim();ui.quizSrc=src;
+  const lv=$("#qlevel"),qn=$("#qn"),qc=$("#qcat");if(lv)ui.qlevel=lv.value;if(qn)ui.qn=qn.value;if(qc)ui.qcat=qc.value;
+  if(src.length<80)return toast("Paste a longer text.");
+  const p=pickProv();if(!p)return;ui.busy=true;$("#quizBox").innerHTML='<div class="note">Making your quiz. This uses one request.</div>';
+  try{const r=await aiJSON(p,SYS_QUIZ,"Level: "+ui.qlevel+"\nTopic focus: "+ui.qcat+"\nNumber of questions: "+ui.qn+"\nMix mcq, tf and fill. Questions in English at the stated level. Give 4-6 vocab items.\nMaterial:\n"+src.slice(0,6000),6000);
+    const d=r.data;d.title=String(d.title||"Quiz");d.questions=(Array.isArray(d.questions)?d.questions:[]).filter(q=>q&&q.q&&(q.type==="fill"||q.type==="tf"||(q.type==="mcq"&&Array.isArray(q.options)&&q.options.length>=2)));
+    if(!d.questions.length)throw new Error("No questions were made. Try again with another text.");
+    d.vocab=(Array.isArray(d.vocab)?d.vocab:[]).filter(v=>v&&v.front&&v.back).slice(0,6);
+    const id=uid();ui.quiz={data:d,ans:{},draft:{},refId:id,logged:false};
+    if(!r.cached){S.quizzes.unshift({id,date:today(),data:d});S.quizzes=S.quizzes.slice(0,15);logEvent({kind:"quiz",title:d.title,detail:pl(d.questions.length,"question"),ref:id});save()}
+    $("#quizBox").innerHTML=quizBoxHTML();chrome();
+  }catch(e){$("#quizBox").innerHTML='<div class="note warn">'+msgHTML(e.message)+"</div>"}
+  ui.busy=false};
+function refreshQuiz(){document.querySelectorAll("[data-fill]").forEach(i=>{ui.quiz.draft[i.dataset.fill]=i.value});const b=$("#quizBox");if(b)b.innerHTML=quizBoxHTML();maybeScoreQuiz()}
+function maybeScoreQuiz(){const q=ui.quiz;if(!q||q.scored)return;const n=q.data.questions.length;if(Object.keys(q.ans).length<n)return;q.scored=true;const ok=Object.values(q.ans).filter(a=>a.ok).length;const h=(S.history||[]).find(x=>x.kind==="quiz"&&x.ref===q.refId);if(h){h.detail=ok+"/"+n+" correct";save()}else logEvent({kind:"quiz",title:q.data.title||"Quiz",detail:ok+"/"+n+" correct",ref:q.refId||""})}
+const normA=s=>String(s).toLowerCase().replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim();
+A.qa=(d)=>{const q=ui.quiz;if(!q)return;const i=+d.i,x=q.data.questions[i];if(!x||q.ans[i])return;let v,ok;if(x.type==="mcq"){v=+d.v;ok=v===+x.answer}else{v=d.v==="true";ok=v===(x.answer===true||x.answer==="true")}q.ans[i]={v,ok};mark();refreshQuiz()};
+A.qf=(d)=>{const q=ui.quiz;if(!q)return;const i=+d.i,x=q.data.questions[i];if(!x||q.ans[i])return;const inp=document.querySelector('[data-fill="'+i+'"]');const v=(inp?inp.value:"").trim();if(!v)return toast("Type your answer first.");const acc=[x.answer].concat(x.accept||[]).map(normA);q.ans[i]={v,ok:acc.indexOf(normA(v))>=0};mark();refreshQuiz()};
+A.quizSaveWrong=()=>{const q=ui.quiz;if(!q)return;let n=0;q.data.questions.forEach((x,i)=>{const a=q.ans[i];if(!a||a.ok)return;let ans=x.type==="mcq"?(x.options||[])[x.answer]:x.type==="tf"?String(x.answer):x.answer;if(addCard({front:x.q,back:String(ans)+"\n"+(x.why||""),tag:"koreksi",kind:"fix",say:x.type==="fill"?String(x.q).replace(/_+/,String(ans)):""}))n++});save();toast(n?pl(n,"card")+" added.":"No new wrong answers.")};
+A.quizVocab=(d)=>{const v=ui.quiz&&ui.quiz.data.vocab[+d.i];if(!v)return;const ok=addCard({front:v.front,back:v.back,example:v.example,tag:ui.qcat,say:v.front});save();toast(ok?"Card made.":"Already saved.")};
+A.quizOpen=(d)=>{const x=S.quizzes[+d.i];if(!x)return;ui.quiz={data:clone(x.data),ans:{},draft:{},refId:x.id,logged:true,scored:false};render();const b=$("#quizBox");if(b)b.scrollIntoView({behavior:"smooth"})};
+A.dictPlay=()=>{if(ui.dict)speak(ui.dict.t)};
+A.dictSlow=()=>{if(ui.dict)speak(ui.dict.t,0.6)};
+A.dictNext=()=>{pickDict();render()};
+A.dictCheck=()=>{const a=($("#dans")||{}).value||"";if(!a.trim())return toast("Type what you heard first.");ui.dict.res=diffWords(ui.dict.t,a);if(ui.dict.res.score<ui.dict.res.total){const miss=ui.dict.res.words.filter((w,i)=>!ui.dict.res.ok[i]);addNotes([{wrong:a.trim(),right:ui.dict.t,type:"dictation",why:"Dikte: kata yang terlewat atau salah: "+miss.join(", ")+"."}],today())}logEvent({kind:"dictate",title:ui.dict.t.slice(0,90),detail:ui.dict.res.score+"/"+ui.dict.res.total+" words"});save();const keep=a;render();const ta=$("#dans");if(ta)ta.value=keep};
+A.dictSave=()=>{if(!ui.dict)return;const ok=addCard({front:ui.dict.t,back:"Dictation sentence. Add your own meaning later.",example:ui.dict.t,tag:"umum",say:ui.dict.t});save();toast(ok?"Card made.":"Already in your cards.")};
+A.openHist=(d)=>{const h=(S.history||[]).find(x=>x.id===d.id);if(!h)return;
+  if(h.kind==="write"){const w=S.writings.find(x=>x.id===h.ref);if(!w)return toast("This writing no longer exists.");ui.wtype=w.type;ui.draft=w.text;ui.topic="";ui.result={data:w.data,text:w.text,cached:true,saved:{}};go("write")}
+  else if(h.kind==="quiz"){const q=S.quizzes.find(x=>x.id===h.ref);ui.lt="quiz";if(q)ui.quiz={data:clone(q.data),ans:{},draft:{},refId:q.id,scored:false};go("learn")}
+  else if(h.kind==="lesson"){ui.lt="lesson";ui.lesson=h.ref;go("learn")}
+  else if(h.kind==="dictate"){ui.lt="dictate";go("learn")}
+  else go("cards")};
+const PRESET={gemini:{name:"Gemini",url:"https://generativelanguage.googleapis.com/v1beta",format:"gemini"},openai:{name:"OpenAI-compatible",url:"",format:"openai"}};
+A.pfNew=(d)=>{const pr=PRESET[d.k]||PRESET.openai;const prevKey=(S.providers.find(p=>p.format===pr.format)||{}).key||"";ui.pf={id:null,name:pr.name,url:pr.url,format:pr.format,key:prevKey,model:d.k==="gemini"?"gemini-3.5-flash-lite":"",limit:d.k==="gemini"?"400":""};render()};
+A.pfEdit=(d)=>{const p=provById(d.id);if(!p)return;ui.pf={id:p.id,name:p.name,url:p.url,format:p.format,key:p.key,model:p.model,limit:p.limit||""};render()};
+A.pfClose=()=>{ui.pf=null;render()};
+A.pfUse=(d)=>{S.defaultProvider=d.id;save();render()};
+A.pfDel=(d)=>ask("Delete this provider and its API key from this browser?\nHapus provider ini beserta API key-nya dari browser?",()=>{S.providers=S.providers.filter(p=>p.id!==d.id);if(S.defaultProvider===d.id)S.defaultProvider=S.providers[0]?S.providers[0].id:null;if(ui.pf&&ui.pf.id===d.id)ui.pf=null;save();render()});
+A.toggleKey=(d,el)=>{const i=$("#pfKey");if(!i)return;const show=i.type==="password";i.type=show?"text":"password";if(el)el.textContent=show?"Hide":"Show"};
+function readPf(){return {name:$("#pfName").value.trim(),format:$("#pfFormat").value,url:$("#pfUrl").value.trim(),key:$("#pfKey").value.trim(),model:$("#pfModel").value.trim(),limit:Math.max(0,parseInt($("#pfLimit").value,10)||0)}}
+A.pfSave=()=>{const v=readPf();const miss=[];if(!v.url)miss.push("Base URL");if(!v.key)miss.push("API key");if(!v.model)miss.push("Model ID");if(miss.length){const m="Missing: "+miss.join(", ");const el=$("#pfMsg");if(el)el.textContent=m;return toast(m)}if(!v.name)v.name=v.model;const f=ui.pf;if(f.id){const p=provById(f.id);if(p)Object.assign(p,v)}else{const p=Object.assign({id:uid()},v);S.providers.push(p);for(let i=0;i<(f.tested||0);i++)bump(p);if(!S.defaultProvider)S.defaultProvider=p.id}ui.pf=null;save();toast("Provider saved.");render()};
+A.pfTest=async()=>{const v=readPf();const m=$("#pfMsg");if(!v.url||!v.key||!v.model)return toast("Fill in the URL, key, and model first.");if(m)m.textContent="Testing. This uses one request and counts toward the daily limit.";try{const r=await callAI(Object.assign({id:"tmp"},v),"You are a connection test.","Reply with the single word: OK",{noTrack:true,max:64});const ok="Success: "+r.text.slice(0,80);const f=ui.pf;const ex=f&&f.id?provById(f.id):null;if(ex)bump(ex);else if(f)f.tested=(f.tested||0)+1;save();if(f){Object.assign(f,v)}render();const m2=$("#pfMsg");if(m2)m2.textContent=ok+(ex?"":"\nThis test is counted once you save the provider.")}catch(e){if(m)m.textContent="Failed: "+e.message}};
+A.export=()=>{const o=clone(S);const inc=$("#incKey");if(!inc||!inc.checked)o.providers=(o.providers||[]).map(p=>Object.assign({},p,{key:""}));ui.exportText=JSON.stringify(o,null,2);try{const b=new Blob([ui.exportText],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="english-coach-backup-"+today()+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}catch(e){}render();setTimeout(()=>{const t=$("#expBox");if(t)t.scrollIntoView({behavior:"smooth"})},30)};
+A.copyExport=()=>{const t=$("#expBox");if(!t)return;const done=()=>toast("Copied.");const fail=()=>toast("Select the text and copy it manually.");if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).then(done,fail);else{t.select();fail()}};
+function importObj(o){if(!o||typeof o!=="object"||!Array.isArray(o.cards))throw new Error("x");const old=S.providers;const n=Object.assign(clone(DEF),o);n.providers=(n.providers||[]).map(p=>{if(!p.key){const m=old.find(x=>x.id===p.id);if(m)p.key=m.key}return p});if(!Array.isArray(n.history))n.history=[];if(!n.reviews||typeof n.reviews!=="object")n.reviews={};S=n;if(!S.historyMigrated)migrate();save();applyTheme();toast("Backup imported.");render()}
+A.importPaste=()=>{const v=(($("#impText")||{}).value||"").trim();try{importObj(JSON.parse(v))}catch(err){toast("Invalid backup text.")}};
+A.importPick=()=>{const f=$("#impFile");if(f)f.click()};
+A.reset=()=>ask("Delete all data, including cards, writing, and the API key? This cannot be undone.\nHapus semua data, termasuk kartu, tulisan, dan API key? Tidak bisa dibatalkan.",()=>{try{localStorage.removeItem(LS);localStorage.removeItem(LSC)}catch(e){}S=clone(DEF);seedIfNeeded();migrate();ui.pf=null;ui.exportText="";ui.result=null;ui.quiz=null;ui.rv=null;render();toast("Data deleted.")});
+
+document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(!t)return;const f=A[t.dataset.act];if(!f)return;if(t.tagName==="A")e.preventDefault();f(t.dataset,t)});
+document.addEventListener("input",e=>{const id=e.target.id;if(id==="draft"){ui.draft=e.target.value;updateWc()}else if(id==="qsrc")ui.quizSrc=e.target.value;else if(id==="cSearch"){ui.cquery=e.target.value;const box=$("#cardList");if(box)box.innerHTML=cardListHTML()}});
+document.addEventListener("change",e=>{const el=e.target,id=el.id;
+  if(id==="modelSel")ui.model=el.value;
+  else if(id==="wtype"){ui.draft=($("#draft")||{}).value||ui.draft;ui.wtype=el.value;ui.topic="";render()}
+  else if(id==="qlevel")ui.qlevel=el.value;else if(id==="qn")ui.qn=el.value;else if(id==="qcat")ui.qcat=el.value;
+  else if(id==="setAccent"){S.accent=el.value;save()}
+  else if(id==="setRate"){S.rate=parseFloat(el.value);save()}
+  else if(id==="setTheme"){S.theme=el.value;save();applyTheme()}
+  else if(id==="impFile"){const f=el.files&&el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{importObj(JSON.parse(r.result))}catch(err){toast("Invalid backup file.")}};r.readAsText(f);el.value=""}});
+document.addEventListener("keydown",e=>{
+  if(ui.page!=="cards"||!ui.rv)return;
+  const tag=(e.target&&e.target.tagName||"").toLowerCase();
+  if(tag==="input"||tag==="textarea"||tag==="select"||e.target.isContentEditable)return;
+  if(e.key===" "||e.code==="Space"){e.preventDefault();if(!ui.rv.shown)A.flip();return}
+  if(!ui.rv.shown)return;
+  if(e.key==="1")A.rate({v:"again"});else if(e.key==="2")A.rate({v:"hard"});else if(e.key==="3")A.rate({v:"good"});
+});
+if("speechSynthesis" in window){try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){}}
+
+/* ---- sampul ---- */
+let cvCard=null;
+function coverPhrase(){const pool=S.cards.filter(c=>c.kind!=="fix"&&c.front&&c.back);if(!pool.length)return null;const due=dueCards().filter(c=>c.kind!=="fix");return due[0]||rand(pool)}
+function renderCover(){
+  const el=$("#cover");if(!el)return;
+  const n=streak(),due=dueCards().length;cvCard=coverPhrase();
+  const stat=(n?n+"-day streak":"Start your streak")+" · "+(due?pl(due,"card")+" due":"no cards due");
+  el.innerHTML=`<div class="cv-in">
+    <div class="cv-top"><span>${esc(dateLong())}</span><span>${esc(stat)}</span></div>
+    <div class="cv-mid"><p class="cv-kick">A quiet studio</p><h1 class="cv-title">English <em>Coach</em></h1><p class="cv-sub">Learn calmly.</p></div>
+    <div class="cv-bot">
+      ${cvCard?`<div class="cv-phrase"><p class="cv-label">Phrase of the day</p><p class="cv-en">${esc(cvCard.front)}</p><p class="cv-id">${esc(cvCard.back)}</p><button class="cv-say" data-act="cvSay" aria-label="Hear the phrase">${IC.vol}</button></div>`:""}
+      <button class="cv-go" id="cvGo" data-act="enterApp">Enter ${IC.arrow}</button>
+    </div>
+  </div><span class="cv-mono" aria-hidden="true">Ec</span>`;
+  el.hidden=false;el.classList.remove("out");document.documentElement.classList.add("cv-on");
+}
+document.addEventListener("keydown",e=>{const el=$("#cover");if(!el||el.hidden||el.classList.contains("out"))return;if(e.key!=="Enter"&&e.key!==" ")return;if(e.target&&e.target.closest&&e.target.closest(".cv-say"))return;e.preventDefault();A.enterApp()});
+A.cvSay=()=>{if(cvCard)speak(cvCard.say||cvCard.front)};
+A.openCover=()=>{try{speechSynthesis.cancel()}catch(e){}renderCover()};
+A.enterApp=()=>{const el=$("#cover");if(!el||el.classList.contains("out"))return;try{speechSynthesis.cancel()}catch(e){}el.classList.add("out");document.documentElement.classList.remove("cv-on");setTimeout(()=>{el.hidden=true;el.innerHTML=""},420)};
+seedIfNeeded();migrate();migrateNotes();applyTheme();render();renderCover();
+</script>
+</body>
+</html>
