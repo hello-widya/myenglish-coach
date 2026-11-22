@@ -362,6 +362,32 @@ main{flex:1}
 #selbar[hidden]{display:none}
 @media (min-width:980px){#selbar{bottom:28px}}
 .chip2.on{background:var(--forest);color:var(--btn-ink);border-color:transparent}
+
+/* ---- v2 ---- */
+.fc-wrap{perspective:1100px;margin:12px 0}
+.fc-in{display:grid;transition:transform .55s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+.fc-in.flipped{transform:rotateY(180deg)}
+.fc-face{grid-area:1/1;margin:0!important;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.fc-face.back{transform:rotateY(180deg)}
+.fc-in:not(.flipped) .back,.fc-in.flipped .front{pointer-events:none}
+.mdots{display:inline-flex;gap:3px;margin-left:8px;vertical-align:middle}.mdots i{width:6px;height:6px;border-radius:50%;background:var(--line)}.mdots i.on{background:var(--forest-2)}
+@media (prefers-reduced-motion:reduce){.fc-in{transition:none}}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px;margin:6px 0 16px;box-shadow:var(--shadow)}
+.hero-top{display:flex;gap:14px;align-items:center}
+.avatar{flex:none;width:52px;height:52px;border-radius:50%;background:var(--forest);color:var(--paper);display:grid;place-items:center;font-family:var(--serif);font-size:24px;font-weight:600}
+.xpbar .xprow{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.shpanel{padding:10px 12px;margin:2px 0 8px;background:var(--bg-2);border-radius:12px}
+.shwords{font-size:18px;margin:0 0 4px}
+.btn.on{outline:2px solid var(--forest-2)}
+.mtool.txt{font-size:13px;font-weight:600;padding:2px 8px}
+.trbox{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--bg-2);font-size:14px;color:var(--muted)}
+.vcall{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));text-align:center;overflow:auto}
+.vc-top{display:grid;gap:2px}.vc-orb{width:132px;height:132px;border-radius:50%;margin:28px 0 16px;background:radial-gradient(circle at 35% 30%,var(--forest-2),var(--forest));opacity:.85;transition:transform .3s}
+.vc-orb.listening{animation:vcp 1.1s ease-in-out infinite}.vc-orb.speaking{animation:vcp .7s ease-in-out infinite}.vc-orb.thinking{opacity:.45;animation:vcp 1.8s ease-in-out infinite}
+@keyframes vcp{50%{transform:scale(1.12)}}@media (prefers-reduced-motion:reduce){.vc-orb{animation:none!important}}
+.vc-state{font-weight:600;margin:0}.vc-live{min-height:24px;color:var(--muted);margin:6px 0}
+.vc-last{max-width:520px;width:100%;margin:8px 0 18px;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:14px;text-align:left;max-height:30vh;overflow:auto}
+.vc-btns{display:flex;gap:10px;margin-top:auto}
 </style>
 </head>
 <body>
@@ -386,12 +412,13 @@ main{flex:1}
       <button class="brandmark only-mobile logo-btn" data-act="openCover" aria-label="English Coach, back to cover" title="Back to cover">English <i>Coach</i></button>
       <div class="top-meta">
         <button class="iconbtn" data-act="lkOpen" aria-label="Quick dictionary" title="Quick dictionary" id="lkBtn"></button>
+        <span class="chip" id="chipXp"></span>
         <span class="chip" id="chipStreak"></span>
         <span class="chip" id="chipQuota"></span>
       </div>
     </header>
     <main id="view"></main>
-    <footer class="appfoot">English Coach · © <span id="ftYear">2026</span> · v1.5</footer>
+    <footer class="appfoot">English Coach · © <span id="ftYear">2026</span> · v2.0</footer>
   </div>
 </div>
 <nav class="tabbar"><div id="tabNav"></div></nav>
@@ -1155,7 +1182,7 @@ const msgHTML=m=>esc(m).replace(/\n/g,"<br>");
 function histTitle(h){const t=String(h.title||"");let m=t.match(/^Mengulang (\d+) kartu$/);if(m)return "Reviewed "+pl(+m[1],"card");if(t==="Soal")return "Quiz";if(t==="Pelajaran")return "Lesson";return t}
 function histDetail(h){const d=String(h.detail||"");if(h.kind==="write")return typeName(d);let m;if(m=d.match(/^(\d+) soal$/))return pl(+m[1],"question");if(m=d.match(/^(\d+)\/(\d+) benar$/))return m[1]+"/"+m[2]+" correct";if(m=d.match(/^(\d+) ingat · (\d+) susah · (\d+) lupa$/))return m[1]+" got it · "+m[2]+" hard · "+m[3]+" forgot";if(m=d.match(/^(\d+)\/(\d+) kata$/))return m[1]+"/"+m[2]+" words";return d}
 
-const DEF={liveStrict:true,makeMode:"ex",talks:[],lastBackup:"",backupSnooze:"",goal:10,autoSpeak:false,autoSend:false,theme:"system",accent:"en-US",rate:0.9,focus:"all",providers:[],defaultProvider:null,cards:[],seeded:false,activity:[],usage:{},errorStats:{},writings:[],quizzes:[],lessonsDone:[],history:[],reviews:{},historyMigrated:false,notebook:[],notesMigrated:false,profile:{name:"",level:"",placedOn:"",mods:["daily","work","travel"],expl:"auto",notes:"",notesBackup:"",tone:"casual",rules:"",mLearn:"",mTalk:""},unitProg:{},sessions:[],hw:null,ws:null,cls:null,talk:null,ask:null,accepted:{},flags:[]};
+const DEF={xp:0,sound:true,talkLive:false,liveStrict:true,makeMode:"ex",talks:[],lastBackup:"",backupSnooze:"",goal:10,autoSpeak:false,autoSend:false,theme:"system",accent:"en-US",rate:0.9,focus:"all",providers:[],defaultProvider:null,cards:[],seeded:false,activity:[],usage:{},errorStats:{},writings:[],quizzes:[],lessonsDone:[],history:[],reviews:{},historyMigrated:false,notebook:[],notesMigrated:false,profile:{name:"",level:"",placedOn:"",mods:["daily","work","travel"],expl:"auto",notes:"",notesBackup:"",tone:"casual",rules:"",mLearn:"",mTalk:""},unitProg:{},sessions:[],hw:null,ws:null,cls:null,talk:null,ask:null,accepted:{},flags:[]};
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function load(){
   try{
@@ -1173,7 +1200,7 @@ let LS_OK=true;try{localStorage.setItem("__t","1");localStorage.removeItem("__t"
 function save(){if(!LS_OK)return;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast("Browser storage is full or blocked.")}}
 function loadCache(){try{return JSON.parse(localStorage.getItem(LSC)||"{}")}catch(e){return {}}}
 function saveCache(c){const k=Object.keys(c);if(k.length>80){k.sort((a,b)=>c[a].t-c[b].t).slice(0,k.length-80).forEach(x=>delete c[x])}try{localStorage.setItem(LSC,JSON.stringify(c))}catch(e){}}
-const ui={wshow:8,page:"home",rt:"cards",wtype:"jurnal",topic:"",draft:"",model:null,result:null,rv:null,quiz:null,quizSrc:"",qlevel:"A2–B1",qn:"8",qcat:"umum",dict:null,pf:null,cfilter:"all",cquery:"",hfilter:"all",nfilter:"all",busy:false,exportText:"",pt:null,me:"profile",tsum:null,ln:{view:"home"},ctx:"auto",gen:null,fin:null,cb:{},ce:{},cd:{},stream:{},tmenu:false,tmode:"auto",tview:null,lk:null,lkCache:{},pr:null,sel:"",selCtx:""};
+const ui={wshow:8,page:"home",rt:"cards",wtype:"jurnal",topic:"",draft:"",model:null,result:null,rv:null,quiz:null,quizSrc:"",qlevel:"A2–B1",qn:"8",qcat:"umum",dict:null,pf:null,cfilter:"all",cquery:"",hfilter:"all",nfilter:"all",busy:false,exportText:"",pt:null,me:"profile",tsum:null,ln:{view:"home"},ctx:"auto",gen:null,fin:null,cb:{},ce:{},cd:{},stream:{},tmenu:false,tmode:"auto",tview:null,lk:null,lkCache:{},pr:null,sel:"",selCtx:"",shIdx:-1,shRes:null,shRec:false,vcall:false,vcallState:"idle",vcallLive:"",trMap:{},trBusy:{}};
 
 function seedIfNeeded(){if(S.seeded)return;S.cards=SEED.map(s=>({id:uid(),front:s[0],back:s[1],example:s[2],tag:s[3],kind:"phrase",say:s[0],box:0,due:today(),created:today(),lapses:0}));S.seeded=true;save()}
 function migrate(){
@@ -1207,7 +1234,25 @@ function rateCard(c,r){const n=nextState(c,r);c.box=n.box;c.ef=n.ef;c.ivl=n.ivl;
 function addCard(o){const f=String(o.front||"").trim(),b=String(o.back||"").trim();if(!f||!b)return false;if(S.cards.some(c=>c.kind===(o.kind||"phrase")&&c.front.toLowerCase()===f.toLowerCase()))return false;S.cards.push({id:uid(),front:f,back:b,example:String(o.example||"").trim(),tag:o.tag||"umum",kind:o.kind||"phrase",cloze:o.cloze||"",say:o.say||"",box:0,ef:2.5,ivl:0,due:today(),created:today(),lapses:0});return true}
 function streak(){const a=new Set(S.activity);let d=today();if(!a.has(d))d=addDays(d,-1);let n=0;while(a.has(d)){n++;d=addDays(d,-1)}return n}
 function mark(){const t=today();if(!S.activity.includes(t)){S.activity.push(t);if(S.activity.length>400)S.activity.shift()}save()}
-function logEvent(ev){if(!Array.isArray(S.history))S.history=[];S.history.unshift(Object.assign({id:uid(),ts:new Date().toISOString(),date:today()},ev));if(S.history.length>400)S.history.length=400;mark()}
+/* ---- v2: XP, ranks, sounds ---- */
+const RANKS=[[0,"Novice"],[100,"Beginner"],[300,"Explorer"],[650,"Builder"],[1200,"Conversationalist"],[2000,"Speaker"],[3200,"Achiever"],[5000,"Fluent"]];
+function rankInfo(xp){let cur=RANKS[0],nxt=RANKS[1];for(let i=0;i<RANKS.length;i++){if(xp>=RANKS[i][0]){cur=RANKS[i];nxt=RANKS[i+1]||null}}
+  return {title:cur[1],nextXp:nxt?nxt[0]:null,pct:nxt?Math.min(100,Math.round((xp-cur[0])/(nxt[0]-cur[0])*100)):100}}
+let actx=null;
+function playTone(type){if(S.sound===false)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!actx)actx=new AC();if(actx.state==="suspended")actx.resume();
+  const now=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();o.connect(g);g.connect(actx.destination);
+  const seq={ok:["sine",[523.25,659.25],.08,.25],bad:["triangle",[240,195],.1,.25],flip:["sine",[420,520],.05,.14],win:["sine",[523.25,659.25,783.99,1046.5],.09,.56]}[type];if(!seq)return;
+  o.type=seq[0];seq[1].forEach((f,i)=>o.frequency.setValueAtTime(f,now+i*seq[2]));g.gain.setValueAtTime(.06,now);g.gain.exponentialRampToValueAtTime(.001,now+seq[3]);o.start(now);o.stop(now+seq[3]+.01)}catch(e){}}
+function addXP(pts,reason){if(!pts||pts<=0)return;const old=rankInfo(S.xp||0).title;S.xp=(S.xp||0)+pts;const nw=rankInfo(S.xp).title;
+  if(nw!==old){playTone("win");toast("Level up! You are now a "+nw+" (+"+pts+" XP)")}else if(reason)toast("+"+pts+" XP · "+reason)}
+function xpForEvent(ev){const m={review:10,talk:20,unit:15,class:15,write:12,speak:6,quiz:12,dict:6,placement:20};addXP(m[ev&&ev.kind]||8)}
+function avatarHTML(){const nm=(S.profile.name||"").trim();return `<span class="avatar" aria-hidden="true">${esc(nm?nm[0].toUpperCase():"✦")}</span>`}
+function xpBarHTML(){const r=rankInfo(S.xp||0),x=S.xp||0;return `<div class="xpbar"><div class="xprow"><b>${esc(r.title)}</b><small>${x} XP${r.nextXp?" · "+(r.nextXp-x)+" to the next rank":" · top rank"}</small></div><div class="prog"><i style="width:${r.pct}%"></i></div></div>`}
+function heroHTML(n,line){const pr=S.profile,nm=(pr.name||"").trim();
+  return `<section class="hero"><div class="hero-top">${avatarHTML()}<div class="grow"><p class="kicker" style="margin:0">${esc(dateLong())}${pr.level?" · "+esc(pr.level):""}</p><h1 style="margin:2px 0 0">${esc(greet())}${nm?", <em>"+esc(nm)+"</em>":""}.</h1></div></div>
+  <p class="lede" style="margin:10px 0 14px">${esc(line)} ${n}/3 done today.</p>${xpBarHTML()}
+  ${nm?"":`<div class="row" style="margin-top:14px;flex-wrap:nowrap"><input id="homeName" placeholder="What should I call you?" style="flex:1"><button class="btn sm" data-act="saveHomeName">Save</button></div>`}</section>`}
+function logEvent(ev){xpForEvent(ev);if(!Array.isArray(S.history))S.history=[];S.history.unshift(Object.assign({id:uid(),ts:new Date().toISOString(),date:today()},ev));if(S.history.length>400)S.history.length=400;mark()}
 function bumpReview(r){const t=today();S.reviews[t]=S.reviews[t]||{again:0,hard:0,good:0};S.reviews[t][r]=(S.reviews[t][r]||0)+1}
 function reviewsToday(){const r=S.reviews[today()]||{again:0,hard:0,good:0};return (r.again||0)+(r.hard||0)+(r.good||0)}
 function dayScore(key){let n=(S.history||[]).filter(h=>h.date===key).length;const rv=S.reviews&&S.reviews[key];if(rv)n+=(rv.again||0)+(rv.hard||0)+(rv.good||0);if(!n&&S.activity.includes(key))n=1;return n}
@@ -1221,13 +1266,14 @@ function mastered(){return S.cards.filter(c=>c.box>=3).length}
 function wroteToday(){return S.writings.some(w=>w.date===today())}
 function didToday(kind){return (S.history||[]).some(h=>h.date===today()&&h.kind===kind)}
 
-function speak(t,rate){if(!("speechSynthesis" in window))return toast("Speech is not supported in this browser.");try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=S.accent;u.rate=rate||S.rate;const vs=speechSynthesis.getVoices();const v=vs.find(v=>v.lang.replace("_","-")===S.accent)||vs.find(v=>v.lang.startsWith("en"));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){toast("Could not play the audio.")}}
-let rec=null, micStop=false, micCancel=false, prec=null;
+function speak(t,rate,onend){if(!("speechSynthesis" in window))return toast("Speech is not supported in this browser.");try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=S.accent;u.rate=rate||S.rate;if(onend){let dn=false;const f=()=>{if(dn)return;dn=true;onend()};u.onend=f;u.onerror=f}const vs=speechSynthesis.getVoices();const v=vs.find(v=>v.lang.replace("_","-")===S.accent)||vs.find(v=>v.lang.startsWith("en"));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){toast("Could not play the audio.")}}
+let rec=null, micStop=false, micCancel=false, prec=null, vrec=null;
+function stopVrec(){if(vrec){vrec._x=true;try{vrec.stop()}catch(e){}vrec=null}}
 function mergeSpeech(list){const out=[];list.forEach(t=>{t=String(t||"").trim();if(!t)return;const last=out[out.length-1];if(last&&t.toLowerCase().startsWith(last.toLowerCase()))out[out.length-1]=t;else if(!(last&&last.toLowerCase().startsWith(t.toLowerCase())))out.push(t)});return out.join(" ")}
 const MIC_IDLE=()=>IC.mic+" Speak",MIC_ON=()=>IC.mic+" Listening… tap to stop";
 function micUI(on){const b=$("#micBtn");if(!b)return;b.classList.toggle("on",on);const c=b.dataset.compact;b.innerHTML=c?IC.mic:(on?MIC_ON():MIC_IDLE());if(c)b.setAttribute("aria-label",on?"Stop listening":"Speak");b.setAttribute("aria-pressed",on?"true":"false")}
 function autoGrow(t){if(!t||!t.closest||!t.closest(".composer"))return;t.style.height="auto";t.style.height=Math.max(46,Math.min(t.scrollHeight+2,140))+"px"}
-function stopMic(cancel){micCancel=!!cancel;micStop=true;if(rec){try{rec.stop()}catch(e){}rec=null}if(prec){try{prec.stop()}catch(e){}}micUI(false)}
+function stopMic(cancel){stopVrec();micCancel=!!cancel;micStop=true;if(rec){try{rec.stop()}catch(e){}rec=null}if(prec){try{prec.stop()}catch(e){}}micUI(false)}
 function micErr(er){return er==="not-allowed"||er==="service-not-allowed"?(location.protocol==="file:"?"Chrome blocks the microphone for files opened from your computer. Open the app from https or localhost. Brave does not support speech recognition.":"Microphone is blocked. Allow it in the site settings and your system privacy settings."):er==="network"?"Speech service unreachable. Brave blocks it, so use Chrome or Edge.":"Microphone: "+er}
 function toggleMic(d){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast("Speech recognition is not supported here. Try Chrome.");if(rec){stopMic();return}
   if(prec){try{prec.stop()}catch(e){}}
@@ -1292,7 +1338,7 @@ const SYS_QUIZ=`You are an English teacher creating a comprehension quiz for an 
 {"title":"short title","questions":[{"type":"mcq","q":"question","options":["A","B","C","D"],"answer":0,"why":"short explanation in simple Indonesian"},{"type":"tf","q":"statement","answer":true,"why":"..."},{"type":"fill","q":"sentence with ____ as the blank","answer":"word","accept":["alternative"],"why":"..."}],"vocab":[{"front":"useful English phrase from the text","back":"Indonesian meaning","example":"short example sentence"}]}
 For mcq, "answer" is the index (0-3) of the correct option. Use only information from the material.`;
 
-function go(p){stopMic(true);try{speechSynthesis.cancel()}catch(e){}if(ui.page==="cards"&&p!=="cards"&&ui.rv)commitReview(ui.rv);
+function go(p){ui.vcall=false;ui.shIdx=-1;ui.shRes=null;stopMic(true);try{speechSynthesis.cancel()}catch(e){}if(ui.page==="cards"&&p!=="cards"&&ui.rv)commitReview(ui.rv);
   const al={write:["cards","write"],history:["me","history"],set:["me","set"],path:["learn","course"],tutor:["talk",""]};
   if(al[p]){if(p==="write")ui.rt="write";else if(p==="path")ui.ln={view:"course"};else if(al[p][1])ui.me=al[p][1];p=al[p][0]}
   if(ui.page!==p){ui.tsum=null;ui.tview=null}
@@ -1305,6 +1351,7 @@ function chrome(){
   if(side)side.innerHTML=items.map(x=>navBtn(x[0],x[1],x[2],"navb")).join("");
   if(tab)tab.innerHTML=items.map(x=>navBtn(x[0],x[1],x[2],"tabb")).join("");
   const n=streak();
+  if($("#chipXp"))$("#chipXp").textContent="⭐ "+(S.xp||0)+" XP";
   if($("#sideStreak"))$("#sideStreak").textContent=String(n);
   if($("#chipStreak"))$("#chipStreak").textContent=pl(n,"day");
   const p=defProv();
@@ -1366,15 +1413,11 @@ function resultHTML(r){const d=r.data;
   ${(d.errors.length||d.vocab.length)?`<div style="margin-top:14px"><button class="btn block" data-act="saveAll" ${savedAll?"disabled":""}>${savedAll?"All saved as cards":"Save all as cards"}</button></div>`:""}</div>`;
 }
 
-const CPAGE=30;
-function cardStatus(c){return c.due<=today()?"due":c.box===0?"new":c.box>=3?"strong":"learning"}
 function cardListHTML(){
-  const f=ui.cfilter,st=ui.cstat||"all",q=(ui.cquery||"").trim().toLowerCase();
-  const list=S.cards.map((c,i)=>[c,i]).filter(x=>{const c=x[0];return (f==="all"||c.tag===f)&&(st==="all"||cardStatus(c)===st)&&(!q||(c.front+" "+c.back+" "+(c.example||"")).toLowerCase().includes(q))})
-    .sort((a,b)=>String(b[0].created||"").localeCompare(String(a[0].created||""))||b[1]-a[1]).map(x=>x[0]);
+  const f=ui.cfilter,q=(ui.cquery||"").trim().toLowerCase();
+  const list=S.cards.filter(c=>(f==="all"||c.tag===f)&&(!q||(c.front+" "+c.back+" "+(c.example||"")).toLowerCase().includes(q)));
   if(!list.length)return '<p class="muted">No cards match this filter.</p>';
-  const n=ui.cshow||CPAGE;
-  return '<small style="margin-bottom:6px">'+pl(list.length,"card")+', newest first.</small>'+list.slice(0,n).map(c=>`<div class="phrase"><div class="grow"><b class="en">${c.kind==="fix"?"Fix: ":c.kind==="cloze"?"Blank: ":""}${esc(c.front)}</b><small>${esc(c.back).replace(/\n/g," · ")}</small></div><span class="pill">${c.box}</span><button class="btn ghost sm" data-act="delCard" data-id="${c.id}" aria-label="Delete card">Delete</button></div>`).join("")+(list.length>n?`<div class="row" style="margin-top:10px"><button class="btn ghost sm" data-act="cMore">Show ${Math.min(CPAGE,list.length-n)} more (${list.length-n} left)</button><button class="btn ghost sm" data-act="cAll">Show all</button></div>`:(n>CPAGE?`<div style="margin-top:10px"><button class="btn ghost sm" data-act="cLess">Show fewer</button></div>`:""));
+  return list.slice(0,120).map(c=>`<div class="phrase"><div class="grow"><b class="en">${c.kind==="fix"?"Fix: ":c.kind==="cloze"?"Blank: ":""}${esc(c.front)}</b><small>${esc(c.back).replace(/\n/g," · ")}</small></div><span class="pill">${c.box}</span><button class="btn ghost sm" data-act="delCard" data-id="${c.id}" aria-label="Delete card">Delete</button></div>`).join("")+(list.length>120?`<small>Showing 120 of ${list.length}.</small>`:"");
 }
 function pgCardsBody(){
   if(ui.rv)return reviewHTML();
@@ -1397,10 +1440,9 @@ function pgCardsBody(){
     <div style="margin-top:12px"><button class="btn block" data-act="addCard">Save card</button></div></section>
   <h4>All cards</h4>
   <div class="seg">${[["all","All"],["umum","General"],["kerja","Work"],["VA","VA"],["koreksi","Corrections"]].map(x=>`<button class="${ui.cfilter===x[0]?"on":""}" data-act="cfilter" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>
-  <div class="seg">${[["all","Any status"],["due","Due"],["new","New"],["learning","Learning"],["strong","Strong"]].map(x=>`<button class="${(ui.cstat||"all")===x[0]?"on":""}" data-act="cstat" data-v="${x[0]}">${x[1]}</button>`).join("")}</div>
   <div class="card"><input id="cSearch" placeholder="Search a phrase or meaning" value="${esc(ui.cquery)}" style="margin-bottom:8px"><div id="cardList">${cardListHTML()}</div></div>`;
 }
-function commitReview(rv){if(!rv||rv.logged||!rv.done)return;rv.logged=true;const s=rv.stats;logEvent({kind:"review",title:"Reviewed "+pl(rv.unique,"card"),detail:s.good+" got it · "+s.hard+" hard · "+s.again+" forgot"})}
+function commitReview(rv){if(!rv||rv.logged||!rv.done)return;rv.logged=true;playTone("win");const s=rv.stats;logEvent({kind:"review",title:"Reviewed "+pl(rv.unique,"card"),detail:s.good+" got it · "+s.hard+" hard · "+s.again+" forgot"})}
 function maskCloze(c){const w=String(c.cloze||"");const i=c.front.toLowerCase().indexOf(w.toLowerCase());if(!w||i<0)return c.front;return c.front.slice(0,i)+"_____"+c.front.slice(i+w.length)}
 function reviewHTML(){
   const rv=ui.rv;const c=cardById(rv.queue[rv.i]);
@@ -1412,11 +1454,18 @@ function reviewHTML(){
   const back=rv.shown?`${cz?`<p class="${cz.ok?"w-ok":"w-bad"}" style="margin:10px 0 0">${cz.ok?"Correct.":"You typed: "+esc(cz.given)+". Answer: "+esc(c.cloze)}</p>`:""}<div class="b">${esc(c.back)}</div>${c.example?`<small style="margin-top:8px">${esc(c.example)}</small>`:""}`
     :isCz?`<div class="row" style="margin-top:14px;width:100%;max-width:340px;flex-wrap:nowrap"><input id="czin" lang="en" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the missing word" style="flex:1"><button class="btn sm" data-act="czCheck">Check</button></div><small style="margin-top:8px">Hint: ${esc(c.back).replace(/\n/g," · ")}</small>`
     :'<small style="margin-top:12px">Say it out loud first, then check the answer.</small>';
+  const dots=`<span class="mdots" title="Mastery">${[1,2,3,4,5].map(i=>`<i class="${(c.box||0)>=i?"on":""}"></i>`).join("")}</span>`;
+  const tag=`<div class="t">${esc(tagName(c.tag))}${c.kind==="fix"?" · correction":""}${isCz?" · fill in the blank":""} ${dots}</div>`;
+  const flipped=rv.shown&&!rv.pendingFlip;
+  const frontTxt=c.kind==="fix"?"Fix this sentence:\n"+c.front:c.front;
+  const frontFace=`<div class="fc fc-face front" aria-hidden="${rv.shown?"true":"false"}">${tag}<div class="f">${esc(isCz?maskCloze(c):frontTxt)}</div>${isCz?`<div class="row" style="margin-top:14px;width:100%;max-width:340px;flex-wrap:nowrap"><input id="czin" lang="en" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the missing word" style="flex:1"><button class="btn sm" data-act="czCheck">Check</button></div><small style="margin-top:8px">Hint: ${esc(c.back).replace(/\n/g," · ")}</small>`:'<small style="margin-top:12px">Say it out loud first, then flip the card.</small>'}</div>`;
+  const backFace=`<div class="fc fc-face back" aria-hidden="${rv.shown?"false":"true"}">${tag}<div class="f">${esc(frontTxt)}</div>${cz?`<p class="${cz.ok?"w-ok":"w-bad"}" style="margin:10px 0 0">${cz.ok?"Correct.":"You typed: "+esc(cz.given)+". Answer: "+esc(c.cloze)}</p>`:""}<div class="b">${esc(c.back)}</div>${c.example?`<small style="margin-top:8px">${esc(c.example)}</small>`:""}</div>`;
   return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="endReview">Exit</button><span class="pill">${left} left</span></div><div class="prog"><i style="width:${pct}%"></i></div>
-  <div class="fc"><div class="t">${esc(tagName(c.tag))}${c.kind==="fix"?" · correction":""}${isCz?" · fill in the blank":""}</div><div class="f">${esc(front)}</div>${back}</div>
-  ${c.say&&!(isCz&&!rv.shown)?`<div style="text-align:center"><button class="btn ghost sm" data-act="say" data-t="${esc(c.say)}">${IC.vol} Listen</button></div>`:""}
-  ${rv.shown?`<div class="rate"><button class="btn danger" data-act="rate" data-v="again">Forgot<small>${hint("again")}</small></button><button class="btn ghost" data-act="rate" data-v="hard">Hard<small>${hint("hard")}</small></button><button class="btn" data-act="rate" data-v="good">Got it<small>${hint("good")}</small></button></div><p class="keys muted">Space to reveal · 1 forgot · 2 hard · 3 got it</p>`:`<button class="btn block" style="margin-top:10px" data-act="flip">Show answer</button><p class="keys muted">Press space</p>`}`;
+  <div class="fc-wrap"><div class="fc-in${flipped?" flipped":""}" id="fcIn">${frontFace}${backFace}</div></div>
+  ${c.say&&!(isCz&&!rv.shown)?`<div style="text-align:center"><button class="btn ghost sm" data-act="say" data-t="${esc(c.say)}">${IC.vol} Listen</button> <button class="btn ghost sm" data-act="sayslow" data-t="${esc(c.say)}">🐢 Slow</button></div>`:""}
+  ${rv.shown?`<div class="rate"><button class="btn danger" data-act="rate" data-v="again">Forgot<small>${hint("again")}</small></button><button class="btn ghost" data-act="rate" data-v="hard">Hard<small>${hint("hard")}</small></button><button class="btn" data-act="rate" data-v="good">Got it<small>${hint("good")}</small></button></div><p class="keys muted">Space to flip · 1 forgot · 2 hard · 3 got it</p>`:`<button class="btn block" style="margin-top:10px" data-act="flip">Flip card</button><p class="keys muted">Press space</p>`}`;
 }
+function flipAnim(rv){const el=$("#fcIn");if(el){void el.offsetWidth;el.classList.add("flipped")}rv.pendingFlip=false;playTone("flip")}
 
 
 /* ---- buku kesalahan ---- */
@@ -1530,8 +1579,9 @@ A.focus=(d)=>{S.focus=d.v;save();render()};
 A.hfilter=(d)=>{ui.hfilter=d.v;render()};
 A.startReview=()=>{const q=dueCards().slice(0,30).map(c=>c.id);if(!q.length)return toast("No cards to review.");ui.rv={queue:q,i:0,shown:false,done:0,unique:0,seen:{},logged:false,stats:{again:0,hard:0,good:0}};ui.page="cards";render();window.scrollTo(0,0)};
 A.endReview=()=>{if(ui.rv)commitReview(ui.rv);ui.rv=null;save();render()};
-A.flip=()=>{if(ui.rv){ui.rv.shown=true;render()}};
-A.rate=(d)=>{const rv=ui.rv;if(!rv)return;const c=cardById(rv.queue[rv.i]);if(!c)return;rateCard(c,d.v);bumpReview(d.v);rv.stats[d.v]=(rv.stats[d.v]||0)+1;if(!rv.seen[c.id]){rv.seen[c.id]=1;rv.unique++}if(d.v==="again")rv.queue.push(c.id);rv.done++;rv.i++;rv.shown=false;rv.cz=null;if(rv.i>=rv.queue.length)commitReview(rv);else mark();save();render()};
+A.flip=()=>{const rv=ui.rv;if(rv&&!rv.shown){rv.shown=true;rv.pendingFlip=true;render();flipAnim(rv)}};
+A.sayslow=(d)=>{if(d.t)speak(d.t,0.6)};
+A.rate=(d)=>{const rv=ui.rv;if(!rv)return;const c=cardById(rv.queue[rv.i]);if(!c)return;rateCard(c,d.v);addXP(d.v==="good"?3:d.v==="hard"?1:0);playTone(d.v==="again"?"bad":"ok");bumpReview(d.v);rv.stats[d.v]=(rv.stats[d.v]||0)+1;if(!rv.seen[c.id]){rv.seen[c.id]=1;rv.unique++}if(d.v==="again")rv.queue.push(c.id);rv.done++;rv.i++;rv.shown=false;rv.cz=null;if(rv.i>=rv.queue.length)commitReview(rv);else mark();save();render()};
 A.say=(d)=>{let t=d.t;if(d.k&&ui.result)t=ui.result.data[d.k];if(t)speak(t)};
 A.cAuto=async()=>{const f=$("#cFront"),b=$("#cBack"),x=$("#cEx"),btn=$("#cAutoBtn");if(!f)return;const q=f.value.trim();if(!q)return toast("Type the English first.");if(!areaProv("learn"))return toast("Add an AI provider in Settings first.");
   if(btn){btn.disabled=true;btn.textContent="Filling in…"}
@@ -1545,11 +1595,7 @@ A.addCard=()=>{const front=$("#cFront").value.trim(),back=$("#cBack").value.trim
 A.dlgNo=()=>{$("#dlg").hidden=true;ui.dlg=null};
 A.dlgYes=()=>{const f=ui.dlg;$("#dlg").hidden=true;ui.dlg=null;if(f)f()};
 A.delCard=(d)=>ask("Delete this card?",()=>{S.cards=S.cards.filter(c=>c.id!==d.id);save();render()});
-A.cfilter=(d)=>{ui.cfilter=d.v;ui.cshow=CPAGE;render()};
-A.cstat=(d)=>{ui.cstat=d.v;ui.cshow=CPAGE;render()};
-A.cMore=()=>{ui.cshow=(ui.cshow||CPAGE)+CPAGE;const b=$("#cardList");if(b)b.innerHTML=cardListHTML()};
-A.cAll=()=>{ui.cshow=99999;const b=$("#cardList");if(b)b.innerHTML=cardListHTML()};
-A.cLess=()=>{ui.cshow=CPAGE;render()};
+A.cfilter=(d)=>{ui.cfilter=d.v;render()};
 A.topic=()=>{const list=TOPICS[ui.wtype]||TOPICS.bebas;let t=rand(list);if(list.length>1){let g=0;while(t===ui.topic&&g++<6)t=rand(list)}ui.topic=t;ui.draft=($("#draft")||{}).value||ui.draft;render()};
 A.frame=()=>{const f=FRAMES[ui.wtype];if(!f)return;const cur=($("#draft")||{}).value||"";if(cur.trim())return toast("Clear your writing first to use a template.");ui.draft=f;render()};
 A.clearDraft=()=>{ui.draft="";ui.result=null;render()};
@@ -1636,7 +1682,7 @@ A.importPick=()=>{const f=$("#impFile");if(f)f.click()};
 A.reset=()=>ask("Delete all data, including cards, writing, and the API key? This cannot be undone.\nHapus semua data, termasuk kartu, tulisan, dan API key? Tidak bisa dibatalkan.",()=>{try{localStorage.removeItem(LS);localStorage.removeItem(LSC)}catch(e){}S=clone(DEF);seedIfNeeded();migrate();ui.pf=null;ui.exportText="";ui.result=null;ui.quiz=null;ui.rv=null;ui.pt=null;ui.tsum=null;ui.ln={view:"home"};render();toast("Data deleted.")});
 
 document.addEventListener("click",e=>{const t=e.target.closest("[data-act]");if(!t)return;const f=A[t.dataset.act];if(!f)return;if(t.tagName==="A")e.preventDefault();f(t.dataset,t)});
-document.addEventListener("input",e=>{const id=e.target.id;if(id==="draft"){ui.draft=e.target.value;updateWc()}else if(id==="qsrc")ui.quizSrc=e.target.value;else if(id==="cSearch"){ui.cquery=e.target.value;ui.cshow=CPAGE;const box=$("#cardList");if(box)box.innerHTML=cardListHTML()}});
+document.addEventListener("input",e=>{const id=e.target.id;if(id==="draft"){ui.draft=e.target.value;updateWc()}else if(id==="qsrc")ui.quizSrc=e.target.value;else if(id==="cSearch"){ui.cquery=e.target.value;const box=$("#cardList");if(box)box.innerHTML=cardListHTML()}});
 document.addEventListener("change",e=>{const el=e.target,id=el.id;
   if(id==="modelSel")ui.model=el.value;
   else if(id==="wtype"){ui.draft=($("#draft")||{}).value||ui.draft;ui.wtype=el.value;ui.topic="";render()}
@@ -1717,7 +1763,7 @@ const unitsDone=()=>visUnits().filter(isDone).length;
 function nextUnit(){const vis=visUnits(),li=lvIdx(S.profile.level||"A1");return vis.find(u=>!isDone(u)&&lvIdx(u.lv)>=li)||vis.find(u=>!isDone(u))||null}
 function nextAfter(id){const l=lessonById(id);if(l&&l.topic==="tenses"){const i=TLESSONS.findIndex(x=>x.id===id);return TLESSONS.slice(i+1).find(x=>!isDone(x))||TLESSONS.find(x=>!isDone(x)&&x.id!==id)||null}return nextUnit()}
 function explLang(){const m=S.profile.expl;if(m==="id"||m==="en")return m;return S.profile.level==="B2"?"en":"id"}
-const fmt=s=>esc(String(s==null?"":s).replace(/<<<\s*\/?\s*[A-Za-z]+\s*>>>/g,"")).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*(.+?)\*/g,"<i>$1</i>").replace(/\n/g,"<br>");
+const fmt=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*(.+?)\*/g,"<i>$1</i>").replace(/\n/g,"<br>");
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const accList=a=>String(a).split("|");
 const stripHint=s=>String(s).replace(/\s*\([^)]*\)\s*$/,"");
@@ -1912,7 +1958,7 @@ function openLesson(id){
   if(!(S.ws&&S.ws.src==="lesson"&&S.ws.meta.lesson===id&&!S.ws.submitted))S.ws=makeWS("lesson",l.t,lessonItems(l),{lesson:id});
   save();go("learn")}
 A.unitOpen=(d)=>openLesson(d.id);
-A.lnBack=()=>{const f=ui.ln&&ui.ln.from;ui.ln=f&&f.view?f:{view:"home"};render();window.scrollTo(0,0)};
+A.lnBack=()=>{stopMic(true);ui.shIdx=-1;ui.shRes=null;const f=ui.ln&&ui.ln.from;ui.ln=f&&f.view?f:{view:"home"};render();window.scrollTo(0,0)};
 A.lnHome=()=>{ui.ln={view:"home"};render();window.scrollTo(0,0)};
 A.lnTopic=(d)=>{ui.ln={view:"topic",topic:d.v,fam:"all"};render();window.scrollTo(0,0)};
 A.lnFam=(d)=>{ui.ln=Object.assign({},ui.ln,{fam:d.v});render()};
@@ -1930,8 +1976,21 @@ function materialHTML(l){
   return `<button class="btn ghost sm" data-act="lnBack">‹ Back</button>
   <p class="kicker" style="margin-top:14px">${esc(l.lv)} · ${esc(l.topic==="tenses"?"Tenses":UTAG[l.tag])}${isDone(l)?" · done":""}</p><h2>${esc(l.t)}</h2><p class="lede">${esc(l.g)}</p>${note}
   <section class="card"><h3>Explanation</h3><div class="expl">${fmt(l.ex)}</div></section>
-  <section class="card"><h3>Key phrases</h3>${l.ph.map((p,i)=>`<div class="phrase"><div class="grow"><b class="en">${esc(p[0])}</b><small>${esc(p[1])}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(p[0])}" aria-label="Listen">${IC.vol}</button><button class="btn ghost sm" data-act="lessonPhrase" data-i="${i}">Save</button></div>`).join("")}<div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="lessonSaveAll">Save all as cards</button></div></section>
+  <section class="card"><h3>Key phrases</h3>${l.ph.map((p,i)=>`<div class="phrase"><div class="grow"><b class="en">${esc(p[0])}</b><small>${esc(p[1])}</small></div><button class="btn ghost sm" data-act="say" data-t="${esc(p[0])}" aria-label="Listen">${IC.vol}</button><button class="btn ghost sm" data-act="sayslow" data-t="${esc(p[0])}" aria-label="Listen slowly" title="Slow (0.6x)">🐢</button><button class="btn ghost sm${ui.shIdx===i?" on":""}" data-act="shToggle" data-i="${i}" aria-label="Practise saying it" title="Practise saying it">${IC.mic}</button><button class="btn ghost sm" data-act="lessonPhrase" data-i="${i}">Save</button></div>${ui.shIdx===i?shPanel(p[0],i):""}`).join("")}<div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="lessonSaveAll">Save all as cards</button></div></section>
   <h3 style="margin:18px 0 4px">Practice</h3><p class="muted" style="margin-top:0">Answer everything, then submit once.${pg&&pg.tries?" Best so far: "+pg.best+"%.":""}</p>`}
+function shPanel(t,i){const r=ui.shRes;
+  return `<div class="shpanel"><p class="muted" style="margin:0 0 8px">Listen first (try the slow button), then say it out loud.</p>${r?`<p class="shwords">${r.words.map(x=>`<span class="${x.ok?"w-ok":"w-bad"}">${esc(x.w)}</span>`).join(" ")}</p><small>${r.pct}% · You said: ${esc(r.heard||"(nothing heard)")}</small>`:""}
+  <div class="row" style="margin-top:8px"><button class="btn sm" data-act="shRun" data-i="${i}">${IC.mic} ${ui.shRec?"Listening… tap to stop":r?"Try again":"Speak"}</button></div></div>`}
+A.shToggle=(d)=>{const i=+d.i;stopMic(true);ui.shRec=false;if(ui.shIdx===i){ui.shIdx=-1}else ui.shIdx=i;ui.shRes=null;render()};
+A.shRun=(d)=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast("Speech recognition needs Chrome or Edge.");
+  if(prec){try{prec.stop()}catch(e){}return}
+  const l=lessonById(ui.ln&&ui.ln.id);const ph=l&&l.ph[+d.i];if(!ph)return;
+  if(rec)stopMic(true);try{speechSynthesis.cancel()}catch(e){}
+  const me=new SR();prec=me;me.lang=S.accent;me.interimResults=false;me.continuous=false;me.maxAlternatives=1;let heard="";
+  me.onresult=e=>{heard=Array.from(e.results).map(r=>r[0].transcript).join(" ")};
+  me.onerror=e=>{if(e.error!=="no-speech"&&e.error!=="aborted")toast(micErr(e.error))};
+  me.onend=()=>{if(prec===me)prec=null;ui.shRec=false;if(heard.trim()){const r=scoreSpeech(ph[0],heard);r.heard=heard.trim();ui.shRes=r;if(r.pct>=80){addXP(3,"Clear pronunciation");playTone("ok")}else playTone("flip");mark();save()}else toast("I did not hear anything. Try again closer to the mic.");render()};
+  try{me.start();ui.shRec=true;render()}catch(e){prec=null;ui.shRec=false}};
 A.lessonPhrase=(d)=>{const l=lessonById(ui.ln.id);if(!l)return;const p=l.ph[+d.i];const ok=addCard({front:p[0],back:p[1],example:"",tag:CARDTAG[l.tag]||"umum",say:p[0]});save();toast(ok?"Card made.":"Already in your cards.")};
 A.lessonSaveAll=()=>{const l=lessonById(ui.ln.id);if(!l)return;let n=0;l.ph.forEach(p=>{if(addCard({front:p[0],back:p[1],tag:CARDTAG[l.tag]||"umum",say:p[0]}))n++});save();toast(n?pl(n,"card")+" added.":"All already saved.")};
 function wsNavHTML(){
@@ -2151,7 +2210,7 @@ const PERSONAS=[
  ["colleague","Team meeting","A call with colleagues","You are Alex, a team member in a short online meeting. Talk about a project, a delay and next steps. Ask for the student's opinion and for their update. Open by greeting them and asking for their update."],
  ["free","Free topic","You choose what to talk about","You are Sam, a friendly conversation partner. Open with a short greeting and ask what the student wants to talk about today. Then follow their topic."]];
 const CORRS=[["live","Live","Corrections appear under each reply"],["end","At the end","Feedback summary when you finish"],["ask","Only if I ask","Just chat. Ask for corrections any time"]];
-function corrFor(pid){return ui.tmode&&ui.tmode!=="auto"?ui.tmode:(pid==="chat"?"ask":"end")}
+function corrFor(pid){return S.talkLive?"live":(pid==="chat"||pid==="free"?"ask":"end")}
 function talkSys(per,corr){const p=S.profile,isChat=per[0]==="chat",rules=(p.rules||"").trim(),lvl=p.level||"A2",who=p.name||"an Indonesian learner";
   const head=isChat?`You are chatting with ${who} (CEFR level ${lvl}), who is practising English. ${per[3]}`:`You are role-playing a real conversation so ${who} (CEFR level ${lvl}) can practise English with other people. ${per[3]}`;
   const body=isChat?`RULES
@@ -2176,7 +2235,6 @@ function chatUser(C,start,area){
   let s="STUDENT PROFILE\n"+memoryText()+"\n\n";
   if(start){return s+(area==="talk"?"Begin the conversation now with your first line, in character.":"The student opened the question room"+(C.lesson?" while studying this lesson":"")+". Say hi in one casual line and ask what they want to know.")}
   return s+"CONVERSATION SO FAR:\n"+C.msgs.slice(-20).map(m=>(m.r==="user"?"Student: ":"You: ")+m.t).join("\n")+""+((area==="talk"&&C.corr==="live"&&!S.liveStrict&&(()=>{const l=[...C.msgs].reverse().find(m=>m.r==="user");return l&&!/^\s*HELP:/i.test(l.t)})())?"\n\nSTUDENT'S LAST MESSAGE, proofread exactly this one strictly: \""+[...C.msgs].reverse().find(m=>m.r==="user").t+"\"":"")+"\n\nRespond to the student's last message."}
-function normTags(s){return String(s==null?"":s).replace(/<<<\s*\/?\s*(FIX|REPLY|DATA)\s*>>>/gi,(m,k)=>"<<<"+k.toUpperCase()+">>>")}
 function visibleReply(t){const i=String(t).indexOf("<<<");return (i>=0?String(t).slice(0,i):String(t)).trim()}
 function streamPaint(area){const ch=$("#chat");if(!ch)return;let el=$("#streamMsg");if(!el){const t=ch.querySelector(".typing");el=document.createElement("div");el.className="msg ai";el.id="streamMsg";if(t)t.replaceWith(el);else ch.appendChild(el)}el.innerHTML=fmt(ui.stream[area]||"");ch.scrollTop=ch.scrollHeight}
 function plainSpeak(t){return String(t).replace(/[*_`#>]/g," ").replace(/\s+/g," ").trim()}
@@ -2187,27 +2245,33 @@ async function chatTurn(area,text,opt){
   let speakText="";const meta=!!(opt&&opt.meta)||/^\s*HELP:/i.test(text||""),isLive=(area==="talk"&&text!=null&&C.corr==="live"&&!meta),inline=isLive&&!S.liveStrict,liveChk=(isLive&&S.liveStrict)?runCheck(text):null;
   try{
     const sys=area==="talk"?talkSys(PERSONAS.find(x=>x[0]===C.persona)||PERSONAS[0],C.corr||"end"):askSys(C.lesson?lessonById(C.lesson):null);
-    const raw=normTags(await aiStream(area==="talk"?"talk":"learn",sys,chatUser(C,text==null,area),{max:3000,temp:inline?0.5:0.8},t0=>{const t=normTags(t0);const v=inline?liveVisible(t):visibleReply(t);ui.stream[area]=v;if(v)streamPaint(area)}));
+    const raw=await aiStream(area==="talk"?"talk":"learn",sys,chatUser(C,text==null,area),{max:3000,temp:inline?0.5:0.8},t=>{const v=inline?liveVisible(t):visibleReply(t);ui.stream[area]=v;if(v)streamPaint(area)});
     const lv=(inline||(area==="talk"&&/<<<(FIX|REPLY)>>>/.test(raw)))?parseLive(raw):null;const pr=lv?{reply:lv.reply,d:{}}:parseTutor(raw),d=pr.d;if(!pr.reply)throw new Error("The tutor returned an empty reply. Try again.");
     const errs=(liveChk||inline)?[]:cleanErrs(d.errors);
     const vocab=(Array.isArray(d.vocab)?d.vocab:[]).filter(v=>v&&v.front&&v.back).slice(0,2).map(v=>({front:String(v.front),back:String(v.back),example:String(v.example||"")}));
     ui.stream[area]="";
-    const reply=String(pr.reply).replace(/<<<\s*\/?\s*[A-Za-z]+\s*>>>/g,"").replace(/^\s*✏️.*$/gm,"").replace(/\n{3,}/g,"\n\n").trim()||pr.reply;
+    const reply=String(pr.reply).replace(/^\s*✏️.*$/gm,"").replace(/\n{3,}/g,"\n\n").trim()||pr.reply;
     const um=C.msgs[C.msgs.length-1];if(area==="talk"&&text!=null&&um&&um.r==="user"){if(liveChk){applyCheck(C,um,await liveChk)}else if(lv&&inline){let fx=lv.fix;if(!fx.ok)fx=await runCheck(text);applyCheck(C,um,fx)}else{um.errs=errs;um.chk=false}}
     C.msgs.push({r:"ai",t:reply,errs,vocab});C.updated=Date.now();
     errs.forEach(e=>{S.errorStats[e.type]=(S.errorStats[e.type]||0)+1;(C.errs=C.errs||[]).push(e)});
     if(errs.length)addNotes(errs,today());
     vocab.forEach(v=>(C.vocab=C.vocab||[]).push(v));
-    if(area==="talk"&&S.autoSpeak&&looksEnglish(pr.reply))speakText=pr.reply;
+    if(area==="talk"&&(S.autoSpeak||ui.vcall)&&looksEnglish(pr.reply))speakText=pr.reply;
     mark();save();
   }catch(e){
     ui.stream[area]="";ui.ce[area]=e.message;
     if(text!=null){C.msgs.pop();ui.cd[area]=text}else if(!C.msgs.length){if(area==="talk")S.talk=null;else S.ask=null}
     save()}
-  ui.cb[area]=false;render();if(speakText)speak(plainSpeak(speakText))}
+  ui.cb[area]=false;
+  if(ui.vcall&&area==="talk"){
+    if(ui.ce.talk){ui.vcallState="idle";render();return}
+    if(speakText){ui.vcallState="speaking";render();speak(plainSpeak(speakText),null,()=>{if(ui.vcall&&ui.vcallState==="speaking"){ui.vcallState="idle";vcallListen()}})}
+    else{ui.vcallState="idle";render();setTimeout(vcallListen,300)}
+    return}
+  render();if(speakText)speak(plainSpeak(speakText))}
 function proofRules(id){return `Find every real mistake: grammar, wrong or missing words, prepositions, articles, tenses, word order, wrong word choice, spelling and typos, and phrasing a native speaker would not say. Be strict: if something is wrong, list it, even when the message is easy to understand. Ignore only missing capital letters and missing final punctuation. Never skip a mistake because the message is short, casual or understandable. Examples you must catch: "lay on my bed" should be "lie on my bed"; "What channel travel vlog do you recommend?" should be "What travel vlog channel do you recommend?"; "I'm getting headache" needs "a headache"; "Sitkom" is a typo for "sitcom". The JSON object is {"language":"en or other","errors":[{"wrong":"exact words copied from the message","right":"the corrected words","type":"tense|article|preposition|word_order|word_choice|spelling|punctuation|subject_verb|plural|other","why":"short reason in ${id?"simple Indonesian":"simple English"}"}],"natural":"the whole message rewritten the way a native speaker would naturally say it, or an empty string if it already sounds natural"}. At most 3 errors. If the message is mostly Indonesian or another language, set "language" to "other" and "errors" to []. If the English is fully correct, "errors" is [].`}
 function takeJSON(t){const a=t.indexOf("{");if(a<0)return null;let d=0,str=false,esc=false;for(let i=a;i<t.length;i++){const c=t[i];if(str){if(esc)esc=false;else if(c==="\\")esc=true;else if(c==='"')str=false}else if(c==='"')str=true;else if(c==="{")d++;else if(c==="}"){d--;if(d===0)return {json:t.slice(a,i+1),end:i+1}}}return null}
-function cleanLiveReply(r){r=String(r||"").replace(/<<<DATA>>>[\s\S]*$/,"").replace(/<<<\s*\/?\s*[A-Za-z]+\s*>>>/g,"").replace(/^\s*```\w*\s*/,"").replace(/\s*```\s*$/,"").trim();
+function cleanLiveReply(r){r=String(r||"").replace(/<<<DATA>>>[\s\S]*$/,"").replace(/<<<[A-Z]+>>>/g,"").replace(/^\s*```\w*\s*/,"").replace(/\s*```\s*$/,"").trim();
   if(/^[\]\}",]/.test(r)||/"(natural|errors|language|wrong)"\s*:/.test(r))return "";return r}
 function parseLive(raw){raw=String(raw||"");const iF=raw.indexOf("<<<FIX>>>");let fixObj=null,rest=raw;
   if(iF>=0){const after=raw.slice(iF+9),j=takeJSON(after);if(j){fixObj=parseJSON(j.json);rest=after.slice(j.end)}else{const iR0=raw.indexOf("<<<REPLY>>>");rest=iR0>=0?raw.slice(iR0):""}}
@@ -2287,6 +2351,7 @@ async function aiStream(area,sys,user,opt,onChunk){
 A.cSay=(d)=>{const C=d.area==="talk"?S.talk:S.ask;const m=C&&C.msgs[+d.m];if(m)speak(plainSpeak(m.t))};
 A.tCorr=(d)=>{if(S.talk){S.talk.corr=d.v;ui.tmenu=false;save();render();toast(MODE_LBL[d.v])}};
 A.tmode=(d)=>{ui.tmode=d.v;render()};
+A.tLive=()=>{S.talkLive=!S.talkLive;if(S.talk)S.talk.corr=corrFor(S.talk.persona);ui.tmenu=false;save();render();toast(S.talkLive?"Corrections on.":"Corrections off.")};
 A.tgAuto=()=>{S.autoSpeak=!S.autoSpeak;if(!S.autoSpeak){try{speechSynthesis.cancel()}catch(e){}}save();render()};
 A.tgStrict=()=>{S.liveStrict=!S.liveStrict;save();render()};
 A.tgSend=()=>{S.autoSend=!S.autoSend;save();render()};
@@ -2298,7 +2363,7 @@ A.talkDel=(d)=>ask("Delete this saved chat?",()=>{S.talks=(S.talks||[]).filter(x
 
 /* ---- cloze check ---- */
 function normW(t){return String(t||"").toLowerCase().replace(/[^a-z0-9' ]/g,"").replace(/\s+/g," ").trim()}
-A.czCheck=()=>{const rv=ui.rv;if(!rv)return;const c=cardById(rv.queue[rv.i]);if(!c)return;const el=$("#czin"),given=(el?el.value:"").trim();if(!given)return toast("Type the missing word first.");rv.cz={given,ok:normW(given)===normW(c.cloze)};rv.shown=true;render()};
+A.czCheck=()=>{const rv=ui.rv;if(!rv)return;const c=cardById(rv.queue[rv.i]);if(!c)return;const el=$("#czin"),given=(el?el.value:"").trim();if(!given)return toast("Type the missing word first.");rv.cz={given,ok:normW(given)===normW(c.cloze)};rv.shown=true;rv.pendingFlip=true;render();flipAnim(rv)};
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="czin"){e.preventDefault();A.czCheck()}});
 
 /* ---- backup reminder ---- */
@@ -2351,17 +2416,17 @@ ${id?"":"Write the meaning in simple English instead of Indonesian."}`;
   const o=parseJSON(txt);if(!o||!o.meaning)throw new Error("Could not read the AI answer. Try again.");
   return {word:String(o.word||q),pos:String(o.pos||""),ipa:String(o.ipa||""),meaning:String(o.meaning),example:String(o.example||""),example_id:String(o.example_id||""),notes:String(o.notes||"")}}
 function lkHTML(){const L=ui.lk;if(!L)return "";const r=L.res,p=areaProv("learn");
-  const sh=true,tiny=r&&isShort(r.word);
+  const sh=r&&isShort(r.word);
   return `<div class="dbox" role="dialog" aria-label="Quick dictionary"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Quick dictionary</h3><button class="btn ghost sm" data-act="lkClose">Close</button></div>
   <div class="row" style="margin-top:10px;flex-wrap:nowrap"><input id="lkIn" lang="en" autocomplete="off" autocapitalize="off" placeholder="Word, phrase or sentence" value="${esc(L.q||"")}" style="flex:1"><button class="btn sm" data-act="lkGo" ${L.busy?"disabled":""}>Look up</button></div>
   ${p?"":'<div class="note warn" style="margin-top:10px">Add an AI provider in Settings to use the dictionary.</div>'}
   ${L.busy?'<p class="muted" style="margin-top:12px">Looking up…</p>':""}${L.err?`<div class="note warn" style="margin-top:10px">${msgHTML(L.err)}</div>`:""}
-  ${r?`<div style="margin-top:14px"><label style="margin-top:0">English</label><textarea id="lkWord" lang="en" style="min-height:${tiny?44:76}px">${esc(r.word)}</textarea>${r.pos||r.ipa?`<small>${esc(r.pos)}${r.ipa?" · "+esc(r.ipa):""}</small>`:""}
-  <label>Meaning, in Indonesian</label><textarea id="lkMean" style="min-height:${tiny?44:76}px">${esc(r.meaning)}</textarea>
+  ${r?`<div style="margin-top:14px"><label style="margin-top:0">English</label><textarea id="lkWord" lang="en" style="min-height:${sh?44:76}px">${esc(r.word)}</textarea>${r.pos||r.ipa?`<small>${esc(r.pos)}${r.ipa?" · "+esc(r.ipa):""}</small>`:""}
+  <label>Meaning, in Indonesian</label><textarea id="lkMean" style="min-height:${sh?44:76}px">${esc(r.meaning)}</textarea>
   ${r.notes?`<div class="note" style="margin-top:10px"><b>Pelajari dulu</b><br>${esc(r.notes).replace(/\n/g,"<br>")}</div>`:""}
   <label>Example</label><input id="lkEx" lang="en" value="${esc(r.example)}"><label>Example, Indonesian</label><input id="lkExId" value="${esc(r.example_id)}">
   <small>Nothing is saved until you press a save button. Read first, then decide. If the meaning sounds off, fix it here and it is saved as you see it.</small>
-  <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="lkSay">${IC.vol} Listen</button>${sh?`<select id="lkMake" style="width:auto;min-height:0">${MAKE_OPTS.map(o=>`<option value="${o[0]}" ${(S.makeMode||"ex")===o[0]?"selected":""}>${o[1]}</option>`).join("")}</select>`:""}<button class="btn sm" data-act="lkSave">Save card(s)</button>${sh?'<button class="btn ghost sm" data-act="lkSaveCz">Save as fill-in card</button>':""}</div></div>`:""}</div>`}
+  <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="lkSay">${IC.vol} Listen</button>${sh?`<select id="lkMake" style="width:auto;min-height:0">${MAKE_OPTS.map(o=>`<option value="${o[0]}" ${(S.makeMode||"ex")===o[0]?"selected":""}>${o[1]}</option>`).join("")}</select>`:""}<button class="btn sm" data-act="lkSave">Save card${sh?"(s)":""}</button>${sh?'<button class="btn ghost sm" data-act="lkSaveCz">Save as fill-in card</button>':""}</div></div>`:""}</div>`}
 function lkRender(){const el=$("#lk");if(!el)return;if(!ui.lk){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.innerHTML=lkHTML();const i=$("#lkIn");if(i&&!ui.lk.res&&!ui.lk.busy&&document.activeElement!==i&&!ui.lk.q)i.focus()}
 A.lkOpen=(d)=>{ui.lk=ui.lk||{q:"",res:null,err:"",busy:false,ctx:""};lkRender()};
 A.lkClose=()=>{ui.lk=null;lkRender()};
@@ -2373,7 +2438,7 @@ A.lkGo=async()=>{const L=ui.lk;if(!L||L.busy)return;const i=$("#lkIn");const q=(
   L.busy=false;if(ui.lk===L)lkRender()};
 function lkVals(){const g=id=>(($("#"+id)||{}).value||"").trim();return {word:g("lkWord"),mean:g("lkMean"),ex:g("lkEx"),exid:g("lkExId")}}
 A.lkSay=()=>{const v=lkVals();if(v.word)speak(v.word)};
-A.lkSave=()=>{const v=lkVals();if(!v.word||!v.mean)return toast("English and meaning cannot be empty.");const sh=true;const mode=sh?((($("#lkMake")||{}).value)||S.makeMode||"ex"):"word";if(sh){S.makeMode=mode}
+A.lkSave=()=>{const v=lkVals();if(!v.word||!v.mean)return toast("English and meaning cannot be empty.");const sh=isShort(v.word);const mode=sh?((($("#lkMake")||{}).value)||S.makeMode||"ex"):"word";if(sh){S.makeMode=mode}
   const r=makeCards(mode,{front:v.word,back:v.mean,example:sh?(v.ex+(v.exid?"\n"+v.exid:"")):v.ex},{en:v.ex,id:v.exid},"umum");save();toast(makeToast(r))};
 const MAKE_OPTS=[["ex","Example sentence only"],["word","Word only"],["both","Both cards"]];
 function makeCards(mode,w,e,tag){const hasEx=!!(e&&e.en&&e.id);let m=mode,fb=false;if(m==="ex"&&!hasEx){m="word";fb=true}
@@ -2424,22 +2489,22 @@ const MODE_DESC={live:"Every message you send gets a ✏️ correction under it.
 function talkChatHTML(T,per,corr){
   const busy=ui.cb.talk,live=corr==="live";
   const quick=T.persona==="chat"?(live?[]:[["cQuick","Correct me","Please correct my last message and explain the mistakes."]]).concat([["cQuick","More natural","Can you say my last message in a more natural way?"],["cQuick","Explain","Please explain that again in simpler words."]]):[["cHelp","HELP:"],["cQuick","Say again","Sorry, could you say that again more simply?"],["cQuick","Check me","HELP: Please correct my last message and explain the mistakes."]];
-  const msgs=T.msgs.map((m,mi)=>m.r==="user"?`<div class="msg me">${fmt(m.t)}${userFix(m,mi)}</div>`:`<div class="msg ai">${fmt(m.t)}<div class="mtools"><button class="mtool" data-act="cSay" data-area="talk" data-m="${mi}" aria-label="Listen">${IC.vol}</button></div>${chatFixes(m,mi,"talk")}</div>`).join("");
+  const msgs=T.msgs.map((m,mi)=>m.r==="user"?`<div class="msg me">${fmt(m.t)}${userFix(m,mi)}</div>`:`<div class="msg ai">${fmt(m.t)}<div class="mtools"><button class="mtool" data-act="cSay" data-area="talk" data-m="${mi}" aria-label="Listen">${IC.vol}</button><button class="mtool" data-act="sayslowm" data-m="${mi}" aria-label="Listen slowly" title="Slow (0.6x)">🐢</button><button class="mtool txt" data-act="trMsg" data-m="${mi}">${ui.trMap[T.id+"_"+mi]?"Hide":"Translate"}</button></div>${ui.trMap[T.id+"_"+mi]?`<div class="trbox">${esc(ui.trMap[T.id+"_"+mi])}</div>`:ui.trBusy[T.id+"_"+mi]?'<div class="trbox">Translating…</div>':""}${chatFixes(m,mi,"talk")}</div>`).join("");
   const lv=busy?(ui.stream.talk?`<div class="msg ai" id="streamMsg">${fmt(ui.stream.talk)}</div>`:'<div class="typing">Typing…</div>'):"";
   const ph=T.persona==="chat"?"Write or speak…":"Reply in English…";
   const sub=MODE_LBL[corr]+(corr==="end"&&(T.errs||[]).length?" · "+pl((T.errs||[]).length,"note"):"");
   const menu=ui.tmenu?`<div class="sheetbg" data-act="tmenuClose"></div><div class="sheet" role="dialog" aria-label="Chat options"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Chat options</h3><button class="btn ghost sm" data-act="tmenuClose">Done</button></div>
-    <label>Corrections</label><div class="seg">${CORRS.map(c=>`<button class="${corr===c[0]?"on":""}" data-act="tCorr" data-v="${c[0]}">${c[1]}</button>`).join("")}</div><small>${MODE_DESC[corr]}</small>
+    <label>Corrections</label><div class="chips"><button class="chip2${corr==="live"?" on":""}" data-act="tLive" aria-pressed="${corr==="live"?"true":"false"}">Show corrections under my messages</button></div><small>${corr==="live"?MODE_DESC.live:"Off. Ask “Correct me” any time, or finish the chat to get feedback."}</small>
     ${corr==="live"?`<div class="chips"><button class="chip2${S.liveStrict?" on":""}" data-act="tgStrict" aria-pressed="${S.liveStrict?"true":"false"}">Double-check corrections</button></div><small>${S.liveStrict?"Uses 2 requests per message. More accurate.":"Uses 1 request per message. The tutor checks your message first, then replies."}</small>`:""}
     <label>Voice</label><div class="chips"><button class="chip2${S.autoSpeak?" on":""}" data-act="tgAuto" aria-pressed="${S.autoSpeak?"true":"false"}">Read replies aloud</button><button class="chip2${S.autoSend?" on":""}" data-act="tgSend" aria-pressed="${S.autoSend?"true":"false"}">Send after speaking</button></div>
     <div style="display:grid;gap:8px;margin-top:16px"><button class="btn" data-act="tmEnd" ${busy?"disabled":""}>End and get feedback</button><button class="btn soft" data-act="tmSave" ${busy?"disabled":""}>Save for later</button><button class="btn ghost" data-act="tmDiscard">Discard this chat</button></div></div>`:"";
   return `<div class="tchat">
-    <div class="chathead"><button class="iconbtn" data-act="talkSave" aria-label="Save and go back" ${busy?"disabled":""}><span style="font-size:26px;line-height:1;margin-top:-3px">‹</span></button><div class="grow"><b>${esc(per[1])}</b><small>${esc(sub)}</small></div><button class="iconbtn" data-act="tmenu" aria-label="Chat options">${IC.dots}</button></div>
+    <div class="chathead"><button class="iconbtn" data-act="talkSave" aria-label="Save and go back" ${busy?"disabled":""}><span style="font-size:26px;line-height:1;margin-top:-3px">‹</span></button><div class="grow"><b>${esc(per[1])}</b><small>${esc(sub)}</small></div><button class="iconbtn" data-act="vcallStart" data-v="${T.persona}" aria-label="Voice call" title="Voice call" ${busy?"disabled":""}>${IC.mic}</button><button class="iconbtn" data-act="tmenu" aria-label="Chat options">${IC.dots}</button></div>
     ${ui.ce.talk?`<div class="note warn" style="flex:none">${msgHTML(ui.ce.talk)}</div>`:""}
     <div class="chat" id="chat">${msgs}${lv}</div>
     ${quick.length?`<div class="quick">${quick.map(c=>`<button class="chip2" data-act="${c[0]}" data-area="talk" data-v="${esc(c[2]||"")}" ${busy?"disabled":""}>${esc(c[1])}</button>`).join("")}</div>`:""}
     <div class="composer"><textarea id="cinput" data-area="talk" lang="en" rows="1" placeholder="${ph}">${esc(ui.cd.talk||"")}</textarea><button class="cbtn" id="micBtn" data-compact="1" data-act="mic" data-target="cinput" data-area="talk" aria-label="Speak" aria-pressed="false">${IC.mic}</button><button class="cbtn send" data-act="cSend" data-area="talk" aria-label="Send" ${busy?"disabled":""}>${IC.sendi}</button></div>
-  </div>${menu}`}
+  </div>${menu}${ui.vcall?vcallHTML(T,per):""}`}
 A.tmenu=()=>{ui.tmenu=true;render()};
 A.tmenuClose=()=>{ui.tmenu=false;render()};
 A.tmEnd=()=>{ui.tmenu=false;render();talkFinish()};
@@ -2449,15 +2514,54 @@ function pgTalk(){
   if(ui.tsum)return tsumHTML();
   const p=areaProv("talk");
   if(ui.tview){const c=(S.talks||[]).find(x=>x.id===ui.tview);if(c)return talkViewHTML(c);ui.tview=null}
+  if(ui.vcall&&!S.talk)ui.vcall=false;
   if(S.talk){const T=S.talk,per=PERSONAS.find(x=>x[0]===T.persona)||PERSONAS[0],corr=T.corr||"end";return talkChatHTML(T,per,corr)}
-  return `<h2>Talk</h2><p class="lede">Chat in English like with a friend, or practise real situations. Get corrections live, at the end, or only when you ask.</p>
+  const role=ui.tmode==="role",RP=["friend","client","interview","service","colleague"];
+  return `<h2>Talk</h2><p class="lede">Speak or write in English with your AI tutor. Pick a style and start.</p>
   ${p?"":'<div class="note warn">Add an AI provider first. <a href="#" data-act="go" data-p="set">Open Settings</a></div>'}
   ${ui.ce.talk?`<div class="note warn">${msgHTML(ui.ce.talk)}</div>`:""}
-  <section class="card"><h3>Corrections</h3><div class="seg">${[["auto","Auto"]].concat(CORRS.map(c=>[c[0],c[1]])).map(c=>`<button class="${ui.tmode===c[0]?"on":""}" data-act="tmode" data-v="${c[0]}">${c[1]}</button>`).join("")}</div><small>Live: a ✏️ correction under each message you send. At the end: silent notes, then a feedback summary. Only if I ask: plain chat. Auto: Free chat = only if I ask, role-plays = at the end. You can change it during the chat.</small></section>
-  <section class="card"><h3>Who do you want to talk to?</h3>${PERSONAS.map(x=>`<button class="item" data-act="talkStart" data-v="${x[0]}" ${p?"":"disabled"}><span class="grow"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span><span class="chev">›</span></button>`).join("")}
-  <small style="margin-top:8px">${p?"Model: "+esc(p.name)+" · "+esc(p.model)+". Change it in Me → Profile.":""} In a role-play, type <b>HELP:</b> before a message when you don't know how to say something. Your own tutor rules (Me → Profile) apply here too.</small></section>
+  <section class="card"><div class="seg"><button class="${role?"":"on"}" data-act="tmode" data-v="free">Free chat</button><button class="${role?"on":""}" data-act="tmode" data-v="role">Role-play</button></div>
+  ${role?`<small style="margin:10px 0 6px;display:block">Practise a real situation. The AI plays a character and stays in English. Stuck? Type <b>HELP:</b> before your message.</small>${RP.map(id=>{const x=PERSONAS.find(q=>q[0]===id);return `<button class="item" data-act="talkStart" data-v="${x[0]}" ${p?"":"disabled"}><span class="grow"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span><span class="chev">›</span></button>`}).join("")}`
+  :`<small style="margin:10px 0 12px;display:block">Talk about anything, in English or Indonesian. Ask “Correct me” or “More natural” whenever you want.</small><div class="row"><button class="btn" data-act="talkStart" data-v="chat" ${p?"":"disabled"}>Start chatting</button><button class="btn soft" data-act="vcallStart" data-v="chat" ${p?"":"disabled"}>${IC.mic} Voice call</button></div>`}
+  </section>
+  <section class="card"><h3>Corrections</h3><div class="chips"><button class="chip2${S.talkLive?" on":""}" data-act="tLive" aria-pressed="${S.talkLive?"true":"false"}">Show corrections under my messages</button></div><small>${S.talkLive?"On: every message you send gets a ✏️ correction under it.":"Off: free chat corrects only when you ask, and role-plays give you feedback at the end."} You can change this during the chat.</small>
+  ${p?`<small style="display:block;margin-top:8px">Model: ${esc(p.name)} · ${esc(p.model)}. Change it in Me → Profile.</small>`:""}</section>
   ${(S.talks||[]).length?`<h4>Saved chats</h4><div class="card">${S.talks.slice(0,12).map(c=>{const per=PERSONAS.find(x=>x[0]===c.persona)||PERSONAS[0];const n=c.msgs.filter(m=>m.r==="user").length;return `<div class="phrase"><button class="item" style="flex:1;border:0;padding:6px 0" data-act="talkOpen" data-id="${c.id}"><span class="grow"><b>${esc(per[1])} · ${esc(c.title||"Chat")}</b><small>${esc(niceDate(c.date))} · ${pl(n,"message")} · ${c.done?"finished":"paused, tap to continue"}</small></span><span class="chev">›</span></button><button class="btn ghost sm" data-act="talkDel" data-id="${c.id}" aria-label="Delete chat">Delete</button></div>`}).join("")}</div>`:""}
   ${S.sessions.filter(s=>s.mode==="talk").length?`<h4>Past feedback</h4><div class="card">${S.sessions.filter(s=>s.mode==="talk").slice(0,5).map(s=>`<button class="item" data-act="sessOpen" data-id="${s.id}"><span class="grow"><b>${esc(niceDate(s.date))}</b><small>${pl(s.n,"message")}</small></span><span class="chev">›</span></button>`).join("")}</div>`:""}`}
+
+/* ---- v2: translate + voice call ---- */
+A.sayslowm=(d)=>{const m=S.talk&&S.talk.msgs[+d.m];if(m)speak(plainSpeak(m.t),0.6)};
+A.trMsg=async(d)=>{const T=S.talk;if(!T)return;const i=+d.m,key=T.id+"_"+i;if(ui.trMap[key]){delete ui.trMap[key];render();return}
+  const m=T.msgs[i];if(!m||ui.trBusy[key])return;if(!areaProv("talk"))return toast("Add an AI provider in Settings first.");
+  ui.trBusy[key]=1;render();
+  try{const t=await aiCall("talk","Translate the text into natural, everyday Indonesian. Return ONLY the translation.",m.t,{max:700,temp:0.2});ui.trMap[key]=String(t).trim()}catch(e){toast("Could not translate. "+String(e.message).split("\n")[0])}
+  delete ui.trBusy[key];render()};
+function vcallHTML(T,per){const last=[...T.msgs].reverse().find(m=>m.r==="ai"),st=ui.cb.talk?"thinking":ui.vcallState;
+  const lbl={idle:"Tap to talk",listening:"Listening… tap when you finish",thinking:"Thinking…",speaking:"Speaking… tap to interrupt"}[st]||"";
+  return `<div class="vcall" role="dialog" aria-label="Voice call"><div class="vc-top"><b>${esc(per[1])}</b><small>Hands-free voice call</small></div>
+  <div class="vc-orb ${st}" aria-hidden="true"></div><p class="vc-state">${lbl}</p><p class="vc-live">${esc(ui.vcallLive||"")}</p>
+  ${ui.ce.talk?`<div class="note warn" style="text-align:left">${msgHTML(ui.ce.talk)}</div>`:""}
+  <div class="vc-last">${last?fmt(last.t):""}</div>
+  <div class="vc-btns"><button class="btn" data-act="vcallMic" ${st==="thinking"?"disabled":""}>${IC.mic} ${st==="listening"?"Send":"Talk"}</button><button class="btn danger" data-act="vcallOff">End call</button></div></div>`}
+function vcallListen(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR||!ui.vcall||ui.cb.talk)return;
+  stopVrec();try{speechSynthesis.cancel()}catch(e){}
+  const r=new SR();vrec=r;r.lang=S.accent;r.interimResults=true;r.continuous=false;let txt="";
+  ui.vcallState="listening";ui.vcallLive="";ui.ce.talk="";render();
+  r.onresult=e=>{const parts=[];for(let i=0;i<e.results.length;i++)parts.push(e.results[i][0].transcript);txt=mergeSpeech(parts).trim();ui.vcallLive=txt;const lv=$(".vc-live");if(lv)lv.textContent=txt};
+  r.onerror=e=>{if(e.error!=="no-speech"&&e.error!=="aborted")toast(micErr(e.error))};
+  r.onend=()=>{if(r._x)return;if(vrec===r)vrec=null;if(!ui.vcall)return;if(!txt.trim()){ui.vcallState="idle";render();return}ui.vcallState="thinking";chatTurn("talk",txt)};
+  try{r.start()}catch(e){vrec=null;ui.vcallState="idle";render()}}
+A.vcallStart=(d)=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast("Voice call needs Chrome or Edge.");
+  if(!areaProv("talk"))return toast("Add an AI provider in Me → Settings first.");if(ui.cb.talk)return;
+  ui.vcall=true;ui.vcallState="idle";ui.vcallLive="";
+  if(!S.talk)A.talkStart({v:(d&&d.v)||"chat"});else{render();vcallListen()}};
+A.vcallOff=()=>{ui.vcall=false;ui.vcallState="idle";ui.vcallLive="";stopVrec();try{speechSynthesis.cancel()}catch(e){}render()};
+A.vcallMic=()=>{if(ui.cb.talk)return;
+  if(ui.vcallState==="listening"&&vrec){try{vrec.stop()}catch(e){}return}
+  if(ui.vcallState==="speaking"){ui.vcallState="idle";try{speechSynthesis.cancel()}catch(e){}}
+  vcallListen()};
+A.saveHomeName=()=>{const v=(($("#homeName")||{}).value||"").trim();if(!v)return toast("Type your name first.");S.profile.name=v.slice(0,40);save();render();toast("Nice to meet you, "+S.profile.name+".")};
+A.tgSound=()=>{S.sound=S.sound===false;save();render();playTone("ok")};
 A.talkStart=(d)=>{if(S.talk||ui.cb.talk)return;S.talk={id:uid(),persona:d.v,corr:corrFor(d.v),msgs:[],errs:[],vocab:[],started:Date.now()};ui.cd.talk="";ui.ce.talk="";save();chatTurn("talk",null)};
 A.talkDiscard=()=>ask("Discard this conversation? No feedback will be made.",()=>{S.talk=null;ui.ce.talk="";save();render()});
 function localTalkSummary(T){const id=explLang()==="id",p=S.profile;
@@ -2527,9 +2631,7 @@ function pgHome(){
   const recent=(S.history||[]).slice(0,4);
   const hwOpen=H&&H.status!=="checked";
   return `${backupNote()}${p?"":'<div class="note">Learn extras, Talk and corrections need an AI provider. Lessons, cards and dictation already work. <a href="#" data-act="go" data-p="set">Set up a provider</a></div>'}
-  <p class="kicker">${esc(dateLong())}${pr.level?" · "+esc(pr.level):""}</p>
-  <h1>${esc(greet())}. <em>${n===3?"You're on a roll.":"Take one step."}</em></h1>
-  <p class="lede">${esc(line)} ${n}/3 done today.</p>
+  ${heroHTML(n,line)}
   <div class="split">${goalHTML()}${levelProgHTML()}</div>
   ${pr.level?"":`<section class="card"><h3>Find your level first</h3><p class="muted">A 24-question placement test (about 10 minutes, no AI needed) sets your starting point. You can also pick a level yourself.</p><div class="row"><button class="btn" data-act="ptStart">Start placement test</button><button class="btn ghost" data-act="lnCourse" data-p="learn">Choose level</button></div></section>`}
   ${hwOpen?`<section class="card"><div class="kicker">Homework</div><h3>${H.status==="submitted"?"Waiting to be checked":"You have homework"}</h3><p class="muted">${esc(H.title)}</p><button class="btn sm" data-act="go" data-p="hw">${H.status==="submitted"?"View":"Do it now"}</button></section>`:""}
@@ -2550,15 +2652,17 @@ function pgHome(){
 /* ---------- Me ---------- */
 function modelOpts(cur){return `<option value="" ${!cur?"selected":""}>Default provider</option>`+S.providers.map(p=>`<option value="${esc(p.id)}" ${cur===p.id?"selected":""}>${esc(p.name)} · ${esc(p.model)}</option>`).join("")}
 function pgProfile(){const p=S.profile,vis=visUnits();
-  return `<div class="stats cols3"><div class="stat"><b>${esc(p.level||"–")}</b><span>${p.level?esc(LVNAME[p.level]):"not placed"}</span></div><div class="stat"><b>${unitsDone()}/${vis.length}</b><span>units done</span></div><div class="stat"><b>${streak()}</b><span>day streak</span></div></div>
+  return `<section class="hero"><div class="hero-top">${avatarHTML()}<div class="grow"><h2 style="margin:0">${esc(p.name||"Your profile")}</h2><small>${p.level?esc(p.level)+" · "+esc(LVNAME[p.level]):"Level not set yet"}</small></div></div>${xpBarHTML()}</section>
+  <div class="stats cols3"><div class="stat"><b>${esc(p.level||"–")}</b><span>${p.level?esc(LVNAME[p.level]):"not placed"}</span></div><div class="stat"><b>${unitsDone()}/${vis.length}</b><span>units done</span></div><div class="stat"><b>${streak()}</b><span>day streak</span></div></div>
   <section class="card"><h3>Level</h3><div class="seg">${LEVELS.map(l=>`<button class="${p.level===l?"on":""}" data-act="setLevel" data-v="${l}">${l}</button>`).join("")}</div><div class="row"><button class="btn ghost sm" data-act="ptStart">${p.level?"Retake placement test":"Take placement test"}</button></div></section>
   <section class="card"><h3>Interests</h3><div class="seg">${MODS.map(m=>`<button class="${p.mods.includes(m[0])?"on":""}" data-act="modToggle" data-v="${m[0]}">${m[1]}</button>`).join("")}</div><small>These choose the extra course units and the example topics. Grammar and Tenses are always there.</small></section>
   <section class="card"><h3>AI models</h3><p class="muted">Pick a model for each area. A "lite" model has a bigger daily limit, so it suits Talk. A bigger model usually follows instructions better for Learn.</p>
     <label style="margin-top:0">Learn and Ask tutor</label><select id="setMLearn">${modelOpts(p.mLearn)}</select>
     <label>Talk</label><select id="setMTalk">${modelOpts(p.mTalk)}</select></section>
-  <section class="card"><h3>Learning settings</h3><label style="margin-top:0">Your name (optional)</label><input id="setName" value="${esc(p.name)}" placeholder="Used by the tutor">
+  <section class="card"><h3>Learning settings</h3><label style="margin-top:0">Your name</label><input id="setName" value="${esc(p.name)}" placeholder="Used by the tutor">
     <label>Explanation language</label><select id="setExpl">${[["auto","Auto (Indonesian up to B1, English at B2)"],["id","Indonesian"],["en","English"]].map(x=>`<option value="${x[0]}" ${p.expl===x[0]?"selected":""}>${x[1]}</option>`).join("")}</select>
     <label>Daily goal</label><select id="setGoal">${[5,10,15,20,30].map(n=>`<option value="${n}" ${(S.goal||10)===n?"selected":""}>${n} activities a day</option>`).join("")}</select>
+    <label>Sound effects</label><div class="chips"><button class="chip2${S.sound!==false?" on":""}" data-act="tgSound" aria-pressed="${S.sound!==false?"true":"false"}">${S.sound!==false?"Sounds on":"Sounds off"}</button></div>
     <label>Tutor tone</label><select id="setTone">${[["casual","Casual (aku-kamu)"],["formal","Polite (saya-Anda)"]].map(x=>`<option value="${x[0]}" ${(p.tone||"casual")===x[0]?"selected":""}>${x[1]}</option>`).join("")}</select></section>
   <section class="card"><h3>My rules for the tutor</h3><p class="muted">Anything you always want, for example: "When I ask for a long text, write the full length I ask for."</p><textarea id="setRules" style="min-height:90px" placeholder="Write your own rules here">${esc(p.rules||"")}</textarea><small style="margin-top:6px">Saved when you tap outside the box.</small></section>
   <section class="card"><h3>Tutor memory</h3><p class="muted">The tutor reads this in every Learn session and Ask chat (up to about 7,000 characters). It updates when you finish a Learn session, and the previous version is kept as a backup. You can paste a summary from an earlier course or chat here.</p><textarea id="setNotes" style="min-height:150px" placeholder="Paste a previous summary here">${esc(p.notes)}</textarea><div style="margin-top:8px"><button class="btn ghost sm" data-act="saveNotes">Save memory</button></div></section>
